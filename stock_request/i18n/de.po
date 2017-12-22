@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-21 21:59+0000\n"
-"PO-Revision-Date: 2017-11-21 21:59+0000\n"
+"POT-Creation-Date: 2018-03-02 03:44+0000\n"
+"PO-Revision-Date: 2018-03-02 03:44+0000\n"
 "Last-Translator: Rudolf Schnapka <rs@techno-flex.de>, 2017\n"
 "Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
 "MIME-Version: 1.0\n"
@@ -25,22 +25,7 @@ msgid "<li><b>%s</b>: Transferred quantity %s %s</li>"
 msgstr "<li><b>%s</b>: Umgelagerte Menge %s %s</li>"
 
 #. module: stock_request
-#: model:ir.ui.view,arch_db:stock_request.view_stock_request_kanban
-msgid ""
-"<strong>Done Qty:\n"
-"                                    </strong>"
-msgstr ""
-"<strong>Erledigte Menge:\n"
-"                                    </strong>"
-
-#. module: stock_request
-#: model:ir.ui.view,arch_db:stock_request.view_stock_request_kanban
-msgid "<strong>Qty :</strong>"
-msgstr "<strong>Menge :</strong>"
-
-#. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_allocated_product_qty
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_requested_product_qty
 msgid "Allocated Quantity"
 msgstr "Zugeordnete Menge"
 
@@ -175,6 +160,11 @@ msgid "Name"
 msgstr "Bezeichnung"
 
 #. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_open_product_qty
+msgid "Open Quantity"
+msgstr ""
+
+#. module: stock_request
 #: model:ir.model,name:stock_request.model_stock_move_line
 msgid "Packing Operation"
 msgstr "Packvorgang"
@@ -195,6 +185,7 @@ msgid "Procurement Rule"
 msgstr "Beschaffungsregel"
 
 #. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_product_id
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_product_id
 msgid "Product"
 msgstr "Produkt"
@@ -215,11 +206,6 @@ msgid "Qty In Progress"
 msgstr "Menge in Bearbeitung"
 
 #. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_open_product_qty
-msgid "Qty pending to allocate"
-msgstr "Menge in Zuweisung"
-
-#. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_product_uom_qty
 msgid "Quantity"
 msgstr "Menge"
@@ -238,6 +224,13 @@ msgstr "Menge in Bearbeitung."
 #: model:ir.model.fields,help:stock_request.field_stock_request_product_qty
 msgid "Quantity in the default UoM of the product"
 msgstr "Menge in Vorgabe-ME des Produkts"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request_allocation_requested_product_uom_qty
+msgid ""
+"Quantity of the stock request allocated to the stock move, in the UoM of the"
+" Stock Request"
+msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request_allocation_allocated_product_qty
@@ -273,6 +266,16 @@ msgstr "Alle Produkte auf einmal erhalten"
 #: selection:stock.request,picking_policy:0
 msgid "Receive each product when available"
 msgstr "Jedes Produkt bei Verfügbarkeit erhalten"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_requested_product_qty
+msgid "Requested Quantity"
+msgstr ""
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_requested_product_uom_qty
+msgid "Requested Quantity (UoM)"
+msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_requested_by
@@ -314,8 +317,14 @@ msgstr "Bestandsbuchungen"
 #: model:ir.model,name:stock_request.model_stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_stock_request_id
 #: model:ir.module.category,name:stock_request.module_category_stock_request
+#: model:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Stock Request"
 msgstr "Bestandsanforderung"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_picking_stock_request_count
+msgid "Stock Request #"
+msgstr ""
 
 #. module: stock_request
 #: model:ir.model,name:stock_request.model_stock_request_allocation
@@ -323,6 +332,14 @@ msgstr "Bestandsanforderung"
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_ids
 msgid "Stock Request Allocation"
 msgstr "Bestandszuweisung beantragen"
+
+#. module: stock_request
+#: model:ir.ui.view,arch_db:stock_request.view_move_form
+#: model:ir.ui.view,arch_db:stock_request.view_move_picking_form
+#: model:ir.ui.view,arch_db:stock_request.view_stock_request_allocation_form
+#: model:ir.ui.view,arch_db:stock_request.view_stock_request_allocation_tree
+msgid "Stock Request Allocations"
+msgstr ""
 
 #. module: stock_request
 #: model:res.groups,name:stock_request.group_stock_request_manager
@@ -341,9 +358,12 @@ msgstr "Bezeichner der Anforderung muss eindeutig sein"
 
 #. module: stock_request
 #: model:ir.actions.act_window,name:stock_request.action_stock_request_form
+#: model:ir.model.fields,field_description:stock_request.field_stock_move_stock_request_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_picking_stock_request_ids
 #: model:ir.ui.menu,name:stock_request.menu_stock_request
 #: model:ir.ui.menu,name:stock_request.menu_stock_request_root
 #: model:ir.ui.view,arch_db:stock_request.stock_request_search
+#: model:ir.ui.view,arch_db:stock_request.view_picking_form
 #: model:ir.ui.view,arch_db:stock_request.view_stock_request_form
 #: model:ir.ui.view,arch_db:stock_request.view_stock_request_tree
 msgid "Stock Requests"
@@ -365,9 +385,19 @@ msgstr ""
 "Kommissionierung %s:"
 
 #. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: stock_request
 #: model:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Transfers"
 msgstr "Umlagerungen"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation_product_uom_id
+msgid "UoM"
+msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_warehouse_id
@@ -376,7 +406,7 @@ msgid "Warehouse"
 msgstr "Warenlager"
 
 #. module: stock_request
-#: code:addons/stock_request/models/stock_request.py:193
+#: code:addons/stock_request/models/stock_request.py:187
 #, python-format
 msgid ""
 "You have to select a product unit of measure in the same category than the "
