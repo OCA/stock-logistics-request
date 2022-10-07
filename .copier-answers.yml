@@ -1,0 +1,25 @@
+# Do NOT update manually; changes here will be overwritten by Copier
+_commit: v1.11.0
+_src_path: gh:oca/oca-addons-repo-template
+ci: GitHub
+dependency_installation_mode: PIP
+generate_requirements_txt: true
+github_check_license: true
+github_enable_codecov: true
+github_enable_makepot: true
+github_enable_stale_action: true
+github_enforce_dev_status_compatibility: true
+include_wkhtmltopdf: false
+odoo_version: 16.0
+org_name: Odoo Community Association (OCA)
+org_slug: OCA
+rebel_module_groups: []
+repo_description: This repository contains modules to provide another way of creating
+    stock movements. Provided as a dedicated application, users will be able to create
+    their stock needs by product and location.
+repo_name: Stock Logistics Request
+repo_slug: stock-logistics-request
+repo_website: https://github.com/OCA/stock-logistics-request
+travis_apt_packages: []
+travis_apt_sources: []
+
