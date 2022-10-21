@@ -51,3 +51,9 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_request_submit.view_stock_request_form
 msgid "Submit"
 msgstr ""
+
+#. module: stock_request_submit
+#: code:addons/stock_request_submit/models/stock_request_order.py:0
+#, python-format
+msgid "There should be at least one request item for submiting the order."
+msgstr ""
