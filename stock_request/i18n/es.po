@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-21 09:10+0000\n"
-"PO-Revision-Date: 2022-10-21 11:11+0200\n"
-"Last-Translator: JrAdhoc <jr@adhoc.com.ar>\n"
+"POT-Creation-Date: 2023-01-25 17:42+0000\n"
+"PO-Revision-Date: 2023-01-25 18:42+0100\n"
+"Last-Translator: Víctor Martínez <victor.martinez@tecnativa.com>\n"
 "Language-Team: Spanish (https://www.transifex.com/oca/teams/23907/es/)\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -826,7 +826,6 @@ msgstr "Movimientos de stock"
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__stock_request_id
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_order__stock_request_ids
 #: model:ir.module.category,name:stock_request.module_category_stock_request
-#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Stock Request"
 msgstr "Solicitud de existencias"
@@ -941,8 +940,8 @@ msgstr "Regla de stock"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
-msgid "Stock request"
-msgstr "Solicitud de existencias"
+msgid "Stock request Order"
+msgstr "Pedido de existencias"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_order__stock_request_count
@@ -1158,6 +1157,9 @@ msgid ""
 msgstr ""
 "Debe seleccionada una unidad de medida de producto de la misma categoría que "
 "la unidad de medida por defecto del producto"
+
+#~ msgid "Stock request Orders"
+#~ msgstr "Pedidos de existencias"
 
 #, python-format
 #~ msgid "<li><b>%s</b>: Transferred quantity %s %s</li>"
