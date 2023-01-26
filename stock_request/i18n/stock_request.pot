@@ -116,6 +116,7 @@ msgid "Cancel"
 msgstr ""
 
 #. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__cancel
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
 msgid "Cancelled"
@@ -209,11 +210,13 @@ msgid "Display Name"
 msgstr ""
 
 #. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__done
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Done"
 msgstr ""
 
 #. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__draft
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
 msgid "Draft"
@@ -351,6 +354,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
 msgid "In Progress"
+msgstr ""
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__open
+msgid "In progress"
 msgstr ""
 
 #. module: stock_request
