@@ -52,6 +52,3 @@ msgstr "已提交"
 #, python-format
 msgid "There should be at least one request item for submiting the order."
 msgstr ""
-
-#~ msgid "Draft"
-#~ msgstr "草稿"
