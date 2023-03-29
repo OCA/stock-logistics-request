@@ -53,12 +53,3 @@ msgstr "Enviado"
 #, python-format
 msgid "There should be at least one request item for submiting the order."
 msgstr "Debe haber al menos un elemento de solicitud para enviar el pedido."
-
-#~ msgid "Display Name"
-#~ msgstr "Nombre mostrado"
-
-#~ msgid "ID"
-#~ msgstr "ID"
-
-#~ msgid "Last Modified on"
-#~ msgstr "Última Modificación el"
