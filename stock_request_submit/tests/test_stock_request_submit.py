@@ -16,7 +16,7 @@ class TestStockRequestSubmit(TransactionCase):
         cls.StockRequest = cls.env["stock.request"]
         cls.StockRequestOrder = cls.env["stock.request.order"]
         cls.StockLocation = cls.env["stock.location"]
-        cls.StockLocationRoute = cls.env["stock.location.route"]
+        cls.StockLocationRoute = cls.env["stock.route"]
         cls.StockRule = cls.env["stock.rule"]
         cls.ProductProduct = cls.env["product.product"]
         cls.ResUsers = cls.env["res.users"]
@@ -53,7 +53,7 @@ class TestStockRequestSubmit(TransactionCase):
                 "name": "Transfer",
                 "route_id": cls.route.id,
                 "location_src_id": cls.ressuply_loc.id,
-                "location_id": cls.warehouse.lot_stock_id.id,
+                "location_dest_id": cls.warehouse.lot_stock_id.id,
                 "action": "pull",
                 "picking_type_id": cls.warehouse.int_type_id.id,
                 "procure_method": "make_to_stock",
