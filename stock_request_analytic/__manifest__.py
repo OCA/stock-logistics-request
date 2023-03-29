@@ -4,7 +4,7 @@
 {
     "name": "Stock Request Analytic",
     "summary": "Internal request for stock",
-    "version": "15.0.1.1.0",
+    "version": "16.0.1.0.0",
     "license": "AGPL-3",
     "website": "https://github.com/OCA/stock-logistics-request",
     "author": "ForgeFlow, Odoo Community Association (OCA)",
@@ -13,8 +13,6 @@
     "data": [
         "security/ir.model.access.csv",
         "views/stock_request_views.xml",
-        "views/stock_request_order_views.xml",
-        "views/analytic_views.xml",
     ],
     "installable": True,
 }

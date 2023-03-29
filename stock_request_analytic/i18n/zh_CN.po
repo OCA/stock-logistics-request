@@ -81,9 +81,3 @@ msgstr "库存请求"
 #: model:ir.model,name:stock_request_analytic.model_stock_rule
 msgid "Stock Rule"
 msgstr "库存规则"
-
-#, python-format
-#~ msgid ""
-#~ "You cannot link a analytic account to a stock request that belongs to "
-#~ "another company."
-#~ msgstr "您无法将分析帐户链接到属于另一家公司的库存请求。"

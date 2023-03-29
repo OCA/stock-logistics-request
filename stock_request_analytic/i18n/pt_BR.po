@@ -81,11 +81,3 @@ msgstr "Requisições de Estoque"
 #: model:ir.model,name:stock_request_analytic.model_stock_rule
 msgid "Stock Rule"
 msgstr "Regras de Estoque"
-
-#, python-format
-#~ msgid ""
-#~ "You cannot link a analytic account to a stock request that belongs to "
-#~ "another company."
-#~ msgstr ""
-#~ "Você não pode vincular uma conta analítica a uma requisição de estoque "
-#~ "que pertence a outra empresa."
