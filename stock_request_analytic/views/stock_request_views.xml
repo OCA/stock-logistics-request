@@ -13,9 +13,9 @@
                     groups="analytic.group_analytic_accounting"
                 />
                 <field
-                    name="analytic_tag_ids"
+                    name="analytic_plan_ids"
                     widget="many2many_tags"
-                    groups="analytic.group_analytic_tags"
+                    groups="analytic.group_analytic_accounting"
                 />
             </field>
         </field>

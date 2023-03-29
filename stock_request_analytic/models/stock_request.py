@@ -18,8 +18,8 @@ class StockRequest(models.Model):
         check_company=True,
         compute_sudo=True,
     )
-    analytic_tag_ids = fields.Many2many(
-        comodel_name="account.analytic.tag",
+    analytic_plan_ids = fields.Many2many(
+        comodel_name="account.analytic.plan",
         string="Analytic Tags",
         check_company=True,
     )

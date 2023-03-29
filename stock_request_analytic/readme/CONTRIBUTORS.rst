@@ -6,3 +6,4 @@
 * `Tecnativa <https://www.tecnativa.com>`__:
 
   * João Marques
+* Urvisha Desai <udesai@opensourceintegrators.com>

@@ -31,9 +31,9 @@ class ProcurementRule(models.Model):
         if values.get("stock_request_id"):
             stock_request = self.env["stock.request"].browse(values["stock_request_id"])
             analytic_account = stock_request.analytic_account_id
-            analytic_tags = stock_request.analytic_tag_ids
+            analytic_tags = stock_request.analytic_plan_ids
             res.update(
-                analytic_account_id=analytic_account.id,
-                analytic_tag_ids=[(4, tag.id) for tag in analytic_tags],
+                analytic_distribution=analytic_account.id,
+                analytic_plan_ids=[(4, tag.id) for tag in analytic_tags],
             )
         return res
