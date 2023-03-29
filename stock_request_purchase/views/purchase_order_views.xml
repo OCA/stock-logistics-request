@@ -25,7 +25,11 @@
                 </button>
             </xpath>
             <xpath expr="//field[@name='order_line']/form//notebook" position="inside">
-                <page name="stock_requests" string="Stock Requests" groups="stock_request.group_stock_request_user">
+                <page
+                    name="stock_requests"
+                    string="Stock Requests"
+                    groups="stock_request.group_stock_request_user"
+                >
                     <field name="stock_request_ids" />
                 </page>
             </xpath>
@@ -38,7 +42,10 @@
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <separator string="Stock Requests" />
-                <field name="stock_request_ids" groups="stock_request.group_stock_request_user"/>
+                <field
+                    name="stock_request_ids"
+                    groups="stock_request.group_stock_request_user"
+                />
             </field>
         </field>
     </record>
