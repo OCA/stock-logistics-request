@@ -11,9 +11,9 @@
                 decoration-bf="message_needaction==True"
             >
                 <field name="message_needaction" invisible="1" />
+                <field name="allow_virtual_location" invisible="1" />
                 <field name="name" />
                 <field name="warehouse_id" groups="stock.group_stock_multi_locations" />
-                <field name="allow_virtual_location" invisible="1" />
                 <field name="location_id" groups="stock.group_stock_multi_locations" />
                 <field
                     name="route_id"
@@ -38,6 +38,7 @@
             <search string="Stock Requests Kanban">
                 <field name="name" string="Stock Requests Kanban" />
                 <field name="warehouse_id" groups="stock.group_stock_multi_locations" />
+                <field name="allow_virtual_location" invisible="1" />
                 <field name="location_id" groups="stock.group_stock_multi_locations" />
                 <field name="company_id" groups="base.group_multi_company" />
                 <field name="product_id" />
@@ -68,6 +69,7 @@
         <field name="model">stock.request.kanban</field>
         <field name="arch" type="xml">
             <form string="Stock Requests">
+                <field name="company_id" invisible="1" />
                 <header />
                 <sheet>
                     <div class="oe_button_box" name="button_box" />
@@ -82,15 +84,16 @@
                             <field name="product_id" />
                         </group>
                         <group>
+                            <field name="allow_virtual_location" invisible="1" />
                             <field
                                 name="warehouse_id"
                                 widget="selection"
                                 groups="stock.group_stock_multi_locations"
                             />
-                            <field name="allow_virtual_location" invisible="1" />
                             <field
                                 name="location_id"
                                 groups="stock.group_stock_multi_locations"
+                                domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
                             />
                             <field
                                 name="route_id"
@@ -112,7 +115,6 @@
                             <label for="product_uom_qty" />
                             <div>
                                 <field name="product_uom_qty" class="oe_inline" />
-                                <field name="allowed_uom_categ_id" invisible="1" />
                                 <field
                                     name="product_uom_id"
                                     class="oe_inline"
