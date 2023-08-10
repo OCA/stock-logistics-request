@@ -23,7 +23,7 @@ Stock Request Purchase
     :target: https://runboat.odoo-community.org/webui/builds.html?repo=OCA/stock-logistics-request&target_branch=16.0
     :alt: Try me on Runboat
 
-|badge1| |badge2| |badge3| |badge4| |badge5| 
+|badge1| |badge2| |badge3| |badge4| |badge5|
 
 This module allows for users to be able to display purchase orders that have
 been created as a consequence of Stock Requests.
