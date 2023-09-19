@@ -277,14 +277,17 @@ class StockRequestOrder(models.Model):
             action["res_id"] = self.stock_request_ids.id
         return action
 
-    @api.model
-    def create(self, vals):
-        upd_vals = vals.copy()
-        if upd_vals.get("name", "/") == "/":
-            upd_vals["name"] = self.env["ir.sequence"].next_by_code(
-                "stock.request.order"
-            )
-        return super().create(upd_vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list_upd = []
+        for vals in vals_list:
+            upd_vals = vals.copy()
+            if upd_vals.get("name", "/") == "/":
+                upd_vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "stock.request.order"
+                )
+            vals_list_upd.append(upd_vals)
+        return super().create(vals_list_upd)
 
     def unlink(self):
         if self.filtered(lambda r: r.state != "draft"):
