@@ -18,8 +18,8 @@ msgstr ""
 #: code:addons/stock_request/models/stock_move_line.py:0
 #, python-format
 msgid ""
-"<li><b>%(product_name)s</b>: Transferred quantity "
-"%(product_qty)s%(product_uom)s</li>"
+"<li><b>%(product_name)s</b>: Transferred quantity %(product_qty)s"
+"%(product_uom)s</li>"
 msgstr ""
 
 #. module: stock_request
@@ -111,6 +111,11 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "By default, available stock is not used"
+msgstr ""
+
+#. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Cancel"
@@ -127,6 +132,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__allowed_uom_categ_id
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__allowed_uom_categ_id
 msgid "Category"
+msgstr ""
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__stock_request_check_available_first
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__stock_request_check_available_first
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Check available stock first"
 msgstr ""
 
 #. module: stock_request
@@ -343,11 +355,8 @@ msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -663,8 +672,8 @@ msgstr ""
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request_allocation__requested_product_uom_qty
 msgid ""
-"Quantity of the stock request allocated to the stock move, in the UoM of the"
-" Stock Request"
+"Quantity of the stock request allocated to the stock move, in the UoM of the "
+"Stock Request"
 msgstr ""
 
 #. module: stock_request
@@ -690,8 +699,7 @@ msgstr ""
 #. module: stock_request
 #: code:addons/stock_request/models/stock_move_line.py:0
 #, python-format
-msgid ""
-"Receipt confirmation %(picking_name)s for your Request %(request_name)s"
+msgid "Receipt confirmation %(picking_name)s for your Request %(request_name)s"
 msgstr ""
 
 #. module: stock_request
@@ -752,13 +760,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__route_ids
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__route_ids
 msgid "Routes"
-msgstr ""
-
-#. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_sms_error
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_sms_error
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_sms_error
-msgid "SMS Delivery error"
 msgstr ""
 
 #. module: stock_request
@@ -949,8 +950,7 @@ msgstr ""
 #. module: stock_request
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
-msgid ""
-"The company of the stock request must match with that of the warehouse."
+msgid "The company of the stock request must match with that of the warehouse."
 msgstr ""
 
 #. module: stock_request
@@ -1089,16 +1089,16 @@ msgstr ""
 #: code:addons/stock_request/models/stock_warehouse.py:0
 #, python-format
 msgid ""
-"You cannot change the company of the warehouse, as it is already assigned to"
-" stock request orders that belong to another company."
+"You cannot change the company of the warehouse, as it is already assigned to "
+"stock request orders that belong to another company."
 msgstr ""
 
 #. module: stock_request
 #: code:addons/stock_request/models/stock_warehouse.py:0
 #, python-format
 msgid ""
-"You cannot change the company of the warehouse, as it is already assigned to"
-" stock requests that belong to another company."
+"You cannot change the company of the warehouse, as it is already assigned to "
+"stock requests that belong to another company."
 msgstr ""
 
 #. module: stock_request
