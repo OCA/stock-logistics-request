@@ -120,6 +120,11 @@ msgstr ""
 "Aufträgen zulässig."
 
 #. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "By default, available stock is not used"
+msgstr ""
+
+#. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Cancel"
@@ -136,6 +141,13 @@ msgstr "Abgebrochen"
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__allowed_uom_categ_id
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__allowed_uom_categ_id
 msgid "Category"
+msgstr ""
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__stock_request_check_available_first
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__stock_request_check_available_first
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Check available stock first"
 msgstr ""
 
 #. module: stock_request
@@ -355,11 +367,8 @@ msgstr "Wenn angehakt, erfordern neue Meldungen Ihre Aufmerksamkeit."
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Wenn angehakt, haben Meldungen einen Zustellfehler."
 
@@ -776,14 +785,6 @@ msgid "Routes"
 msgstr "Routen"
 
 #. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_sms_error
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_sms_error
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_sms_error
-#, fuzzy
-msgid "SMS Delivery error"
-msgstr "Meldungszustellfehler"
-
-#. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Set to Draft"
@@ -1162,6 +1163,10 @@ msgid ""
 msgstr ""
 "Sie müssen eine Produktmengeneinheit aus der gleichen Kategorie, wie die "
 "Basismengeneinheit des Produkts, verwenden"
+
+#, fuzzy
+#~ msgid "SMS Delivery error"
+#~ msgstr "Meldungszustellfehler"
 
 #, fuzzy
 #~ msgid "Stock request"
