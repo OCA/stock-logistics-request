@@ -124,7 +124,7 @@ class TestStockRequest(common.TransactionCase):
                 uom_id=self.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
                 type="product",
-                **vals
+                **vals,
             )
         )
 
@@ -156,7 +156,7 @@ class TestStockRequest(common.TransactionCase):
                 product_categ_selectable=False,
                 product_selectable=True,
                 sequence=10,
-                **vals
+                **vals,
             )
         )
 
