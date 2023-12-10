@@ -22,17 +22,17 @@
                         name="action_confirm"
                         string="Confirm"
                         type="object"
-                        attrs="{'invisible': [('state', 'not in', ['draft'])]}"
+                        invisible="state not in ['draft']"
                     />
                     <button
                         name="action_cancel"
-                        states="draft,open"
+                        invisible="state not in ['draft','open']"
                         type="object"
                         string="Cancel"
                     />
                     <button
                         name="action_draft"
-                        states="cancel"
+                        invisible="state not in ['cancel']"
                         type="object"
                         string="Set to Draft"
                     />
@@ -46,7 +46,7 @@
                             name="action_view_transfer"
                             class="oe_stat_button"
                             icon="fa-truck"
-                            attrs="{'invisible': [('picking_count', '=', 0)]}"
+                            invisible="picking_count == 0"
                             groups="stock.group_stock_user"
                         >
                             <field
@@ -60,7 +60,7 @@
                             name="action_view_stock_requests"
                             class="oe_stat_button"
                             icon="fa-chain"
-                            attrs="{'invisible': [('state', '=', 'draft')]}"
+                            invisible="state == 'draft'"
                             groups="stock.group_stock_user"
                         >
                             <field
@@ -78,17 +78,20 @@
                     </div>
                     <group>
                         <group>
-                            <field name="expected_date" />
-                            <field name="picking_policy" />
+                            <field name="expected_date" readonly="state != 'draft'" />
+                            <field name="picking_policy" readonly="state != 'draft'" />
                         </group>
                         <group>
                             <field
                                 name="warehouse_id"
-                                widget="selection"
+                                readonly="state != 'draft'"
+                                options="{'no_create': True, 'no_open': True}"
                                 groups="stock.group_stock_multi_locations"
                             />
                             <field
                                 name="location_id"
+                                readonly="state != 'draft'"
+                                options="{'no_create': True, 'no_open': True}"
                                 groups="stock.group_stock_multi_locations"
                             />
                             <field name="allow_virtual_location" invisible="1" />
@@ -100,7 +103,12 @@
                                 name="company_id"
                                 groups="base.group_multi_company"
                                 options="{'no_create': True}"
+                                readonly="state != 'draft'"
                             />
+                            <field name="warehouse_id" invisible="1" />
+                            <field name="location_id" invisible="1" />
+                            <field name="procurement_group_id" invisible="1" />
+                            <field name="company_id" invisible="1" />
                         </group>
                     </group>
                     <notebook>
@@ -116,12 +124,15 @@
                             'default_company_id': company_id,
                             'default_state': state,
                             }"
-                                attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                readonly="state != 'draft'"
                             >
                                 <tree editable="bottom">
-                                    <field name="name" readonly="1" />
+                                    <field name="name" readonly="1" optional="show" />
                                     <field name="product_id" />
-                                    <field name="allowed_uom_categ_id" invisible="1" />
+                                    <field
+                                        name="allowed_uom_categ_id"
+                                        column_invisible="1"
+                                    />
                                     <field
                                         name="product_uom_id"
                                         options="{'no_open': True, 'no_create': True}"
@@ -132,21 +143,25 @@
                                         options="{'no_create': True}"
                                         groups="stock.group_stock_multi_locations"
                                     />
-                                    <field name="route_ids" invisible="1" />
+                                    <field name="route_ids" column_invisible="1" />
                                     <field name="product_uom_qty" />
-                                    <field name="qty_in_progress" />
-                                    <field name="qty_done" />
-                                    <field name="expected_date" invisible="1" />
-                                    <field name="picking_policy" invisible="1" />
-                                    <field name="warehouse_id" invisible="1" />
+                                    <field name="qty_in_progress" optional="show" />
+                                    <field name="qty_done" optional="show" />
+                                    <field name="expected_date" column_invisible="1" />
+                                    <field name="picking_policy" column_invisible="1" />
+                                    <field name="warehouse_id" column_invisible="1" />
                                     <field
                                         name="allow_virtual_location"
-                                        invisible="1"
+                                        column_invisible="1"
                                     />
-                                    <field name="location_id" invisible="1" />
-                                    <field name="procurement_group_id" invisible="1" />
-                                    <field name="company_id" invisible="1" />
-                                    <field name="state" />
+                                    <field name="product_uom_id" column_invisible="1" />
+                                    <field name="location_id" column_invisible="1" />
+                                    <field
+                                        name="procurement_group_id"
+                                        column_invisible="1"
+                                    />
+                                    <field name="company_id" column_invisible="1" />
+                                    <field name="state" optional="show" />
                                 </tree>
                             </field>
                         </page>
@@ -164,7 +179,7 @@
         <field name="name">stock.request.order.search</field>
         <field name="model">stock.request.order</field>
         <field name="arch" type="xml">
-            <search string="Stock Requests Order Search">
+            <search>
                 <field name="name" string="Stock Request Orders" />
                 <field name="state" />
                 <field name="warehouse_id" />

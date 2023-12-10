@@ -26,7 +26,7 @@ class StockMove(models.Model):
             rec.stock_request_ids = rec.allocation_ids.mapped("stock_request_id")
 
     def _merge_moves_fields(self):
-        res = super(StockMove, self)._merge_moves_fields()
+        res = super()._merge_moves_fields()
         res["allocation_ids"] = [(4, m.id) for m in self.mapped("allocation_ids")]
         return res
 
@@ -65,7 +65,7 @@ class StockMove(models.Model):
                     },
                 )
             )
-        return super(StockMove, self).copy_data(default)
+        return super().copy_data(default)
 
     def _action_cancel(self):
         """Apply sudo to prevent requests ACL errors if the user does not have
