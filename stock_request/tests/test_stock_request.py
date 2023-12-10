@@ -91,7 +91,7 @@ class TestStockRequest(common.TransactionCase):
                 "name": "Transfer",
                 "route_id": self.route.id,
                 "location_src_id": self.ressuply_loc.id,
-                "location_id": self.warehouse.lot_stock_id.id,
+                "location_dest_id": self.warehouse.lot_stock_id.id,
                 "action": "pull",
                 "picking_type_id": self.warehouse.int_type_id.id,
                 "procure_method": "make_to_stock",
@@ -104,7 +104,7 @@ class TestStockRequest(common.TransactionCase):
                 "name": "Transfer",
                 "route_id": self.route_2.id,
                 "location_src_id": self.ressuply_loc_2.id,
-                "location_id": self.wh2.lot_stock_id.id,
+                "location_dest_id": self.wh2.lot_stock_id.id,
                 "action": "pull",
                 "picking_type_id": self.wh2.int_type_id.id,
                 "procure_method": "make_to_stock",
@@ -123,7 +123,7 @@ class TestStockRequest(common.TransactionCase):
                 default_code=default_code,
                 uom_id=self.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
-                type="product",
+                detailed_type="product",
                 **vals,
             )
         )
@@ -151,7 +151,7 @@ class TestStockRequest(common.TransactionCase):
         return self.env["stock.location"].create(dict(usage="internal", **vals))
 
     def _create_location_route(self, **vals):
-        return self.env["stock.location.route"].create(
+        return self.env["stock.route"].create(
             dict(
                 product_categ_selectable=False,
                 product_selectable=True,
@@ -715,7 +715,8 @@ class TestStockRequestBase(TestStockRequest):
         picking.with_user(self.stock_request_manager).action_assign()
         self.assertEqual(picking.origin, order.name)
         packout1 = picking.move_line_ids[0]
-        packout1.qty_done = 5
+        packout1.quantity = 5
+        packout1.picked = True
         picking.with_user(self.stock_request_manager)._action_done()
         self.assertEqual(stock_request.qty_in_progress, 0.0)
         self.assertEqual(stock_request.qty_done, stock_request.product_uom_qty)
@@ -760,7 +761,8 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request.qty_done, 0.0)
         picking.with_user(self.stock_request_manager).action_assign()
         packout1 = picking.move_line_ids[0]
-        packout1.qty_done = 1
+        packout1.quantity = 1
+        packout1.picked = True
         picking.with_user(self.stock_request_manager)._action_done()
         self.assertEqual(stock_request.qty_in_progress, 0.0)
         self.assertEqual(stock_request.qty_done, stock_request.product_uom_qty)
@@ -813,7 +815,8 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request_2.qty_done, 0)
         self.assertEqual(stock_request_2.qty_cancelled, 0)
         packout1 = picking.move_line_ids[0]
-        packout1.qty_done = 4
+        packout1.quantity = 4
+        packout1.picked = True
         self.env["stock.backorder.confirmation"].with_context(
             button_validate_picking_ids=[picking.id]
         ).create({"pick_ids": [(4, picking.id)]}).process_cancel_backorder()
@@ -1137,9 +1140,9 @@ class TestStockRequestBase(TestStockRequest):
         group = self.env["procurement.group"].create({"name": "Procurement group"})
         product2 = self._create_product("SH2", "Shoes2", False)
         product3 = self._create_product("SH3", "Shoes3", False)
-        self.product.type = "consu"
-        product2.type = "consu"
-        product3.type = "consu"
+        self.product.detailed_type = "consu"
+        product2.detailed_type = "consu"
+        product3.detailed_type = "consu"
         vals = {
             "company_id": self.main_company.id,
             "warehouse_id": self.warehouse.id,
@@ -1195,9 +1198,10 @@ class TestStockRequestBase(TestStockRequest):
         picking = order.picking_ids
         self.assertEqual(1, len(picking))
         picking.action_assign()
-        self.assertEqual(3, len(picking.move_lines))
-        line = picking.move_lines.filtered(lambda r: r.product_id == self.product)
-        line.quantity_done = 1
+        self.assertEqual(3, len(picking.move_ids))
+        line = picking.move_ids.filtered(lambda r: r.product_id == self.product)
+        line.quantity = 1
+        line.picked = True
         sr1 = order.stock_request_ids.filtered(lambda r: r.product_id == self.product)
         sr2 = order.stock_request_ids.filtered(lambda r: r.product_id == product2)
         sr3 = order.stock_request_ids.filtered(lambda r: r.product_id == product3)
@@ -1207,9 +1211,9 @@ class TestStockRequestBase(TestStockRequest):
         self.env["stock.backorder.confirmation"].with_context(
             button_validate_picking_ids=[picking.id]
         ).create({"pick_ids": [(4, picking.id)]}).process()
-        sr1.refresh()
-        sr2.refresh()
-        sr3.refresh()
+        sr1.invalidate_recordset()
+        sr2.invalidate_recordset()
+        sr3.invalidate_recordset()
         self.assertNotEqual(sr1.state, "done")
         self.assertNotEqual(sr2.state, "done")
         self.assertNotEqual(sr3.state, "done")
@@ -1218,17 +1222,19 @@ class TestStockRequestBase(TestStockRequest):
         )
         self.assertEqual(1, len(picking))
         picking.action_assign()
-        self.assertEqual(3, len(picking.move_lines))
-        line = picking.move_lines.filtered(lambda r: r.product_id == self.product)
-        line.quantity_done = 4
-        line = picking.move_lines.filtered(lambda r: r.product_id == product2)
-        line.quantity_done = 1
+        self.assertEqual(3, len(picking.move_ids))
+        line = picking.move_ids.filtered(lambda r: r.product_id == self.product)
+        line.quantity = 4
+        line.picked = True
+        line = picking.move_ids.filtered(lambda r: r.product_id == product2)
+        line.quantity = 1
+        line.picked = True
         self.env["stock.backorder.confirmation"].with_context(
             button_validate_picking_ids=[picking.id]
         ).create({"pick_ids": [(4, picking.id)]}).process_cancel_backorder()
-        sr1.refresh()
-        sr2.refresh()
-        sr3.refresh()
+        sr1.invalidate_recordset()
+        sr2.invalidate_recordset()
+        sr3.invalidate_recordset()
         self.assertEqual(sr1.state, "done")
         self.assertEqual(sr1.qty_done, 5)
         self.assertEqual(sr1.qty_cancelled, 0)
