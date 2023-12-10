@@ -19,7 +19,7 @@ class StockRequest(models.Model):
     def _get_expected_date():
         return fields.Datetime.now()
 
-    name = fields.Char(states={"draft": [("readonly", False)]})
+    name = fields.Char()
     state = fields.Selection(
         selection=[
             ("draft", "Draft"),
@@ -43,8 +43,6 @@ class StockRequest(models.Model):
     expected_date = fields.Datetime(
         index=True,
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
         help="Date when you expect to receive the goods.",
     )
     picking_policy = fields.Selection(
@@ -54,8 +52,6 @@ class StockRequest(models.Model):
         ],
         string="Shipping Policy",
         required=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
         default="direct",
     )
     move_ids = fields.One2many(
@@ -102,24 +98,14 @@ class StockRequest(models.Model):
         string="Stock Request Allocation",
     )
     order_id = fields.Many2one("stock.request.order", readonly=True)
-    warehouse_id = fields.Many2one(
-        states={"draft": [("readonly", False)]}, readonly=True
-    )
-    location_id = fields.Many2one(
-        states={"draft": [("readonly", False)]}, readonly=True
-    )
-    product_id = fields.Many2one(states={"draft": [("readonly", False)]}, readonly=True)
-    product_uom_id = fields.Many2one(
-        states={"draft": [("readonly", False)]}, readonly=True
-    )
-    product_uom_qty = fields.Float(
-        states={"draft": [("readonly", False)]}, readonly=True
-    )
-    procurement_group_id = fields.Many2one(
-        states={"draft": [("readonly", False)]}, readonly=True
-    )
-    company_id = fields.Many2one(states={"draft": [("readonly", False)]}, readonly=True)
-    route_id = fields.Many2one(states={"draft": [("readonly", False)]}, readonly=True)
+    warehouse_id = fields.Many2one()
+    location_id = fields.Many2one()
+    product_id = fields.Many2one()
+    product_uom_id = fields.Many2one()
+    product_uom_qty = fields.Float()
+    procurement_group_id = fields.Many2one()
+    company_id = fields.Many2one()
+    route_id = fields.Many2one()
 
     _sql_constraints = [
         ("name_uniq", "unique(name, company_id)", "Stock Request name must be unique")
@@ -148,7 +134,7 @@ class StockRequest(models.Model):
         "allocation_ids",
         "allocation_ids.stock_move_id.state",
         "allocation_ids.stock_move_id.move_line_ids",
-        "allocation_ids.stock_move_id.move_line_ids.qty_done",
+        "allocation_ids.stock_move_id.move_line_ids.quantity",
     )
     def _compute_qty(self):
         for request in self:
@@ -180,41 +166,70 @@ class StockRequest(models.Model):
 
     @api.constrains("order_id", "requested_by")
     def check_order_requested_by(self):
-        if self.order_id and self.order_id.requested_by != self.requested_by:
-            raise ValidationError(_("Requested by must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.requested_by != stock_request.requested_by
+            ):
+                raise ValidationError(_("Requested by must be equal to the order"))
 
     @api.constrains("order_id", "warehouse_id")
     def check_order_warehouse_id(self):
-        if self.order_id and self.order_id.warehouse_id != self.warehouse_id:
-            raise ValidationError(_("Warehouse must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.warehouse_id != stock_request.warehouse_id
+            ):
+                raise ValidationError(_("Warehouse must be equal to the order"))
 
     @api.constrains("order_id", "location_id")
     def check_order_location(self):
-        if self.order_id and self.order_id.location_id != self.location_id:
-            raise ValidationError(_("Location must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.location_id != stock_request.location_id
+            ):
+                raise ValidationError(_("Location must be equal to the order"))
 
     @api.constrains("order_id", "procurement_group_id")
     def check_order_procurement_group(self):
-        if (
-            self.order_id
-            and self.order_id.procurement_group_id != self.procurement_group_id
-        ):
-            raise ValidationError(_("Procurement group must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.procurement_group_id
+                != stock_request.procurement_group_id
+            ):
+                raise ValidationError(_("Procurement group must be equal to the order"))
 
     @api.constrains("order_id", "company_id")
     def check_order_company(self):
-        if self.order_id and self.order_id.company_id != self.company_id:
-            raise ValidationError(_("Company must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.company_id != stock_request.company_id
+            ):
+                raise ValidationError(_("Company must be equal to the order"))
 
     @api.constrains("order_id", "expected_date")
     def check_order_expected_date(self):
-        if self.order_id and self.order_id.expected_date != self.expected_date:
-            raise ValidationError(_("Expected date must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.expected_date != stock_request.expected_date
+            ):
+                raise ValidationError(_("Expected date must be equal to the order"))
 
     @api.constrains("order_id", "picking_policy")
     def check_order_picking_policy(self):
-        if self.order_id and self.order_id.picking_policy != self.picking_policy:
-            raise ValidationError(_("The picking policy must be equal to the order"))
+        for stock_request in self:
+            if (
+                stock_request.order_id
+                and stock_request.order_id.picking_policy
+                != stock_request.picking_policy
+            ):
+                raise ValidationError(
+                    _("The picking policy must be equal to the order")
+                )
 
     def _action_confirm(self):
         self._action_launch_procurement_rule()
@@ -329,7 +344,8 @@ class StockRequest(models.Model):
                 pending_qty -= qty_move
                 # Create allocation + done move
                 allocation_model.create(self._prepare_stock_request_allocation(move))
-                move.quantity_done = move.product_uom_qty
+                move.quantity = move.product_uom_qty
+                move.picked = True
                 move._action_done()
 
     def _action_launch_procurement_rule(self):
@@ -405,19 +421,22 @@ class StockRequest(models.Model):
             action["res_id"] = pickings.id
         return action
 
-    @api.model
-    def create(self, vals):
-        upd_vals = vals.copy()
-        if upd_vals.get("name", "/") == "/":
-            upd_vals["name"] = self.env["ir.sequence"].next_by_code("stock.request")
-        if "order_id" in upd_vals:
-            order_id = self.env["stock.request.order"].browse(upd_vals["order_id"])
-            upd_vals["expected_date"] = order_id.expected_date
-        else:
-            upd_vals["expected_date"] = self._get_expected_date()
-        return super().create(upd_vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list_upd = []
+        for vals in vals_list:
+            upd_vals = vals.copy()
+            if upd_vals.get("name", "/") == "/":
+                upd_vals["name"] = self.env["ir.sequence"].next_by_code("stock.request")
+            if "order_id" in upd_vals:
+                order_id = self.env["stock.request.order"].browse(upd_vals["order_id"])
+                upd_vals["expected_date"] = order_id.expected_date
+            else:
+                upd_vals["expected_date"] = self._get_expected_date()
+            vals_list_upd.append(upd_vals)
+        return super().create(vals_list_upd)
 
     def unlink(self):
         if self.filtered(lambda r: r.state != "draft"):
             raise UserError(_("Only requests on draft state can be unlinked"))
-        return super(StockRequest, self).unlink()
+        return super().unlink()

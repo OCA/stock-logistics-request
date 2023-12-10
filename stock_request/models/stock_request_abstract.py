@@ -12,7 +12,7 @@ class StockRequest(models.AbstractModel):
 
     @api.model
     def default_get(self, fields):
-        res = super(StockRequest, self).default_get(fields)
+        res = super().default_get(fields)
         warehouse = None
         if "warehouse_id" not in res and res.get("company_id"):
             warehouse = self.env["stock.warehouse"].search(
@@ -94,14 +94,14 @@ class StockRequest(models.AbstractModel):
         "res.company", "Company", required=True, default=lambda self: self.env.company
     )
     route_id = fields.Many2one(
-        "stock.location.route",
+        "stock.route",
         string="Route",
         domain="[('id', 'in', route_ids)]",
         ondelete="restrict",
     )
 
     route_ids = fields.Many2many(
-        "stock.location.route",
+        "stock.route",
         string="Routes",
         compute="_compute_route_ids",
         readonly=True,
@@ -113,16 +113,14 @@ class StockRequest(models.AbstractModel):
 
     @api.depends("product_id", "warehouse_id", "location_id")
     def _compute_route_ids(self):
-        route_obj = self.env["stock.location.route"]
+        route_obj = self.env["stock.route"]
         routes = route_obj.search(
             [("warehouse_ids", "in", self.mapped("warehouse_id").ids)]
         )
         routes_by_warehouse = {}
         for route in routes:
             for warehouse in route.warehouse_ids:
-                routes_by_warehouse.setdefault(
-                    warehouse.id, self.env["stock.location.route"]
-                )
+                routes_by_warehouse.setdefault(warehouse.id, self.env["stock.route"])
                 routes_by_warehouse[warehouse.id] |= route
         for record in self:
             routes = route_obj
@@ -133,8 +131,9 @@ class StockRequest(models.AbstractModel):
             if record.warehouse_id and routes_by_warehouse.get(record.warehouse_id.id):
                 routes |= routes_by_warehouse[record.warehouse_id.id]
             parents = record.get_parents().ids
+            # ruff: noqa: B023
             record.route_ids = routes.filtered(
-                lambda r: any(p.location_id.id in parents for p in r.rule_ids)
+                lambda r: any(p.location_dest_id.id in parents for p in r.rule_ids)
             )
 
     def get_parents(self):
