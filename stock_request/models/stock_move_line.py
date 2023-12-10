@@ -36,17 +36,17 @@ class StockMoveLine(models.Model):
         return {
             "request_name": request.name,
             "picking_name": ml.picking_id.name,
-            "product_name": ml.product_id.name_get()[0][1],
+            "product_name": ml.product_id.display_name,
             "product_qty": allocated_qty,
             "product_uom": ml.product_uom_id.name,
-            "location_name": ml.location_dest_id.name_get()[0][1],
+            "location_name": ml.location_dest_id.display_name,
         }
 
     def _action_done(self):
-        res = super(StockMoveLine, self)._action_done()
+        res = super()._action_done()
         for ml in self.filtered(lambda m: m.exists() and m.move_id.allocation_ids):
             qty_done = ml.product_uom_id._compute_quantity(
-                ml.qty_done, ml.product_id.uom_id
+                ml.quantity, ml.product_id.uom_id
             )
 
             # We do sudo because potentially the user that completes the move
