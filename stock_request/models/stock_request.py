@@ -283,7 +283,6 @@ class StockRequest(models.Model):
         )
 
     def _prepare_procurement_values(self, group_id=False):
-
         """Prepare specific key for moves or other components that
         will be created from a procurement rule
         coming from a stock request. This method could be override
@@ -423,8 +422,8 @@ class StockRequest(models.Model):
             if upd_vals.get("name", "/") == "/":
                 upd_vals["name"] = self.env["ir.sequence"].next_by_code("stock.request")
             if "order_id" in upd_vals:
-                order_id = self.env["stock.request.order"].browse(upd_vals["order_id"])
-                upd_vals["expected_date"] = order_id.expected_date
+                order = self.env["stock.request.order"].browse(upd_vals["order_id"])
+                upd_vals["expected_date"] = order.expected_date
             else:
                 upd_vals["expected_date"] = self._get_expected_date()
             vals_list_upd.append(upd_vals)

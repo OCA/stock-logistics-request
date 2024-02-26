@@ -1176,6 +1176,3 @@ msgid ""
 msgstr ""
 "Debe seleccionada una unidad de medida de producto de la misma categoría que "
 "la unidad de medida por defecto del producto"
-
-#~ msgid "SMS Delivery error"
-#~ msgstr "Error de entrega de SMS"

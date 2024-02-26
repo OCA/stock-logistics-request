@@ -1,14 +1,15 @@
 # Copyright 2017 ForgeFlow S.L.
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
-
 from collections import Counter
 from datetime import datetime
 
 from odoo import exceptions, fields
-from odoo.tests import common
+from odoo.tests import new_test_user
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
-class TestStockRequest(common.TransactionCase):
+class TestStockRequest(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -20,9 +21,6 @@ class TestStockRequest(common.TransactionCase):
         # refs
         cls.stock_request_user_group = cls.env.ref(
             "stock_request.group_stock_request_user"
-        )
-        cls.stock_request_manager_group = cls.env.ref(
-            "stock_request.group_stock_request_manager"
         )
         cls.main_company = cls.env.ref("base.main_company")
         cls.warehouse = cls.env.ref("stock.warehouse0")
@@ -38,59 +36,40 @@ class TestStockRequest(common.TransactionCase):
             .with_context(company_id=cls.company_2.id)
             .create({"name": "Peñiscola"})
         )
+        cls.wh = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.main_company.id)], limit=1
+        )
         cls.wh2 = cls.env["stock.warehouse"].search(
             [("company_id", "=", cls.company_2.id)], limit=1
         )
-        cls.stock_request_user = cls._create_user(
-            "stock_request_user",
-            [cls.stock_request_user_group.id],
-            [cls.main_company.id, cls.company_2.id],
+        cls.stock_request_user = new_test_user(
+            cls.env,
+            login="stock_request_user",
+            groups="stock_request.group_stock_request_user",
+            company_ids=[(4, cls.main_company.id), (4, cls.company_2.id)],
         )
-        cls.stock_request_manager = cls._create_user(
-            "stock_request_manager",
-            [cls.stock_request_manager_group.id],
-            [cls.main_company.id, cls.company_2.id],
+        cls.stock_request_manager = new_test_user(
+            cls.env,
+            login="stock_request_manager",
+            groups="stock_request.group_stock_request_manager",
+            company_ids=[(4, cls.main_company.id), (4, cls.company_2.id)],
         )
         cls.product = cls._create_product("SH", "Shoes", False)
         cls.product_company_2 = cls._create_product("SH_2", "Shoes", cls.company_2.id)
 
-        cls.ressuply_loc = cls.env["stock.location"].create(
-            {
-                "name": "Ressuply",
-                "location_id": cls.warehouse.view_location_id.id,
-                "usage": "internal",
-                "company_id": cls.main_company.id,
-            }
+        cls.ressuply_loc = cls._create_location(
+            name="Ressuply",
+            location_id=cls.warehouse.view_location_id.id,
+            company_id=cls.main_company.id,
+        )
+        cls.ressuply_loc_2 = cls._create_location(
+            name="Ressuply",
+            location_id=cls.wh2.view_location_id.id,
+            company_id=cls.company_2.id,
         )
 
-        cls.ressuply_loc_2 = cls.env["stock.location"].create(
-            {
-                "name": "Ressuply",
-                "location_id": cls.wh2.view_location_id.id,
-                "usage": "internal",
-                "company_id": cls.company_2.id,
-            }
-        )
-
-        cls.route = cls.env["stock.route"].create(
-            {
-                "name": "Transfer",
-                "product_categ_selectable": False,
-                "product_selectable": True,
-                "company_id": cls.main_company.id,
-                "sequence": 10,
-            }
-        )
-
-        cls.route_2 = cls.env["stock.route"].create(
-            {
-                "name": "Transfer",
-                "product_categ_selectable": False,
-                "product_selectable": True,
-                "company_id": cls.company_2.id,
-                "sequence": 10,
-            }
-        )
+        cls.route = cls._create_route(name="Transfer", company_id=cls.main_company.id)
+        cls.route_2 = cls._create_route(name="Transfer", company_id=cls.company_2.id)
 
         cls.uom_dozen = cls.env["uom.uom"].create(
             {
@@ -135,23 +114,6 @@ class TestStockRequest(common.TransactionCase):
         )
 
     @classmethod
-    def _create_user(cls, name, group_ids, company_ids):
-        return (
-            cls.env["res.users"]
-            .with_context(no_reset_password=True)
-            .create(
-                {
-                    "name": name,
-                    "password": "demo",
-                    "login": name,
-                    "email": "@".join([name, "test.com"]),
-                    "groups_id": [(6, 0, group_ids)],
-                    "company_ids": [(6, 0, company_ids)],
-                }
-            )
-        )
-
-    @classmethod
     def _create_product(cls, default_code, name, company_id, **vals):
         return cls.env["product.product"].create(
             dict(
@@ -186,12 +148,23 @@ class TestStockRequest(common.TransactionCase):
     def _create_product_attribute(cls, name):
         return cls.env["product.attribute"].create({"name": name})
 
+    @classmethod
+    def _create_location(cls, **vals):
+        return cls.env["stock.location"].create(dict(usage="internal", **vals))
+
+    @classmethod
+    def _create_route(cls, **vals):
+        return cls.env["stock.route"].create(
+            dict(
+                product_categ_selectable=False,
+                product_selectable=True,
+                sequence=10,
+                **vals
+            )
+        )
+
 
 class TestStockRequestBase(TestStockRequest):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
     def _create_stock_quant(self, product, location, qty):
         self.env["stock.quant"].create(
             {"product_id": product.id, "location_id": location.id, "quantity": qty}
@@ -203,30 +176,17 @@ class TestStockRequestBase(TestStockRequest):
             "product_uom_id": self.product.uom_id.id,
             "product_uom_qty": 5.0,
         }
-        stock_request = (
-            self.stock_request.with_user(self.stock_request_user)
-            .with_context(company_id=self.main_company.id)
-            .create(vals)
-        )
-
+        request_model = self.stock_request.with_user(self.stock_request_user)
+        stock_request = request_model.with_company(self.main_company).create(vals)
         self.assertEqual(stock_request.requested_by, self.stock_request_user)
-
         self.assertEqual(stock_request.warehouse_id, self.warehouse)
-
         self.assertEqual(stock_request.location_id, self.warehouse.lot_stock_id)
 
     def test_defaults_order(self):
-        vals = {}
-        order = (
-            self.request_order.with_user(self.stock_request_user)
-            .with_context(company_id=self.main_company.id)
-            .create(vals)
-        )
-
+        request_model = self.request_order.with_user(self.stock_request_user)
+        order = request_model.with_company(self.main_company).create({})
         self.assertEqual(order.requested_by, self.stock_request_user)
-
         self.assertEqual(order.warehouse_id, self.warehouse)
-
         self.assertEqual(order.location_id, self.warehouse.lot_stock_id)
 
     def test_onchanges_order(self):
@@ -252,10 +212,9 @@ class TestStockRequestBase(TestStockRequest):
                 )
             ],
         }
-        order = self.request_order.with_user(self.stock_request_user).create(vals)
+        order = self.request_order.with_user(self.stock_request_user).new(vals)
         self.stock_request_user.company_id = self.company_2
         order.company_id = self.company_2
-
         order.onchange_company_id()
 
         stock_request = order.stock_request_ids
@@ -294,13 +253,9 @@ class TestStockRequestBase(TestStockRequest):
             "product_id": self.product.id,
             "product_uom_id": self.product.uom_id.id,
             "product_uom_qty": 5.0,
-            "company_id": self.wh2.company_id.id,
-            "warehouse_id": self.wh2.id,
-            "location_id": self.wh2.lot_stock_id.id,
+            "company_id": self.main_company.id,
         }
-        stock_request = self.stock_request.with_user(self.stock_request_user).create(
-            vals
-        )
+        stock_request = self.stock_request.with_user(self.stock_request_user).new(vals)
         stock_request.product_id = self.product
         vals = stock_request.default_get(["warehouse_id", "company_id"])
         stock_request.update(vals)
@@ -335,7 +290,7 @@ class TestStockRequestBase(TestStockRequest):
         # Test onchange_warehouse_id
         wh2_2 = (
             self.env["stock.warehouse"]
-            .with_context(company_id=self.company_2.id)
+            .with_company(self.company_2)
             .create(
                 {
                     "name": "C2_2",
@@ -808,14 +763,15 @@ class TestStockRequestBase(TestStockRequest):
             "warehouse_id": self.warehouse.id,
             "location_id": self.warehouse.lot_stock_id.id,
         }
-
         stock_request_1 = (
-            self.env["stock.request"].with_user(self.stock_request_user).create(vals)
+            self.env["stock.request"]
+            .with_user(self.stock_request_user)
+            .create(vals.copy())
         )
         stock_request_2 = (
             self.env["stock.request"]
             .with_user(self.stock_request_manager.id)
-            .create(vals)
+            .create(vals.copy())
         )
         stock_request_2.product_uom_qty = 6.0
         self.product.route_ids = [(6, 0, self.route.ids)]
@@ -947,10 +903,10 @@ class TestStockRequestBase(TestStockRequest):
             ],
         }
 
-        order = self.request_order.create(vals)
+        order = self.request_order.with_user(self.stock_request_manager).create(vals)
         self.product.route_ids = [(6, 0, self.route.ids)]
 
-        order.with_user(self.stock_request_manager).action_confirm()
+        order.action_confirm()
         stock_request = order.stock_request_ids
         self.assertTrue(stock_request.picking_ids)
         self.assertTrue(order.picking_ids)

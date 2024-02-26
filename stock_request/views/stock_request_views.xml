@@ -140,7 +140,6 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <field name="picking_ids" invisible="1" />
                         <button
                             type="object"
                             name="action_view_transfer"
@@ -151,6 +150,7 @@
                         >
                             <field
                                 name="picking_count"
+                                groups="stock.group_stock_user"
                                 widget="statinfo"
                                 string="Transfers"
                             />
@@ -212,12 +212,7 @@
                                     options="{'no_open': True, 'no_create': True}"
                                     groups="uom.group_uom"
                                 />
-                                <field
-                                    name="product_uom_id"
-                                    readonly="True"
-                                    groups="!uom.group_uom"
-                                    force_save="1"
-                                />
+                                <field name="product_uom_id" invisible="1" />
                             </div>
                             <field
                                 name="qty_in_progress"
