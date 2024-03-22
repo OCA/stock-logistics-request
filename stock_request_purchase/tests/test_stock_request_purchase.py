@@ -78,7 +78,7 @@ class TestStockRequestPurchase(common.TransactionCase):
                 "company_id": company_id,
                 "type": "product",
                 "route_ids": [(6, 0, self.route_buy.ids)],
-                "seller_ids": [(0, 0, {"name": self.supplier.id, "delay": 5})],
+                "seller_ids": [(0, 0, {"partner_id": self.supplier.id, "delay": 5})],
             }
         )
 
@@ -117,7 +117,7 @@ class TestStockRequestPurchase(common.TransactionCase):
         self.assertEqual(order.state, "open")
         self.assertEqual(order.stock_request_ids.state, "open")
 
-        order.refresh()
+        order.invalidate_recordset()
         self.assertEqual(len(order.sudo().purchase_ids), 1)
         self.assertEqual(len(order.picking_ids), 0)
         self.assertEqual(len(order.move_ids), 0)
@@ -176,8 +176,8 @@ class TestStockRequestPurchase(common.TransactionCase):
             sum(stock_request_2.sudo().purchase_line_ids.mapped("product_qty")), 10
         )
 
-        stock_request_1.refresh()
-        stock_request_2.refresh()
+        stock_request_1.invalidate_recordset()
+        stock_request_2.invalidate_recordset()
 
         self.assertEqual(len(stock_request_1.sudo().purchase_ids), 1)
         self.assertEqual(len(stock_request_2.sudo().purchase_ids), 1)
