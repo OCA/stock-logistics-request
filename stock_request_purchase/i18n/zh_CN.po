@@ -92,6 +92,3 @@ msgstr "您无法将采购订单行链接到属于另一家公司的库存请求
 msgid ""
 "You have linked to a purchase order line that belongs to another company."
 msgstr "您已链接到属于另一家公司的采购订单行。"
-
-#~ msgid "Purchase count"
-#~ msgstr "采购数量"

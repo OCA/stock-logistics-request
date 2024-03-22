@@ -98,9 +98,3 @@ msgid ""
 "You have linked to a purchase order line that belongs to another company."
 msgstr ""
 "Ha seleccionada una línea de pedido de compras que pertenece a otra compañía."
-
-#~ msgid "Purchase count"
-#~ msgstr "# de Compras"
-
-#~ msgid "Procurement Rule"
-#~ msgstr "Regla de abastecimiento"
