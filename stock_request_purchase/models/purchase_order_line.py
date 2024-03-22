@@ -14,7 +14,6 @@ class PurchaseOrderLine(models.Model):
 
     def _prepare_stock_moves(self, picking):
         res = super()._prepare_stock_moves(picking)
-
         for re in res:
             re["allocation_ids"] = [
                 (

@@ -3,70 +3,20 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
 from odoo import fields
-from odoo.tests import common, new_test_user
+
+from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 
 
-class TestStockRequestPurchase(common.TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.env = self.env(
-            context=dict(
-                self.env.context,
-                mail_create_nolog=True,
-                mail_create_nosubscribe=True,
-                mail_notrack=True,
-                no_reset_password=True,
-            )
-        )
-        # common models
-        self.stock_request = self.env["stock.request"]
-
-        # refs
-        self.main_company = self.env.ref("base.main_company")
-        self.warehouse = self.env.ref("stock.warehouse0")
-        self.categ_unit = self.env.ref("uom.product_uom_categ_unit")
-
-        # common data
-        self.company_2 = self.env["res.company"].create({"name": "Comp2"})
-        self.wh2 = self.env["stock.warehouse"].search(
-            [("company_id", "=", self.company_2.id)], limit=1
-        )
-        self.stock_request_user = new_test_user(
-            self.env,
-            login="stock_request_user",
-            groups="stock_request.group_stock_request_user",
-            company_ids=[(6, 0, [self.main_company.id, self.company_2.id])],
-        )
-        self.stock_request_manager = new_test_user(
-            self.env,
-            login="stock_request_manager",
-            groups="stock_request.group_stock_request_manager",
-            company_ids=[(6, 0, [self.main_company.id, self.company_2.id])],
-        )
-        self.route_buy = self.warehouse.buy_pull_id.route_id
-        self.supplier = self.env["res.partner"].create({"name": "Supplier"})
-        self.product = self._create_product("SH", "Shoes", False)
-
-        self.uom_dozen = self.env["uom.uom"].create(
+class TestStockRequestPurchase(TestStockRequest):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.route_buy = cls.warehouse.buy_pull_id.route_id
+        cls.supplier = cls.env["res.partner"].create({"name": "Supplier"})
+        cls.product.write(
             {
-                "name": "Test-DozenA",
-                "category_id": self.categ_unit.id,
-                "factor_inv": 12,
-                "uom_type": "bigger",
-                "rounding": 0.001,
-            }
-        )
-
-    def _create_product(self, default_code, name, company_id):
-        return self.env["product.product"].create(
-            {
-                "name": name,
-                "default_code": default_code,
-                "uom_id": self.env.ref("uom.product_uom_unit").id,
-                "company_id": company_id,
-                "type": "product",
-                "route_ids": [(6, 0, self.route_buy.ids)],
-                "seller_ids": [(0, 0, {"name": self.supplier.id, "delay": 5})],
+                "route_ids": [(6, 0, cls.route_buy.ids)],
+                "seller_ids": [(0, 0, {"partner_id": cls.supplier.id, "delay": 5})],
             }
         )
 
@@ -105,7 +55,7 @@ class TestStockRequestPurchase(common.TransactionCase):
         self.assertEqual(order.state, "open")
         self.assertEqual(order.stock_request_ids.state, "open")
 
-        order.refresh()
+        order.invalidate_recordset()
         self.assertEqual(len(order.sudo().purchase_ids), 1)
         self.assertEqual(len(order.picking_ids), 0)
         self.assertEqual(len(order.move_ids), 0)
@@ -164,8 +114,8 @@ class TestStockRequestPurchase(common.TransactionCase):
             sum(stock_request_2.sudo().purchase_line_ids.mapped("product_qty")), 10
         )
 
-        stock_request_1.refresh()
-        stock_request_2.refresh()
+        stock_request_1.invalidate_recordset()
+        stock_request_2.invalidate_recordset()
 
         self.assertEqual(len(stock_request_1.sudo().purchase_ids), 1)
         self.assertEqual(len(stock_request_2.sudo().purchase_ids), 1)
