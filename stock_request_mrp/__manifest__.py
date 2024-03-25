@@ -6,7 +6,7 @@
     "summary": "Manufacturing request for stock",
     "version": "15.0.1.3.0",
     "license": "LGPL-3",
-    "website": "https://github.com/OCA/stock-logistics-warehouse",
+    "website": "https://github.com/OCA/stock-logistics-request",
     "author": "ForgeFlow, Odoo Community Association (OCA)",
     "category": "Warehouse Management",
     "depends": ["stock_request", "mrp"],
