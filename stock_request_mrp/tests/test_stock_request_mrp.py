@@ -82,23 +82,22 @@ class TestStockRequestMrp(TestStockRequest):
         self.assertEqual(order.state, "open")
         self.assertEqual(order.stock_request_ids.state, "open")
 
-        order.refresh()
+        order.invalidate_model()
 
         self.assertEqual(len(order.production_ids), 1)
         self.assertEqual(len(order.stock_request_ids.production_ids), 1)
         self.assertEqual(order.stock_request_ids.qty_in_progress, 5.0)
 
         manufacturing_order = order.production_ids[0]
+        self.assertEqual(manufacturing_order.state, "confirmed")
         self.assertEqual(
             manufacturing_order.company_id, order.stock_request_ids[0].company_id
         )
-        manufacturing_order.action_confirm()
-        manufacturing_order.write(
-            {"qty_producing": manufacturing_order.product_uom_qty}
+        res = manufacturing_order.button_mark_done()
+        wizard_model = (
+            self.env[res["res_model"]].with_context(**res["context"]).create({})
         )
-        manufacturing_order._set_qty_producing()
-
-        manufacturing_order.with_context(skip_immediate=True).button_mark_done()
+        wizard_model.process()
         self.assertEqual(order.stock_request_ids.qty_in_progress, 0.0)
         self.assertEqual(order.stock_request_ids.qty_done, 5.0)
         order2 = order.copy()

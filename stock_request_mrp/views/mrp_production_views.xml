@@ -6,10 +6,6 @@
         <field name="name">mrp.production.form.inherit.stock.request.mrp</field>
         <field name="model">mrp.production</field>
         <field name="inherit_id" ref="mrp.mrp_production_form_view" />
-        <field
-            name="groups_id"
-            eval="[(4, ref('stock_request.group_stock_request_user'))]"
-        />
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button
@@ -18,6 +14,7 @@
                     class="oe_stat_button"
                     icon="fa-chain"
                     attrs="{'invisible':[('stock_request_count', '=', 0)]}"
+                    groups="stock_request.group_stock_request_user"
                 >
                     <field
                         name="stock_request_count"
@@ -29,7 +26,10 @@
             </xpath>
             <xpath expr="/form/sheet/notebook" position="inside">
                 <page name="stock_requests" string="Stock Requests">
-                    <field name="stock_request_ids" />
+                    <field
+                        name="stock_request_ids"
+                        groups="stock_request.group_stock_request_user"
+                    />
                 </page>
             </xpath>
         </field>
