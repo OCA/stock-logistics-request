@@ -12,6 +12,7 @@ class TestStockRequestSubmit(TestStockRequest):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.product.route_ids = [(6, 0, cls.route.ids)]
         vals = {
             "company_id": cls.main_company.id,
             "warehouse_id": cls.warehouse.id,
