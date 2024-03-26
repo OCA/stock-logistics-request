@@ -48,7 +48,9 @@ msgid "Submitted"
 msgstr "Inviata"
 
 #. module: stock_request_submit
+#. odoo-python
 #: code:addons/stock_request_submit/models/stock_request_order.py:0
 #, python-format
 msgid "There should be at least one request item for submiting the order."
-msgstr "Deve essere presente almeno un elemento richiesta per inviare l'ordine."
+msgstr ""
+"Deve essere presente almeno un elemento richiesta per inviare l'ordine."
