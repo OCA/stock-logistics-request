@@ -22,6 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [stock_request](stock_request/) | 16.0.1.0.0 |  | Internal request for stock
+[stock_request_mrp](stock_request_mrp/) | 16.0.1.0.0 |  | Manufacturing request for stock
 [stock_request_submit](stock_request_submit/) | 16.0.1.0.0 |  | Add submit state on Stock Requests
 
 [//]: # (end addons)
