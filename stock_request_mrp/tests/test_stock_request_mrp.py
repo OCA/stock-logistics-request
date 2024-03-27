@@ -10,25 +10,26 @@ from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 
 
 class TestStockRequestMrp(TestStockRequest):
-    def setUp(self):
-        super().setUp()
-        self.mrp_user_group = self.env.ref("mrp.group_mrp_user")
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.mrp_user_group = cls.env.ref("mrp.group_mrp_user")
         # common data
-        self.stock_request_user.write({"groups_id": [(4, self.mrp_user_group.id)]})
-        self.stock_request_manager.write({"groups_id": [(4, self.mrp_user_group.id)]})
-        self.route_manufacture = self.warehouse.manufacture_pull_id.route_id
-        self.product.write({"route_ids": [(6, 0, self.route_manufacture.ids)]})
-        self.raw_1 = self._create_product("SL", "Sole", False)
-        self._update_qty_in_location(self.warehouse.lot_stock_id, self.raw_1, 10)
-        self.raw_2 = self._create_product("LC", "Lace", False)
-        self._update_qty_in_location(self.warehouse.lot_stock_id, self.raw_2, 10)
+        cls.stock_request_user.write({"groups_id": [(4, cls.mrp_user_group.id)]})
+        cls.stock_request_manager.write({"groups_id": [(4, cls.mrp_user_group.id)]})
+        cls.route_manufacture = cls.warehouse.manufacture_pull_id.route_id
+        cls.product.write({"route_ids": [(6, 0, cls.route_manufacture.ids)]})
+        cls.raw_1 = cls._create_product("SL", "Sole", False)
+        cls._update_qty_in_location(cls, cls.warehouse.lot_stock_id, cls.raw_1, 10)
+        cls.raw_2 = cls._create_product("LC", "Lace", False)
+        cls._update_qty_in_location(cls, cls.warehouse.lot_stock_id, cls.raw_2, 10)
 
-        self.bom = self._create_mrp_bom(self.product, [self.raw_1, self.raw_2])
+        cls.bom = cls._create_mrp_bom(cls, cls.product, [cls.raw_1, cls.raw_2])
 
-        self.uom_pair = self.env["uom.uom"].create(
+        cls.uom_pair = cls.env["uom.uom"].create(
             {
                 "name": "Test-Pair",
-                "category_id": self.categ_unit.id,
+                "category_id": cls.categ_unit.id,
                 "factor_inv": 2,
                 "uom_type": "bigger",
                 "rounding": 0.001,
