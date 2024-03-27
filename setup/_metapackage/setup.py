@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo-addon-stock_request>=16.0dev,<16.1dev',
         'odoo-addon-stock_request_mrp>=16.0dev,<16.1dev',
+        'odoo-addon-stock_request_purchase>=16.0dev,<16.1dev',
         'odoo-addon-stock_request_submit>=16.0dev,<16.1dev',
     ],
     classifiers=[
