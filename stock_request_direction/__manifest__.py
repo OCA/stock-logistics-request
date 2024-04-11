@@ -6,7 +6,7 @@
     "summary": "From or to your warehouse?",
     "version": "14.0.1.0.1",
     "license": "LGPL-3",
-    "website": "https://github.com/OCA/stock-logistics-warehouse",
+    "website": "https://github.com/OCA/stock-logistics-request",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "category": "Warehouse Management",
     "depends": ["stock_request"],
