@@ -8,3 +8,7 @@
 
   * Pimolnat Suntian <pimolnats@ecosoft.co.th>
   * Kitti U. <kittiu@ecosoft.co.th>
+
+* `APSL-Nagarro <https://apsl.tech>`__:
+
+  * Antoni Marroig <amarroig@apsl.net>
