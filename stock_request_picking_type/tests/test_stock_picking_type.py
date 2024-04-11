@@ -8,75 +8,11 @@ from odoo.tests import common
 
 
 class TestStockRequest(common.TransactionCase):
-    def setUp(self):
-        super(TestStockRequest, self).setUp()
-
-        # common models
-        self.stock_request = self.env["stock.request"]
-        self.request_order = self.env["stock.request.order"]
-
-        # refs
-        self.stock_request_user_group = self.env.ref(
-            "stock_request.group_stock_request_user"
-        )
-        self.stock_request_manager_group = self.env.ref(
-            "stock_request.group_stock_request_manager"
-        )
-        self.main_company = self.env.ref("base.main_company")
-        self.warehouse = self.env.ref("stock.warehouse0")
-        self.categ_unit = self.env.ref("uom.product_uom_categ_unit")
-        self.default_picking_type = self.env.ref(
-            "stock_request_picking_type.stock_request_order"
-        )
-
-        self.product = self._create_product("SH", "Shoes", False)
-        self.stock_request_manager = self._create_user(
-            "stock_request_manager",
-            [self.stock_request_manager_group.id],
-            [self.main_company.id],
-        )
-
-        self.ressuply_loc = self.env["stock.location"].create(
-            {
-                "name": "Ressuply",
-                "location_id": self.warehouse.view_location_id.id,
-                "usage": "internal",
-                "company_id": self.main_company.id,
-            }
-        )
-
-        self.route = self.env["stock.location.route"].create(
-            {
-                "name": "Transfer",
-                "product_categ_selectable": False,
-                "product_selectable": True,
-                "company_id": self.main_company.id,
-                "sequence": 10,
-            }
-        )
-
-        self.rule = self.env["stock.rule"].create(
-            {
-                "name": "Transfer",
-                "route_id": self.route.id,
-                "location_src_id": self.ressuply_loc.id,
-                "location_id": self.warehouse.lot_stock_id.id,
-                "action": "pull",
-                "picking_type_id": self.warehouse.int_type_id.id,
-                "procure_method": "make_to_stock",
-                "warehouse_id": self.warehouse.id,
-                "company_id": self.main_company.id,
-            }
-        )
-
-        self.env["ir.config_parameter"].sudo().set_param(
-            "stock.no_auto_scheduler", "True"
-        )
-
-    def _create_user(self, name, group_ids, company_ids):
+    @classmethod
+    def _create_user(cls, name, group_ids, company_ids):
         return (
-            self.env["res.users"]
-            .with_context({"no_reset_password": True})
+            cls.env["res.users"]
+            .with_context(**{"no_reset_password": True})
             .create(
                 {
                     "name": name,
@@ -89,22 +25,90 @@ class TestStockRequest(common.TransactionCase):
             )
         )
 
-    def _create_product(self, default_code, name, company_id, **vals):
-        return self.env["product.product"].create(
+    @classmethod
+    def _create_product(cls, default_code, name, company_id, **vals):
+        return cls.env["product.product"].create(
             dict(
                 name=name,
                 default_code=default_code,
-                uom_id=self.env.ref("uom.product_uom_unit").id,
+                uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
                 type="product",
                 **vals
             )
         )
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # common models
+        cls.stock_request = cls.env["stock.request"]
+        cls.request_order = cls.env["stock.request.order"]
+
+        # refs
+        cls.stock_request_user_group = cls.env.ref(
+            "stock_request.group_stock_request_user"
+        )
+        cls.stock_request_manager_group = cls.env.ref(
+            "stock_request.group_stock_request_manager"
+        )
+        cls.main_company = cls.env.ref("base.main_company")
+        cls.warehouse = cls.env.ref("stock.warehouse0")
+        cls.categ_unit = cls.env.ref("uom.product_uom_categ_unit")
+        cls.default_picking_type = cls.env.ref(
+            "stock_request_picking_type.stock_request_order"
+        )
+
+        cls.product = cls._create_product("Shoes", "SH", False)
+        cls.stock_request_manager = cls._create_user(
+            "stock_request_manager",
+            [cls.stock_request_manager_group.id],
+            [cls.main_company.id],
+        )
+
+        cls.ressuply_loc = cls.env["stock.location"].create(
+            {
+                "name": "Ressuply",
+                "location_id": cls.warehouse.view_location_id.id,
+                "usage": "internal",
+                "company_id": cls.main_company.id,
+            }
+        )
+
+        cls.route = cls.env["stock.route"].create(
+            {
+                "name": "Transfer",
+                "product_categ_selectable": False,
+                "product_selectable": True,
+                "company_id": cls.main_company.id,
+                "sequence": 10,
+            }
+        )
+
+        cls.rule = cls.env["stock.rule"].create(
+            {
+                "name": "Transfer",
+                "route_id": cls.route.id,
+                "location_src_id": cls.ressuply_loc.id,
+                "location_dest_id": cls.warehouse.lot_stock_id.id,
+                "action": "pull",
+                "picking_type_id": cls.warehouse.int_type_id.id,
+                "procure_method": "make_to_stock",
+                "warehouse_id": cls.warehouse.id,
+                "company_id": cls.main_company.id,
+            }
+        )
+
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "stock.no_auto_scheduler", "True"
+        )
+
 
 class TestStockPickingType(TestStockRequest):
-    def setUp(self):
-        super(TestStockPickingType, self).setUp()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
 
     def test_compute_sr_count(self):
         expected_date = fields.Datetime.now()
