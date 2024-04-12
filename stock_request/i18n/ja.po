@@ -15,6 +15,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_move_line.py:0
 #, python-format
 msgid ""
@@ -160,6 +161,7 @@ msgid "Company"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Company must be equal to the order"
@@ -272,6 +274,7 @@ msgid "Expected Date"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Expected date must be equal to the order"
@@ -345,18 +348,18 @@ msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_needaction
-#: model:ir.model.fields,help:stock_request.field_stock_request__message_unread
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_needaction
-#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_unread
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_needaction
-#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_unread
 msgid "If checked, new messages require your attention."
 msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -377,7 +380,7 @@ msgid "Inventory Locations"
 msgstr ""
 
 #. module: stock_request
-#: model:ir.model,name:stock_request.model_stock_location_route
+#: model:ir.model,name:stock_request.model_stock_route
 msgid "Inventory Routes"
 msgstr ""
 
@@ -396,13 +399,6 @@ msgstr ""
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Kanban"
-msgstr ""
-
-#. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request____last_update
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation____last_update
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order____last_update
-msgid "Last Modified on"
 msgstr ""
 
 #. module: stock_request
@@ -429,16 +425,10 @@ msgid "Location"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Location must be equal to the order"
-msgstr ""
-
-#. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_main_attachment_id
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_main_attachment_id
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_main_attachment_id
-msgid "Main Attachment"
 msgstr ""
 
 #. module: stock_request
@@ -491,7 +481,6 @@ msgstr ""
 
 #. module: stock_request
 #: model:ir.model.constraint,message:stock_request.constraint_stock_request_abstract_name_uniq
-#: model:ir.model.constraint,message:stock_request.constraint_stock_request_kanban_name_uniq
 msgid "Name must be unique"
 msgstr ""
 
@@ -534,7 +523,7 @@ msgstr ""
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_needaction_counter
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_needaction_counter
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr ""
 
 #. module: stock_request
@@ -545,19 +534,14 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: stock_request
-#: model:ir.model.fields,help:stock_request.field_stock_request__message_unread_counter
-#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_unread_counter
-#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_unread_counter
-msgid "Number of unread messages"
-msgstr ""
-
-#. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "Only orders on draft state can be unlinked"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Only requests on draft state can be unlinked"
@@ -598,6 +582,7 @@ msgid "Procurement Group"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Procurement group must be equal to the order"
@@ -697,6 +682,7 @@ msgid "Real Quantity"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_move_line.py:0
 #, python-format
 msgid "Receipt confirmation %(picking_name)s for your Request %(request_name)s"
@@ -737,6 +723,7 @@ msgid "Requested Quantity (UoM)"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Requested by must be equal to the order"
@@ -760,6 +747,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__route_ids
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__route_ids
 msgid "Routes"
+msgstr ""
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_sms_error
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_sms_error
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_sms_error
+msgid "SMS Delivery error"
 msgstr ""
 
 #. module: stock_request
@@ -815,6 +809,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__stock_request_id
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_order__stock_request_ids
 #: model:ir.module.category,name:stock_request.module_category_stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Stock Request"
 msgstr ""
@@ -877,6 +872,7 @@ msgid "Stock Request name must be unique"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "Stock Request product quantity has to be strictly positive."
@@ -891,7 +887,6 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
 #: model_terms:ir.ui.view,arch_db:stock_request.view_picking_form
-#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Stock Requests"
 msgstr ""
 
@@ -903,16 +898,6 @@ msgstr ""
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_kanban
 msgid "Stock Requests Kanban integration"
-msgstr ""
-
-#. module: stock_request
-#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
-msgid "Stock Requests Order Search"
-msgstr ""
-
-#. module: stock_request
-#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
-msgid "Stock Requests Search"
 msgstr ""
 
 #. module: stock_request
@@ -941,6 +926,7 @@ msgid "Submitted state in Stock Requests"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_move.py:0
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
@@ -948,12 +934,14 @@ msgid "The company of the stock request must match with that of the location."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "The company of the stock request must match with that of the warehouse."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_move_line.py:0
 #, python-format
 msgid ""
@@ -962,18 +950,21 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "The picking policy must be equal to the order"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "There should be at least one request item for confirming the order."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "This action only works in the context of products"
@@ -995,20 +986,6 @@ msgstr ""
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__activity_exception_decoration
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
-
-#. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_unread
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_unread
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_unread
-msgid "Unread Messages"
-msgstr ""
-
-#. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_unread_counter
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_unread_counter
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_unread_counter
-msgid "Unread Messages Counter"
 msgstr ""
 
 #. module: stock_request
@@ -1042,6 +1019,7 @@ msgid "Warehouse"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Warehouse must be equal to the order"
@@ -1062,6 +1040,7 @@ msgid "Website communication history"
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_location.py:0
 #, python-format
 msgid ""
@@ -1070,6 +1049,7 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_location.py:0
 #, python-format
 msgid ""
@@ -1078,7 +1058,8 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
-#: code:addons/stock_request/models/stock_location_route.py:0
+#. odoo-python
+#: code:addons/stock_request/models/stock_route.py:0
 #, python-format
 msgid ""
 "You cannot change the company of the route, as it is already assigned to "
@@ -1086,6 +1067,7 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_warehouse.py:0
 #, python-format
 msgid ""
@@ -1094,6 +1076,7 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_warehouse.py:0
 #, python-format
 msgid ""
@@ -1102,30 +1085,35 @@ msgid ""
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a location that is assigned to another company."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a product that is assigned to another company."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a route that is assigned to another company."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a warehouse that is assigned to another company."
 msgstr ""
 
 #. module: stock_request
+#. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid ""
