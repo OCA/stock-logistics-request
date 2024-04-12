@@ -17,7 +17,11 @@ This repository contains modules to provide another way of creating stock moveme
 
 [//]: # (addons)
 
-This part will be replaced when running the oca-gen-addons-table script from OCA/maintainer-tools.
+Available addons
+----------------
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[stock_request](stock_request/) | 17.0.1.0.0 |  | Internal request for stock
 
 [//]: # (end addons)
 
