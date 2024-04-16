@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 03:44+0000\n"
-"PO-Revision-Date: 2024-04-16 10:25+0000\n"
+"PO-Revision-Date: 2024-04-16 17:37+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: Italian (https://www.transifex.com/oca/teams/23907/it/)\n"
 "Language: it\n"
@@ -1006,40 +1006,40 @@ msgstr "Questa azione lavora solo nel contesto dei prodotti"
 #. module: stock_request
 #: model:ir.model,name:stock_request.model_stock_picking
 msgid "Transfer"
-msgstr ""
+msgstr "Trasferimento"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Transfers"
-msgstr ""
+msgstr "Trasferimenti"
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__activity_exception_decoration
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__activity_exception_decoration
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Tipo di attività eccezione sul record."
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__product_uom_id
 msgid "UoM"
-msgstr ""
+msgstr "UdM"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Use Kanban cards for consumable products"
-msgstr ""
+msgstr "Usa tessere Kanban per prodotti consumabili"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Use Manufacturing Orders with Stock Requests"
-msgstr ""
+msgstr "Usa ordini di produzione con le richieste di magazzino"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Use Purchases with Stock Requests"
-msgstr ""
+msgstr "Usa acquisti con le richieste di magazzino"
 
 #. module: stock_request
 #: model:ir.model,name:stock_request.model_stock_warehouse
@@ -1049,28 +1049,28 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
 msgid "Warehouse"
-msgstr ""
+msgstr "Magazzino"
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "Warehouse must be equal to the order"
-msgstr ""
+msgstr "Il magazzino deve essere uguale all'ordine"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__website_message_ids
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__website_message_ids
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_order__website_message_ids
 msgid "Website Messages"
-msgstr ""
+msgstr "Messaggi sito web"
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__website_message_ids
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__website_message_ids
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__website_message_ids
 msgid "Website communication history"
-msgstr ""
+msgstr "Cronologia comunicazioni sito web"
 
 #. module: stock_request
 #. odoo-python
@@ -1080,6 +1080,8 @@ msgid ""
 "You cannot change the company of the location, as it is already assigned to "
 "stock request orders that belong to another company."
 msgstr ""
+"Non si può modificare l'azienda dell'ubicazione perché già assegnata a "
+"rodini di richiesta magazzino che appartengono ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
@@ -1089,6 +1091,8 @@ msgid ""
 "You cannot change the company of the location, as it is already assigned to "
 "stock requests that belong to another company."
 msgstr ""
+"Non si può modificare l'azienda dell'ubicazione perché già assegnata a "
+"richieste di magazzino che apprtengono ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
@@ -1098,6 +1102,8 @@ msgid ""
 "You cannot change the company of the route, as it is already assigned to "
 "stock requests that belong to another company."
 msgstr ""
+"Non si piò modificare l'azienda di una rotta perché già assegnata ad una "
+"richiesta di magazzino che appartiene ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
@@ -1107,6 +1113,8 @@ msgid ""
 "You cannot change the company of the warehouse, as it is already assigned to "
 "stock request orders that belong to another company."
 msgstr ""
+"Non si può modificare l'azienda del magazzino perché è già assegnato ad un "
+"ordine richiesta di magazzino che apperetiene ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
@@ -1116,34 +1124,36 @@ msgid ""
 "You cannot change the company of the warehouse, as it is already assigned to "
 "stock requests that belong to another company."
 msgstr ""
+"Non si può modificare l'azienda del magazzino perché è già assegnato ad una "
+"richiesta di magazzino che apperetiene ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a location that is assigned to another company."
-msgstr ""
+msgstr "È stata inserita una ubicazione che è assegnata ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a product that is assigned to another company."
-msgstr ""
+msgstr "È stato inserito un prodotto che è assegnato ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a route that is assigned to another company."
-msgstr ""
+msgstr "È stata inserita una rotta che è assegnata ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
 #, python-format
 msgid "You have entered a warehouse that is assigned to another company."
-msgstr ""
+msgstr "È stato inserito un magazzino che è assegnato ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
@@ -1153,3 +1163,5 @@ msgid ""
 "You have to select a product unit of measure in the same category than the "
 "default unit of measure of the product"
 msgstr ""
+"Bisogna selezionare una unità di misura prodotto della stessa categoria "
+"dell'unità di misura predefinita del prodotto"
