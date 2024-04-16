@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 03:44+0000\n"
-"PO-Revision-Date: 2024-04-15 17:37+0000\n"
+"PO-Revision-Date: 2024-04-16 10:25+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: Italian (https://www.transifex.com/oca/teams/23907/it/)\n"
 "Language: it\n"
@@ -125,7 +125,7 @@ msgstr ""
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "By default, available stock is not used"
-msgstr ""
+msgstr "In modo predefinito, non è utilizzata la giacenza disponibile"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
@@ -151,7 +151,7 @@ msgstr "Categoria"
 #: model:ir.model.fields,field_description:stock_request.field_res_config_settings__stock_request_check_available_first
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Check available stock first"
-msgstr ""
+msgstr "Controlla prima la giacenza disponibile"
 
 #. module: stock_request
 #: model_terms:ir.actions.act_window,help:stock_request.action_stock_request_form
@@ -950,7 +950,7 @@ msgstr "Richieste di magazzino"
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_submit
 msgid "Submitted state in Stock Requests"
-msgstr ""
+msgstr "Stato inserito nelle richieste di magazzino"
 
 #. module: stock_request
 #. odoo-python
@@ -959,6 +959,8 @@ msgstr ""
 #, python-format
 msgid "The company of the stock request must match with that of the location."
 msgstr ""
+"L'azienda della richiesta di magazzino deve corrispondere con quella "
+"dell'ubicazione."
 
 #. module: stock_request
 #. odoo-python
@@ -966,6 +968,8 @@ msgstr ""
 #, python-format
 msgid "The company of the stock request must match with that of the warehouse."
 msgstr ""
+"L'azienda della richiesta di magazzino deve corrispondere con quella del "
+"magazzino."
 
 #. module: stock_request
 #. odoo-python
@@ -975,27 +979,29 @@ msgid ""
 "The following requested items from Stock Request %(request_name)s have now "
 "been received in %(location_name)s using Picking %(picking_name)s:"
 msgstr ""
+"I seguenti elementi presenti nella richiesta di magazzino %(request_name)s "
+"sono in ricevimento in %(location_name)s con il prelievo %(picking_name)s:"
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
 #, python-format
 msgid "The picking policy must be equal to the order"
-msgstr ""
+msgstr "La politica di prelievo deve essere uguale a quella dell'ordine"
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "There should be at least one request item for confirming the order."
-msgstr ""
+msgstr "Deve esserci almeno un elemento richiesto per confermare l'ordine."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "This action only works in the context of products"
-msgstr ""
+msgstr "Questa azione lavora solo nel contesto dei prodotti"
 
 #. module: stock_request
 #: model:ir.model,name:stock_request.model_stock_picking
