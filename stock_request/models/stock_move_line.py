@@ -17,7 +17,8 @@ class StockMoveLine(models.Model):
         message += (
             _(
                 "The following requested items from Stock Request %(request_name)s "
-                "have now been received in %(location_name)s using Picking %(picking_name)s:"
+                "have now been received in %(location_name)s using Picking "
+                "%(picking_name)s:"
             )
             % message_data
         )
