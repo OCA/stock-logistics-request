@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-02 03:44+0000\n"
-"PO-Revision-Date: 2024-04-16 17:37+0000\n"
+"PO-Revision-Date: 2024-05-02 13:39+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: Italian (https://www.transifex.com/oca/teams/23907/it/)\n"
 "Language: it\n"
@@ -40,7 +40,7 @@ msgstr "Azione richiesta"
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Activates Stock Request Orders"
-msgstr "Attiva gli ordini di richiesta stock"
+msgstr "Attiva ordini richiesta magazzino"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_ids
@@ -264,7 +264,7 @@ msgstr "Abilita ordini"
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
 msgid "Enable Stock Requests Kanban cards"
-msgstr "Abilita la kanban per le richieste di magazzino"
+msgstr "Abilita le schede Kanban per le richieste di magazzino"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
@@ -298,7 +298,7 @@ msgstr "La data attesa deve essere uguale all'ordine"
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
 msgid "Finished"
-msgstr "Completato"
+msgstr "Completata"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__message_follower_ids
@@ -733,7 +733,7 @@ msgstr "Richiesta di magazzino"
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__requested_by
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_order__requested_by
 msgid "Requested By"
-msgstr "RIchiesto da"
+msgstr "Richiesta da"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__requested_product_qty
@@ -994,7 +994,7 @@ msgstr "La politica di prelievo deve essere uguale a quella dell'ordine"
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
 msgid "There should be at least one request item for confirming the order."
-msgstr "Deve esserci almeno un elemento richiesto per confermare l'ordine."
+msgstr "Deve esserci almeno un articolo richiesto per confermare l'ordine."
 
 #. module: stock_request
 #. odoo-python
@@ -1081,7 +1081,7 @@ msgid ""
 "stock request orders that belong to another company."
 msgstr ""
 "Non si può modificare l'azienda dell'ubicazione perché già assegnata a "
-"rodini di richiesta magazzino che appartengono ad un'altra azienda."
+"ordini di richiesta magazzino che appartengono ad un'altra azienda."
 
 #. module: stock_request
 #. odoo-python
