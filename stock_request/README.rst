@@ -80,7 +80,7 @@ also cancelled.
 Known issues / Roadmap
 ======================
 
-There is no way to archive Stock Request and Stock Request Orders.
+There is no way to achieve Storck Request and Stock Request Orders.
 It should be developed taking into account that only Cancel and Done
 stock request can be archived.
 
@@ -138,4 +138,4 @@ promote its widespread use.
 
 This module is part of the `OCA/stock-logistics-request <https://github.com/OCA/stock-logistics-request/tree/16.0/stock_request>`_ project on GitHub.
 
-You are welcome to contribute. To learn how please visit https://odoo-community.org/page/contribute.
+You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
