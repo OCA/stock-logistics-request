@@ -12,29 +12,31 @@
                     name="action_submit"
                     string="Submit"
                     type="object"
-                    attrs="{'invisible': [('state', '!=', 'draft')]}"
+                    invisible="state != 'draft'"
                 />
             </button>
             <button name="action_confirm" position="attributes">
-                <attribute
-                    name="attrs"
-                >{'invisible': [('state', '!=', 'submitted')]}</attribute>
+                <attribute name="invisible">state != 'submitted'</attribute>
             </button>
             <button name="action_draft" position="attributes">
-                <attribute name="states">submitted,cancel</attribute>
+                <attribute
+                    name="invisible"
+                >state not in ['submitted', 'cancel']</attribute>
             </button>
             <button name="action_cancel" position="attributes">
-                <attribute name="states">draft,submitted,open</attribute>
+                <attribute
+                    name="invisible"
+                >state not in ['draft', 'submitted', 'open']</attribute>
             </button>
             <field name="stock_request_ids" position="attributes">
                 <attribute
-                    name="attrs"
-                >{'readonly': [('state', 'not in', ['draft', 'submitted'])]}</attribute>
+                    name="readonly"
+                >state not in ['draft', 'submitted']</attribute>
             </field>
             <field name="route_id" position="attributes">
                 <attribute
-                    name="attrs"
-                >{'readonly': [('state', 'not in', ['draft', 'submitted'])]}</attribute>
+                    name="readonly"
+                >state  not in ['draft', 'submitted']</attribute>
             </field>
         </field>
     </record>

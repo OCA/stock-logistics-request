@@ -10,9 +10,7 @@ class StockRequest(models.Model):
 
     state = fields.Selection(selection_add=[("submitted", "Submitted"), ("open",)])
 
-    route_id = fields.Many2one(
-        states={"draft": [("readonly", False)], "submitted": [("readonly", False)]}
-    )
+    route_id = fields.Many2one()
 
     def action_submit(self):
         self._action_submit()
