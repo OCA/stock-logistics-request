@@ -67,6 +67,9 @@ Contributors
 
 -  Héctor Villarreal Ortega <hector.villarreal@eficent.com>
 -  Pimolnat Suntian <pimolnats@ecosoft.co.th>
+-  `APSL-Nagarro <https://www.apsl.tech>`__:
+
+   -  Antoni Marroig <amarroig@apsl.net>
 
 Maintainers
 -----------

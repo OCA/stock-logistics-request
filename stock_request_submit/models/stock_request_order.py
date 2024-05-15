@@ -14,7 +14,6 @@ class StockRequestOrder(models.Model):
             raise UserError(
                 _("There should be at least one request item for submiting the order.")
             )
-        for line in self.stock_request_ids:
-            line.action_submit()
+        self.stock_request_ids.action_submit()
         self.state = "submitted"
         return True
