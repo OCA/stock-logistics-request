@@ -33,7 +33,7 @@ def link_existing_mos_to_stock_request(cr):
         if stock_request:
             # Link SR to MO
             mo.stock_request_ids = [(6, 0, stock_request.ids)]
-            logger.info("MO {} linked to SR {}".format(mo.name, stock_request.name))
+            logger.info(f"MO {mo.name} linked to SR {stock_request.name}")
             if (
                 not stock_request_allocation_obj.search(
                     [("stock_request_id", "=", stock_request.id)]
@@ -41,7 +41,7 @@ def link_existing_mos_to_stock_request(cr):
                 and mo.state != "cancel"
             ):
                 # Create allocation for finish move
-                logger.info("Create allocation for {}".format(stock_request.name))
+                logger.info(f"Create allocation for {stock_request.name}")
                 mo.move_finished_ids[0].allocation_ids = [
                     (
                         0,
