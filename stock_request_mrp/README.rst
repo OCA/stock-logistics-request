@@ -28,8 +28,8 @@ Stock Request MRP
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module allows for users to be able to display manufacturing orders
-that have been created as a consequence of Stock Requests.
+This module allows users to be able to display Manufacturing Orders that
+have been created as a consequence of Stock Requests.
 
 **Table of contents**
 
@@ -42,6 +42,12 @@ Usage
 In case that the confirmation of the Stock Request results in an
 immediate Manufacturing Order, the user will be able to display the MO's
 from the Stock Request form view.
+
+Navigate to Stock Requests and create a new stock request. Upon
+confirmation of the stock request, the system will automatically
+generate the corresponding manufacturing order. View and manage the
+generated manufacturing orders directly from the stock request record or
+through Manufacturing.
 
 Known issues / Roadmap
 ======================

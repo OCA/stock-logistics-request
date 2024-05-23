@@ -1,4 +1,4 @@
-# Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
+# Copyright 2020-24 ForgeFlow S.L. (https://www.forgeflow.com)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 from odoo import api, fields, models
