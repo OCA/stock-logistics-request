@@ -1,4 +1,4 @@
-# Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
+# Copyright 2020-24 ForgeFlow S.L. (https://www.forgeflow.com)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 import logging
@@ -8,17 +8,17 @@ from odoo import SUPERUSER_ID, api
 logger = logging.getLogger(__name__)
 
 
-def post_init_hook(cr, registry):
+def post_init_hook(env):
     """
     The objective of this hook is to link existing MOs
     coming from a Stock Request.
     """
     logger.info("Linking existing MOs coming from a Stock Request")
-    link_existing_mos_to_stock_request(cr)
+    link_existing_mos_to_stock_request(env)
 
 
-def link_existing_mos_to_stock_request(cr):
-    env = api.Environment(cr, SUPERUSER_ID, dict())
+def link_existing_mos_to_stock_request(env):
+    env = api.Environment(env.cr, SUPERUSER_ID, dict())
     stock_request_obj = env["stock.request"]
     stock_request_order_obj = env["stock.request.order"]
     stock_request_allocation_obj = env["stock.request.allocation"]
@@ -29,7 +29,7 @@ def link_existing_mos_to_stock_request(cr):
         [("name", "in", [mo.origin for mo in mos_with_sr])]
     )
     for mo in mos_with_sr:
-        stock_request = stock_requests.filtered(lambda x: x.name == mo.origin)
+        stock_request = stock_requests.filtered(lambda x, mo=mo: x.name == mo.origin)
         if stock_request:
             # Link SR to MO
             mo.stock_request_ids = [(6, 0, stock_request.ids)]
@@ -59,13 +59,13 @@ def link_existing_mos_to_stock_request(cr):
             for ml in mo.finished_move_line_ids.filtered(
                 lambda m: m.exists() and m.move_id.allocation_ids
             ):
-                qty_done = ml.product_uom_id._compute_quantity(
-                    ml.qty_done, ml.product_id.uom_id
+                quantity = ml.product_uom_id._compute_quantity(
+                    ml.quantity, ml.product_id.uom_id
                 )
-                to_allocate_qty = ml.qty_done
+                to_allocate_qty = ml.quantity
                 for allocation in ml.move_id.allocation_ids:
                     if allocation.open_product_qty:
-                        allocated_qty = min(allocation.open_product_qty, qty_done)
+                        allocated_qty = min(allocation.open_product_qty, quantity)
                         allocation.allocated_product_qty += allocated_qty
                         to_allocate_qty -= allocated_qty
             stock_request.check_done()

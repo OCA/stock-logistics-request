@@ -1,6 +1,6 @@
-# Copyright 2016-20 ForgeFlow S.L. (https://www.forgeflow.com)
-# Copyright 2022 Tecnativa - Pedro M. Baeza
-# Copyright 2022 Tecnativa - Víctor Martínez
+# Copyright 2016-24 ForgeFlow S.L. (https://www.forgeflow.com)
+# Copyright 2022-24 Tecnativa - Pedro M. Baeza
+# Copyright 2022-24 Tecnativa - Víctor Martínez
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
 from odoo import fields
@@ -14,31 +14,35 @@ class TestStockRequestMrp(TestStockRequest):
     def setUpClass(cls):
         super().setUpClass()
         cls.mrp_user_group = cls.env.ref("mrp.group_mrp_user")
-        # common data
-        cls.stock_request_user.write({"groups_id": [(4, cls.mrp_user_group.id)]})
-        cls.stock_request_manager.write({"groups_id": [(4, cls.mrp_user_group.id)]})
-        cls.route_manufacture = cls.warehouse.manufacture_pull_id.route_id
-        cls.product.write({"route_ids": [(6, 0, cls.route_manufacture.ids)]})
-        cls.raw_1 = cls._create_product("SL", "Sole", False)
-        cls._update_qty_in_location(cls, cls.warehouse.lot_stock_id, cls.raw_1, 10)
-        cls.raw_2 = cls._create_product("LC", "Lace", False)
-        cls._update_qty_in_location(cls, cls.warehouse.lot_stock_id, cls.raw_2, 10)
 
-        cls.bom = cls._create_mrp_bom(cls, cls.product, [cls.raw_1, cls.raw_2])
+    def setUp(self):
+        super().setUp()
+        self.stock_request_user.write({"groups_id": [(4, self.mrp_user_group.id)]})
+        self.stock_request_manager.write({"groups_id": [(4, self.mrp_user_group.id)]})
+        self.route_manufacture = self.warehouse.manufacture_pull_id.route_id
+        self.product.write({"route_ids": [(6, 0, self.route_manufacture.ids)]})
+        self.raw_1 = self._create_product("SL", "Sole", False)
+        self._update_qty_in_location(self.warehouse.lot_stock_id, self.raw_1, 10)
+        self.raw_2 = self._create_product("LC", "Lace", False)
+        self._update_qty_in_location(self.warehouse.lot_stock_id, self.raw_2, 10)
 
-        cls.uom_pair = cls.env["uom.uom"].create(
+        self.bom = self._create_mrp_bom(self.product, [self.raw_1, self.raw_2])
+
+        self.uom_pair = self.env["uom.uom"].create(
             {
                 "name": "Test-Pair",
-                "category_id": cls.categ_unit.id,
+                "category_id": self.categ_unit.id,
                 "factor_inv": 2,
                 "uom_type": "bigger",
                 "rounding": 0.001,
             }
         )
 
+    @classmethod
     def _update_qty_in_location(self, location, product, quantity):
         self.env["stock.quant"]._update_available_quantity(product, location, quantity)
 
+    @classmethod
     def _create_mrp_bom(self, product_id, raw_materials):
         bom = self.env["mrp.bom"].create(
             {
@@ -95,10 +99,11 @@ class TestStockRequestMrp(TestStockRequest):
             manufacturing_order.company_id, order.stock_request_ids[0].company_id
         )
         res = manufacturing_order.button_mark_done()
-        wizard_model = (
-            self.env[res["res_model"]].with_context(**res["context"]).create({})
-        )
-        wizard_model.process()
+        if isinstance(res, dict):
+            wizard_model = (
+                self.env[res["res_model"]].with_context(**res["context"]).create({})
+            )
+            wizard_model.process()
         self.assertEqual(order.stock_request_ids.qty_in_progress, 0.0)
         self.assertEqual(order.stock_request_ids.qty_done, 5.0)
         order2 = order.copy()
