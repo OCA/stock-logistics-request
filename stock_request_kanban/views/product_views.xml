@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Copyright 2020 ForgeFlow, S.L.
+<!-- Copyright 2024 ForgeFlow, S.L.
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
 <odoo>
     <record id="product_product_form_view_kanban_card_button" model="ir.ui.view">
@@ -12,7 +12,7 @@
                     class="oe_stat_button"
                     name="action_view_kanban_cards"
                     type="object"
-                    attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
+                    invisible="type not in ['product', 'consu']"
                     icon="fa-barcode"
                     groups="stock_request.group_stock_request_user"
                 >
@@ -35,7 +35,7 @@
                     class="oe_stat_button"
                     name="action_view_kanban_cards"
                     type="object"
-                    attrs="{'invisible':[('type', 'not in', ['product', 'consu'])]}"
+                    invisible="type not in ['product', 'consu']"
                     icon="fa-barcode"
                     groups="stock_request.group_stock_request_user"
                 >

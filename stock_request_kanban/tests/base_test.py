@@ -1,5 +1,5 @@
 # Copyright 2017 Creu Blanca
-# Copyright 2017-2020 ForgeFlow, S.L.
+# Copyright 2017-2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 from reportlab.graphics.barcode import getCodes

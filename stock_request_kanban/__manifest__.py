@@ -3,7 +3,7 @@
 
 {
     "name": "Stock Request kanban",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Warehouse Management",
     "website": "https://github.com/OCA/stock-logistics-request",
     "author": "Creu Blanca, ForgeFlow, Odoo Community Association (OCA)",
@@ -25,13 +25,6 @@
         "report/stock_request_kanban_templates.xml",
         "security/ir.model.access.csv",
     ],
-    "assets": {
-        "web.assets_backend": [
-            "stock_request_kanban/static/src/js/stock_request_kanban_scan_controller.esm.js",
-            "stock_request_kanban/static/src/js/stock_request_kanban_scan_view.esm.js",
-            "stock_request_kanban/static/src/xml/stock_request_kanban_scan.xml",
-        ]
-    },
     "installable": True,
     "application": False,
 }
