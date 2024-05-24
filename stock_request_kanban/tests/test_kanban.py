@@ -1,5 +1,5 @@
 # Copyright 2017 Creu Blanca
-# Copyright 2017-2020 ForgeFlow, S.L.
+# Copyright 2017-2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 from odoo.exceptions import ValidationError
@@ -57,7 +57,7 @@ class TestKanban(TestBaseKanban):
                 "name": "Transfer",
                 "route_id": self.route.id,
                 "location_src_id": self.ressuply_loc.id,
-                "location_id": self.warehouse.lot_stock_id.id,
+                "location_dest_id": self.warehouse.lot_stock_id.id,
                 "action": "pull_push",
                 "picking_type_id": self.warehouse.int_type_id.id,
                 "procure_method": "make_to_stock",
