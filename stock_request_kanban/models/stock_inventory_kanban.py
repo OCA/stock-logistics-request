@@ -10,9 +10,7 @@ class StockInventoryKanban(models.Model):
     _description = "Inventory for Kanban"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char(
-        readonly=True, states={"draft": [("readonly", False)]}, copy=False
-    )
+    name = fields.Char(readonly=True, copy=False)
     state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -32,7 +30,6 @@ class StockInventoryKanban(models.Model):
         string="Warehouse",
         ondelete="cascade",
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     location_ids = fields.Many2many(
         "stock.location",
@@ -40,7 +37,6 @@ class StockInventoryKanban(models.Model):
         domain=[("usage", "in", ["internal", "transit"])],
         ondelete="cascade",
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     product_ids = fields.Many2many(
         "product.product",
@@ -48,7 +44,6 @@ class StockInventoryKanban(models.Model):
         domain=[("type", "in", ["product", "consu"])],
         ondelete="cascade",
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     kanban_ids = fields.Many2many(
         "stock.request.kanban",
@@ -74,7 +69,7 @@ class StockInventoryKanban(models.Model):
     def _compute_missing_kanban(self):
         for rec in self:
             rec.missing_kanban_ids = rec.kanban_ids.filtered(
-                lambda r: r.id not in rec.scanned_kanban_ids.ids
+                lambda r, rec=rec: r.id not in rec.scanned_kanban_ids.ids
             )
             rec.count_missing_kanbans = len(rec.missing_kanban_ids)
 

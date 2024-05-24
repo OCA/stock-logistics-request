@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- Copyright 2017-2020 ForgeFlow, S.L.
+<!-- Copyright 2017-2024 ForgeFlow, S.L.
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
 <odoo>
     <record id="view_stock_request_kanban_tree" model="ir.ui.view">
@@ -10,8 +10,8 @@
                 decoration-muted="active == 'false'"
                 decoration-bf="message_needaction==True"
             >
-                <field name="message_needaction" invisible="1" />
-                <field name="allow_virtual_location" invisible="1" />
+                <field name="message_needaction" column_invisible="True" />
+                <field name="allow_virtual_location" column_invisible="True" />
                 <field name="name" />
                 <field name="warehouse_id" groups="stock.group_stock_multi_locations" />
                 <field name="location_id" groups="stock.group_stock_multi_locations" />
@@ -27,7 +27,7 @@
                     groups="uom.group_uom"
                 />
                 <field name="product_uom_qty" />
-                <field name="active" invisible="1" />
+                <field name="active" column_invisible="True" />
             </tree>
         </field>
     </record>
@@ -88,21 +88,39 @@
                             <field
                                 name="warehouse_id"
                                 widget="selection"
+                                force_save="1"
                                 groups="stock.group_stock_multi_locations"
+                            />
+                            <field
+                                name="warehouse_id"
+                                widget="selection"
+                                force_save="1"
+                                groups="!stock.group_stock_multi_locations"
+                                invisible="1"
                             />
                             <field
                                 name="location_id"
                                 groups="stock.group_stock_multi_locations"
+                                force_save="1"
                                 domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                            />
+                            <field
+                                name="location_id"
+                                groups="!stock.group_stock_multi_locations"
+                                force_save="1"
+                                domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"
+                                invisible="1"
                             />
                             <field
                                 name="route_id"
                                 options="{'no_create': True}"
+                                force_save="1"
                                 groups="stock.group_stock_multi_locations"
                             />
                             <field name="route_ids" invisible="1" />
                             <field
                                 name="procurement_group_id"
+                                force_save="1"
                                 groups="stock.group_adv_location"
                             />
                             <field
@@ -115,11 +133,21 @@
                             <label for="product_uom_qty" />
                             <div>
                                 <field name="product_uom_qty" class="oe_inline" />
+                                <field name="allowed_uom_categ_id" invisible="1" />
                                 <field
                                     name="product_uom_id"
                                     class="oe_inline"
+                                    force_save="1"
                                     options="{'no_open': True, 'no_create': True}"
                                     groups="uom.group_uom"
+                                />
+                                <field
+                                    name="product_uom_id"
+                                    class="oe_inline"
+                                    force_save="1"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    groups="!uom.group_uom"
+                                    invisible="1"
                                 />
                             </div>
                         </group>
@@ -195,8 +223,8 @@
         <field name="view_mode">kanban,tree,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-            Click to add a Stock Request Kanban.
-          </p>
+                Click to add a Stock Request Kanban.
+            </p>
         </field>
     </record>
 </odoo>
