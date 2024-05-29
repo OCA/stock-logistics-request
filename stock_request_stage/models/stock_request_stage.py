@@ -1,9 +1,7 @@
-# Copyright 2021 ForgeFlow, S.L.
+# Copyright 2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 from odoo import fields, models
-
-from odoo.addons.stock_request.models.stock_request import REQUEST_STATES
 
 
 class StockRequestStage(models.Model):
@@ -24,7 +22,12 @@ class StockRequestStage(models.Model):
         "no records in that stage to display.",
     )
     set_state = fields.Selection(
-        selection=REQUEST_STATES,
+        selection=[
+            ("draft", "Draft"),
+            ("open", "In progress"),
+            ("done", "Done"),
+            ("cancel", "Cancelled"),
+        ],
         string="Target Status",
         help="Status that should be set when the stock request reaches to "
         "this stage.",

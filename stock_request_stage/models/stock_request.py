@@ -1,4 +1,4 @@
-# Copyright 2021 ForgeFlow, S.L.
+# Copyright 2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 from odoo import api, fields, models
@@ -69,14 +69,15 @@ class StockRequest(models.Model):
 
     @api.model
     def create(self, vals):
-        request = super(StockRequest, self).create(vals)
+        request = super().create(vals)
         if vals.get("stage_id"):
             request.update_request_state()
             request.complete_pickings()
         return request
 
     def write(self, vals):
-        super(StockRequest, self).write(vals)
+        res = super().write(vals)
         if vals.get("stage_id"):
             self.update_request_state()
             self.complete_pickings()
+        return res
