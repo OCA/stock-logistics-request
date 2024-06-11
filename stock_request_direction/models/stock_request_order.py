@@ -9,8 +9,6 @@ class StockRequestOrder(models.Model):
 
     direction = fields.Selection(
         [("outbound", "Outbound"), ("inbound", "Inbound")],
-        states={"draft": [("readonly", False)]},
-        readonly=True,
     )
 
     @api.onchange("warehouse_id", "direction")
