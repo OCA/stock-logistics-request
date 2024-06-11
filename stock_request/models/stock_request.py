@@ -411,7 +411,7 @@ class StockRequest(models.Model):
                 )
                 self.env["procurement.group"].run(procurements)
             except UserError as error:
-                errors.append(error.name)
+                errors.append(str(error))
         if errors:
             raise UserError("\n".join(errors))
         return True
