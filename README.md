@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[stock_request](stock_request/) | 17.0.1.1.0 |  | Internal request for stock
+[stock_request](stock_request/) | 17.0.1.1.1 |  | Internal request for stock
 
 [//]: # (end addons)
 
