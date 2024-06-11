@@ -17,7 +17,7 @@
         <field name="inherit_id" ref="stock_request.view_stock_request_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='warehouse_id']" position="after">
-                <field name="direction" />
+                <field name="direction" readonly="state != 'draft'" />
             </xpath>
         </field>
     </record>
