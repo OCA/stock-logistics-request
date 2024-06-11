@@ -10,7 +10,7 @@ from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 class TestStockRequestBase(TestStockRequest):
     @classmethod
     def setUpClass(cls):
-        super(TestStockRequestBase, cls).setUpClass()
+        super().setUpClass()
 
     def test_onchange_direction_request(self):
         # Outbound direction
