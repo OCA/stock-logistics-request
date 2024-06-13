@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo-addon-stock_request>=16.0dev,<16.1dev',
         'odoo-addon-stock_request_direction>=16.0dev,<16.1dev',
         'odoo-addon-stock_request_mrp>=16.0dev,<16.1dev',
+        'odoo-addon-stock_request_picking_type>=16.0dev,<16.1dev',
         'odoo-addon-stock_request_purchase>=16.0dev,<16.1dev',
         'odoo-addon-stock_request_submit>=16.0dev,<16.1dev',
     ],

@@ -24,6 +24,7 @@ addon | version | maintainers | summary
 [stock_request](stock_request/) | 16.0.1.1.0 |  | Internal request for stock
 [stock_request_direction](stock_request_direction/) | 16.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | From or to your warehouse?
 [stock_request_mrp](stock_request_mrp/) | 16.0.1.0.1 |  | Manufacturing request for stock
+[stock_request_picking_type](stock_request_picking_type/) | 16.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | Add Stock Requests to the Inventory App
 [stock_request_purchase](stock_request_purchase/) | 16.0.1.0.0 |  | Internal request for stock
 [stock_request_submit](stock_request_submit/) | 16.0.1.0.0 |  | Add submit state on Stock Requests
 
