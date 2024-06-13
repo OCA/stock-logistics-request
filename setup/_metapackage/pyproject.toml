@@ -1,8 +1,9 @@
 [project]
 name = "odoo-addons-oca-stock-logistics-request"
-version = "17.0.20240611.1"
+version = "17.0.20240613.0"
 dependencies = [
     "odoo-addon-stock_request>=17.0dev,<17.1dev",
+    "odoo-addon-stock_request_direction>=17.0dev,<17.1dev",
     "odoo-addon-stock_request_mrp>=17.0dev,<17.1dev",
     "odoo-addon-stock_request_stage>=17.0dev,<17.1dev",
 ]
