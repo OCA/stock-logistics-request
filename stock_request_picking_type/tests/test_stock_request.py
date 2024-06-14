@@ -33,7 +33,7 @@ class TestStockRequest(common.TransactionCase):
                 uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
                 type="product",
-                **vals
+                **vals,
             )
         )
 
