@@ -35,8 +35,9 @@ class StockPickingType(models.Model):
                 ["picking_type_id"],
             )
             count = {
-                x["picking_type_id"]
-                and x["picking_type_id"][0]: x["picking_type_id_count"]
+                x["picking_type_id"] and x["picking_type_id"][0]: x[
+                    "picking_type_id_count"
+                ]
                 for x in data
             }
             for record in self:
