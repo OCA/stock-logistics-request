@@ -4,7 +4,7 @@
 {
     "name": "Stock Request Picking Type",
     "summary": "Add Stock Requests to the Inventory App",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "LGPL-3",
     "website": "https://github.com/OCA/stock-logistics-request",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",

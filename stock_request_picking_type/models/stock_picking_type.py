@@ -1,7 +1,7 @@
 # Copyright 2019 Open Source Integrators
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class StockPickingType(models.Model):
@@ -45,3 +45,13 @@ class StockPickingType(models.Model):
 
     def get_stock_request_order_picking_type_action(self):
         return self._get_action("stock_request_picking_type.action_picking_dashboard")
+
+    @api.depends("code")
+    def _compute_show_picking_type(self):
+        for record in self:
+            record.show_picking_type = record.code in [
+                "incoming",
+                "outgoing",
+                "internal",
+                "stock_request_order",
+            ]
