@@ -26,7 +26,7 @@
                     name="picking_type_id"
                     domain="[('code', '=', 'stock_request_order')]"
                     context="{'default_code': 'stock_request_order'}"
-                    attrs="{'readonly': [('state', '!=', 'draft')]}"
+                    readonly="state != 'draft'"
                 />
             </xpath>
         </field>
