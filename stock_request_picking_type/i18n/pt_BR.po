@@ -6,15 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2020-03-24 18:22+0000\n"
-"Last-Translator: Marcel Savegnago <marcel.savegnago@gmail.com>\n"
+"PO-Revision-Date: 2024-07-05 19:47+0000\n"
+"Last-Translator: rodrigosottomaiormacedo "
+"<sottomaiormacedotec@sottomaiormacedo.tech>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.10\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: stock_request_picking_type
 #: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
@@ -44,7 +45,7 @@ msgstr "Tudo"
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_picking_type__display_name
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_request_order__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome de exibição"
 
 #. module: stock_request_picking_type
 #: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
@@ -55,7 +56,7 @@ msgstr "Concluído"
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_picking_type__id
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_request_order__id
 msgid "ID"
-msgstr ""
+msgstr "Identificação"
 
 #. module: stock_request_picking_type
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_picking_type__count_sr_open
@@ -67,7 +68,7 @@ msgstr "Em Andamento"
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_picking_type____last_update
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_request_order____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última modificação em"
 
 #. module: stock_request_picking_type
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_picking_type__count_sr_late
