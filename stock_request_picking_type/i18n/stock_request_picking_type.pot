@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,21 +12,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-
-#. module: stock_request_picking_type
-#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
-msgid "<i class=\"fa fa-ellipsis-v\" role=\"img\" aria-label=\"Manage\" title=\"Manage\"/>"
-msgstr ""
-
-#. module: stock_request_picking_type
-#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
-msgid "<span>New</span>"
-msgstr ""
-
-#. module: stock_request_picking_type
-#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
-msgid "<span>View</span>"
-msgstr ""
 
 #. module: stock_request_picking_type
 #: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
@@ -51,9 +36,19 @@ msgid "Late"
 msgstr ""
 
 #. module: stock_request_picking_type
+#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
+msgid "New"
+msgstr ""
+
+#. module: stock_request_picking_type
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_request_order__picking_type_id
 #: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_order_search
 msgid "Operation Type"
+msgstr ""
+
+#. module: stock_request_picking_type
+#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
+msgid "Operations"
 msgstr ""
 
 #. module: stock_request_picking_type
@@ -63,13 +58,12 @@ msgstr ""
 
 #. module: stock_request_picking_type
 #: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
-msgid "Settings"
+msgid "Ready"
 msgstr ""
 
 #. module: stock_request_picking_type
 #: model:ir.model,name:stock_request_picking_type.model_stock_request_order
 #: model:ir.model.fields.selection,name:stock_request_picking_type.selection__stock_picking_type__code__stock_request_order
-#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
 msgid "Stock Request Order"
 msgstr ""
 
@@ -99,4 +93,9 @@ msgstr ""
 #. module: stock_request_picking_type
 #: model:ir.model.fields,field_description:stock_request_picking_type.field_stock_picking_type__code
 msgid "Type of Operation"
+msgstr ""
+
+#. module: stock_request_picking_type
+#: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
+msgid "Waiting"
 msgstr ""
