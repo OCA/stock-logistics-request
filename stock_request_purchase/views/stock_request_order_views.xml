@@ -18,7 +18,7 @@
                     name="action_view_purchase"
                     class="oe_stat_button"
                     icon="fa-credit-card"
-                    attrs="{'invisible': [('purchase_count', '=', 0)]}"
+                    invisible="purchase_count == 0"
                     groups="purchase.group_purchase_user"
                 >
                     <field name="purchase_count" widget="statinfo" string="Purchase" />

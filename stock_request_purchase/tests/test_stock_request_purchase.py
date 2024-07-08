@@ -75,7 +75,7 @@ class TestStockRequestPurchase(TestStockRequest):
 
         picking.action_assign()
         packout1 = picking.move_line_ids[0]
-        packout1.qty_done = 5
+        packout1.quantity = 5
         picking.button_validate()
 
         self.assertEqual(order.stock_request_ids.qty_in_progress, 0.0)
@@ -142,7 +142,7 @@ class TestStockRequestPurchase(TestStockRequest):
 
         picking.action_assign()
         packout1 = picking.move_line_ids[0]
-        packout1.qty_done = 10
+        packout1.quantity = 10
         picking.button_validate()
 
         self.assertEqual(stock_request_1.qty_in_progress, 0.0)
