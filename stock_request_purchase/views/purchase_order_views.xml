@@ -13,7 +13,7 @@
                     name="action_view_stock_request"
                     class="oe_stat_button"
                     icon="fa-chain"
-                    attrs="{'invisible':[('stock_request_ids', '=', [])]}"
+                    invisible="not stock_request_ids"
                     groups="stock_request.group_stock_request_user"
                 >
                     <field
@@ -21,7 +21,7 @@
                         widget="statinfo"
                         string="Stock Requests"
                     />
-                    <field name="stock_request_ids" attrs="{'invisible': True}" />
+                    <field name="stock_request_ids" invisible="True" />
                 </button>
             </xpath>
             <xpath expr="//field[@name='order_line']/form//notebook" position="inside">
