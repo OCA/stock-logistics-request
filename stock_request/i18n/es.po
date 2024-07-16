@@ -25,11 +25,11 @@ msgstr ""
 #: code:addons/stock_request/models/stock_move_line.py:0
 #, python-format
 msgid ""
-"<li><b>%(product_name)s</b>: Transferred quantity %(product_qty)s"
-"%(product_uom)s</li>"
+"<li><b>%(product_name)s</b>: Transferred quantity "
+"%(product_qty)s%(product_uom)s</li>"
 msgstr ""
-"<li><b>%(product_name)s</b>: Cantidad transferida %(product_qty)s"
-"%(product_uom)s</li>"
+"<li><b>%(product_name)s</b>: Cantidad transferida "
+"%(product_qty)s%(product_uom)s</li>"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__message_needaction
@@ -370,11 +370,8 @@ msgstr "Si está marcado, los nuevos mensajes requieren su atención."
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error
-#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 
@@ -775,13 +772,6 @@ msgid "Routes"
 msgstr "Rutas"
 
 #. module: stock_request
-#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_sms_error
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_sms_error
-#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Error de entrega de SMS"
-
-#. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
 msgid "Set to Draft"
@@ -1171,6 +1161,9 @@ msgid ""
 msgstr ""
 "Debe seleccionada una unidad de medida de producto de la misma categoría que "
 "la unidad de medida por defecto del producto"
+
+#~ msgid "SMS Delivery error"
+#~ msgstr "Error de entrega de SMS"
 
 #~ msgid "Last Modified on"
 #~ msgstr "Última Modificación el"
