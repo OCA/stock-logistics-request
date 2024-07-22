@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="stock_request_order_form">
+        <field name="name">stock.request.order.form</field>
+        <field name="model">stock.request.order</field>
+        <field name="inherit_id" ref="stock_request.stock_request_order_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='stock_request_ids']/tree/field[@name='product_uom_id']"
+                position="after"
+            >
+                <field
+                    name="lot_id"
+                    readonly="product_id.tracking == 'none'"
+                    domain="[('product_id', '=', product_id)]"
+                    options="{'no_create': 1}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
