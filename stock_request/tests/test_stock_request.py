@@ -8,133 +8,126 @@ from datetime import datetime
 from odoo import exceptions, fields
 from odoo.tests import common, new_test_user
 
+from odoo.addons.base.tests.common import BaseCommon
 
-class TestStockRequest(common.TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.env = self.env(
-            context=dict(
-                self.env.context,
-                mail_create_nolog=True,
-                mail_create_nosubscribe=True,
-                mail_notrack=True,
-                no_reset_password=True,
-                tracking_disable=True,
-            )
-        )
+
+class TestStockRequest(BaseCommon):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
         # common models
-        self.stock_request = self.env["stock.request"]
-        self.request_order = self.env["stock.request.order"]
+        cls.stock_request = cls.env["stock.request"]
+        cls.request_order = cls.env["stock.request.order"]
         # refs
-        self.stock_request_user_group = self.env.ref(
+        cls.stock_request_user_group = cls.env.ref(
             "stock_request.group_stock_request_user"
         )
-        self.main_company = self.env.ref("base.main_company")
-        self.warehouse = self.env.ref("stock.warehouse0")
-        self.categ_unit = self.env.ref("uom.product_uom_categ_unit")
-        self.virtual_loc = self.env.ref("stock.stock_location_customers")
+        cls.main_company = cls.env.ref("base.main_company")
+        cls.warehouse = cls.env.ref("stock.warehouse0")
+        cls.categ_unit = cls.env.ref("uom.product_uom_categ_unit")
+        cls.virtual_loc = cls.env.ref("stock.stock_location_customers")
         # common data
-        self.company_2 = self.env["res.company"].create(
-            {"name": "Comp2", "parent_id": self.main_company.id}
+        cls.company_2 = cls.env["res.company"].create(
+            {"name": "Comp2", "parent_id": cls.main_company.id}
         )
-        self.company_2_address = (
-            self.env["res.partner"]
-            .with_context(company_id=self.company_2.id)
+        cls.company_2_address = (
+            cls.env["res.partner"]
+            .with_context(company_id=cls.company_2.id)
             .create({"name": "Peñiscola"})
         )
-        self.wh2 = self.env["stock.warehouse"].search(
-            [("company_id", "=", self.company_2.id)], limit=1
+        cls.wh2 = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_2.id)], limit=1
         )
-        self.stock_request_user = new_test_user(
-            self.env,
+        cls.stock_request_user = new_test_user(
+            cls.env,
             login="stock_request_user",
             groups="stock_request.group_stock_request_user",
-            company_ids=[(6, 0, [self.main_company.id, self.company_2.id])],
+            company_ids=[(4, cls.main_company.id), (4, cls.company_2.id)],
         )
-        self.stock_request_manager = new_test_user(
-            self.env,
+        cls.stock_request_manager = new_test_user(
+            cls.env,
             login="stock_request_manager",
             groups="stock_request.group_stock_request_manager",
-            company_ids=[(6, 0, [self.main_company.id, self.company_2.id])],
+            company_ids=[(4, cls.main_company.id), (4, cls.company_2.id)],
         )
-        self.product = self._create_product("SH", "Shoes", False)
-        self.product_company_2 = self._create_product(
-            "SH_2", "Shoes", self.company_2.id
-        )
-        self.ressuply_loc = self._create_location(
+        cls.product = cls._create_product("SH", "Shoes", False)
+        cls.product_company_2 = cls._create_product("SH_2", "Shoes", cls.company_2.id)
+
+        cls.ressuply_loc = cls._create_location(
             name="Ressuply",
-            location_id=self.warehouse.view_location_id.id,
-            company_id=self.main_company.id,
+            location_id=cls.warehouse.view_location_id.id,
+            company_id=cls.main_company.id,
         )
-        self.ressuply_loc_2 = self._create_location(
+        cls.ressuply_loc_2 = cls._create_location(
             name="Ressuply",
-            location_id=self.wh2.view_location_id.id,
-            company_id=self.company_2.id,
+            location_id=cls.wh2.view_location_id.id,
+            company_id=cls.company_2.id,
         )
-        self.route = self._create_location_route(
-            name="Transfer", company_id=self.main_company.id
-        )
-        self.route_2 = self._create_location_route(
-            name="Transfer", company_id=self.company_2.id
-        )
-        self.route_3 = self._create_location_route(
-            name="Transfer", company_id=self.main_company.id
-        )
-        self.uom_dozen = self.env["uom.uom"].create(
+
+        cls.route = cls._create_route(name="Transfer", company_id=cls.main_company.id)
+        cls.route_2 = cls._create_route(name="Transfer", company_id=cls.company_2.id)
+        cls.route_3 = cls._create_route(name="Transfer", company_id=cls.main_company.id)
+        cls.uom_dozen = cls.env["uom.uom"].create(
             {
                 "name": "Test-DozenA",
-                "category_id": self.categ_unit.id,
+                "category_id": cls.categ_unit.id,
                 "factor_inv": 12,
                 "uom_type": "bigger",
                 "rounding": 0.001,
             }
         )
-        self.env["stock.rule"].create(
+
+        cls.env["stock.rule"].create(
             {
                 "name": "Transfer",
-                "route_id": self.route.id,
-                "location_src_id": self.ressuply_loc.id,
-                "location_dest_id": self.warehouse.lot_stock_id.id,
+                "route_id": cls.route.id,
+                "location_src_id": cls.ressuply_loc.id,
+                "location_dest_id": cls.warehouse.lot_stock_id.id,
                 "action": "pull",
-                "picking_type_id": self.warehouse.int_type_id.id,
+                "picking_type_id": cls.warehouse.int_type_id.id,
                 "procure_method": "make_to_stock",
-                "warehouse_id": self.warehouse.id,
-                "company_id": self.main_company.id,
+                "warehouse_id": cls.warehouse.id,
+                "company_id": cls.main_company.id,
             }
         )
-        self.env["stock.rule"].create(
+
+        cls.env["stock.rule"].create(
             {
                 "name": "Transfer",
-                "route_id": self.route_2.id,
-                "location_src_id": self.ressuply_loc_2.id,
-                "location_dest_id": self.wh2.lot_stock_id.id,
+                "route_id": cls.route_2.id,
+                "location_src_id": cls.ressuply_loc_2.id,
+                "location_dest_id": cls.wh2.lot_stock_id.id,
                 "action": "pull",
-                "picking_type_id": self.wh2.int_type_id.id,
+                "picking_type_id": cls.wh2.int_type_id.id,
                 "procure_method": "make_to_stock",
-                "warehouse_id": self.wh2.id,
-                "company_id": self.company_2.id,
+                "warehouse_id": cls.wh2.id,
+                "company_id": cls.company_2.id,
             }
         )
-        self.env["ir.config_parameter"].sudo().set_param(
+
+        cls.env["ir.config_parameter"].sudo().set_param(
             "stock.no_auto_scheduler", "True"
         )
 
-    def _create_product(self, default_code, name, company_id, **vals):
-        return self.env["product.product"].create(
+    @classmethod
+    def _create_product(cls, default_code, name, company_id, **vals):
+        return cls.env["product.product"].create(
             dict(
                 name=name,
                 default_code=default_code,
-                uom_id=self.env.ref("uom.product_uom_unit").id,
+                uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
-                detailed_type="product",
+                type="product",
                 **vals,
             )
         )
 
+    @classmethod
     def _create_product_template_attribute_line(
-        self, product_tmpl_id, attribute_id, value_id
+        cls, product_tmpl_id, attribute_id, value_id
     ):
-        return self.env["product.template.attribute.line"].create(
+        return cls.env["product.template.attribute.line"].create(
             {
                 "product_tmpl_id": product_tmpl_id,
                 "attribute_id": attribute_id,
@@ -142,19 +135,23 @@ class TestStockRequest(common.TransactionCase):
             }
         )
 
-    def _create_product_attribute_value(self, name, attribute):
-        return self.env["product.attribute.value"].create(
+    @classmethod
+    def _create_product_attribute_value(cls, name, attribute):
+        return cls.env["product.attribute.value"].create(
             {"name": name, "attribute_id": attribute}
         )
 
-    def _create_product_attribute(self, name):
-        return self.env["product.attribute"].create({"name": name})
+    @classmethod
+    def _create_product_attribute(cls, name):
+        return cls.env["product.attribute"].create({"name": name})
 
-    def _create_location(self, **vals):
-        return self.env["stock.location"].create(dict(usage="internal", **vals))
+    @classmethod
+    def _create_location(cls, **vals):
+        return cls.env["stock.location"].create(dict(usage="internal", **vals))
 
-    def _create_location_route(self, **vals):
-        return self.env["stock.route"].create(
+    @classmethod
+    def _create_route(cls, **vals):
+        return cls.env["stock.route"].create(
             dict(
                 product_categ_selectable=False,
                 product_selectable=True,
@@ -165,9 +162,6 @@ class TestStockRequest(common.TransactionCase):
 
 
 class TestStockRequestBase(TestStockRequest):
-    def setUp(self):
-        super().setUp()
-
     def _create_stock_quant(self, product, location, qty):
         self.env["stock.quant"].create(
             {"product_id": product.id, "location_id": location.id, "quantity": qty}
@@ -1252,37 +1246,38 @@ class TestStockRequestBase(TestStockRequest):
 
 
 class TestStockRequestOrderState(TestStockRequest):
-    def setUp(self):
-        super().setUp()
-        self.product_a = self._create_product(
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.product_a = cls._create_product(
             "CODEA",
             "Product A",
-            self.main_company.id,
+            cls.main_company.id,
         )
-        self.product_a.route_ids = [(6, 0, self.route.ids)]
-        self.product_b = self._create_product(
+        cls.product_a.route_ids = [(6, 0, cls.route.ids)]
+        cls.product_b = cls._create_product(
             "CODEB",
             "Product B",
-            self.main_company.id,
+            cls.main_company.id,
         )
-        self.product_b.route_ids = [(6, 0, self.route.ids)]
+        cls.product_b.route_ids = [(6, 0, cls.route.ids)]
         expected_date = fields.Datetime.now()
         vals = {
-            "company_id": self.main_company.id,
-            "warehouse_id": self.warehouse.id,
-            "location_id": self.warehouse.lot_stock_id.id,
+            "company_id": cls.main_company.id,
+            "warehouse_id": cls.warehouse.id,
+            "location_id": cls.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
                 (
                     0,
                     0,
                     {
-                        "product_id": self.product_a.id,
-                        "product_uom_id": self.product_a.uom_id.id,
+                        "product_id": cls.product_a.id,
+                        "product_uom_id": cls.product_a.uom_id.id,
                         "product_uom_qty": 1.0,
-                        "company_id": self.main_company.id,
-                        "warehouse_id": self.warehouse.id,
-                        "location_id": self.warehouse.lot_stock_id.id,
+                        "company_id": cls.main_company.id,
+                        "warehouse_id": cls.warehouse.id,
+                        "location_id": cls.warehouse.lot_stock_id.id,
                         "expected_date": expected_date,
                     },
                 ),
@@ -1290,23 +1285,23 @@ class TestStockRequestOrderState(TestStockRequest):
                     0,
                     0,
                     {
-                        "product_id": self.product_b.id,
-                        "product_uom_id": self.product_b.uom_id.id,
+                        "product_id": cls.product_b.id,
+                        "product_uom_id": cls.product_b.uom_id.id,
                         "product_uom_qty": 1.0,
-                        "company_id": self.main_company.id,
-                        "warehouse_id": self.warehouse.id,
-                        "location_id": self.warehouse.lot_stock_id.id,
+                        "company_id": cls.main_company.id,
+                        "warehouse_id": cls.warehouse.id,
+                        "location_id": cls.warehouse.lot_stock_id.id,
                         "expected_date": expected_date,
                     },
                 ),
             ],
         }
-        self.order = self.request_order.new(vals)
-        self.request_a = self.order.stock_request_ids.filtered(
-            lambda x: x.product_id == self.product_a
+        cls.order = cls.request_order.create(vals)
+        cls.request_a = cls.order.stock_request_ids.filtered(
+            lambda x: x.product_id == cls.product_a
         )
-        self.request_b = self.order.stock_request_ids.filtered(
-            lambda x: x.product_id == self.product_b
+        cls.request_b = cls.order.stock_request_ids.filtered(
+            lambda x: x.product_id == cls.product_b
         )
 
     def test_stock_request_order_state_01(self):
