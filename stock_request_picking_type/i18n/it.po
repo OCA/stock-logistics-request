@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-07-09 09:58+0000\n"
+"PO-Revision-Date: 2024-08-22 10:06+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -57,7 +57,7 @@ msgstr "Operazioni"
 #. module: stock_request_picking_type
 #: model:ir.model,name:stock_request_picking_type.model_stock_picking_type
 msgid "Picking Type"
-msgstr "Tipologia prelievo"
+msgstr "Tipo prelievo"
 
 #. module: stock_request_picking_type
 #: model_terms:ir.ui.view,arch_db:stock_request_picking_type.stock_request_type_kanban
