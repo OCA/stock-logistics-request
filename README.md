@@ -23,6 +23,7 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [stock_request](stock_request/) | 17.0.1.1.2 |  | Internal request for stock
 [stock_request_direction](stock_request_direction/) | 17.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | From or to your warehouse?
+[stock_request_kanban](stock_request_kanban/) | 17.0.1.0.0 |  | Adds a stock request order, and takes stock requests as lines
 [stock_request_mrp](stock_request_mrp/) | 17.0.1.0.0 |  | Manufacturing request for stock
 [stock_request_picking_type](stock_request_picking_type/) | 17.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | Add Stock Requests to the Inventory App
 [stock_request_purchase](stock_request_purchase/) | 17.0.1.0.0 |  | Internal request for stock
