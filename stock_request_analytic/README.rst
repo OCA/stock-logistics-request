@@ -39,7 +39,10 @@ accounts to stock requests.
 Usage
 =====
 
-Assign the analytic account to the stock request.
+To create stock moves with a specific analytic distribution, assign an
+analytic distribution to each stock request or set an analytic
+distribution on the stock request order as a default value for new stock
+requests on that order.
 
 Known issues / Roadmap
 ======================
@@ -76,6 +79,8 @@ Contributors
 -  `Tecnativa <https://www.tecnativa.com>`__:
 
    -  João Marques
+
+-  Stefan Rijnhart <stefan@opener.amsterdam>
 
 Maintainers
 -----------

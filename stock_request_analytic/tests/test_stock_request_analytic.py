@@ -2,43 +2,35 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo import fields
-from odoo.exceptions import UserError
-from odoo.tests import Form, common, new_test_user
+from odoo.tests import Form, new_test_user
 from odoo.tests.common import users
 
+from odoo.addons.base.tests.common import BaseCommon
 
-class TestStockRequestAnalytic(common.TransactionCase):
+
+class TestStockRequestAnalytic(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
         # Model
         cls.AccountAnalyticAccount = cls.env["account.analytic.account"]
-        cls.AccountAnalyticTag = cls.env["account.analytic.tag"]
         cls.ProductProduct = cls.env["product.product"]
-        cls.ResUsers = cls.env["res.users"]
         cls.StockRequest = cls.env["stock.request"]
         cls.StockRequestOrder = cls.env["stock.request.order"]
         cls.StockLocation = cls.env["stock.location"]
-        cls.StockLocationRoute = cls.env["stock.location.route"]
+        cls.StockLocationRoute = cls.env["stock.route"]
         cls.StockRule = cls.env["stock.rule"]
 
         # Data
         cls.expected_date = fields.Datetime.now()
         cls.main_company = cls.env.ref("base.main_company")
-        cls.company_2 = cls.env.ref("stock.res_company_1")
         cls.warehouse = cls.env.ref("stock.warehouse0")
-        cls.stock_request_user_group = cls.env.ref(
-            "stock_request.group_stock_request_user"
+        plan = cls.env["account.analytic.plan"].create({"name": __name__})
+        analytic_account = cls.AccountAnalyticAccount.create(
+            {"name": "Analytic", "plan_id": plan.id}
         )
-        cls.stock_request_manager_group = cls.env.ref(
-            "stock_request.group_stock_request_manager"
-        )
-        cls.analytic1 = cls.AccountAnalyticAccount.create({"name": "Analytic"})
-        cls.analytic2 = cls.AccountAnalyticAccount.create(
-            {"name": "Analytic", "company_id": cls.company_2.id}
-        )
-        cls.analytic3 = cls.AccountAnalyticAccount.create({"name": "Analytic 3"})
+        cls.analytic_distribution = {str(analytic_account.id): 100}
         cls.demand_loc = cls.StockLocation.create(
             {
                 "name": "demand_loc",
@@ -46,7 +38,7 @@ class TestStockRequestAnalytic(common.TransactionCase):
                 "usage": "internal",
             }
         )
-        cls.demand_route = cls.StockLocationRoute.create(
+        demand_route = cls.StockLocationRoute.create(
             {
                 "name": "Transfer",
                 "product_categ_selectable": False,
@@ -55,12 +47,12 @@ class TestStockRequestAnalytic(common.TransactionCase):
                 "sequence": 10,
             }
         )
-        cls.demand_rule = cls.StockRule.create(
+        cls.StockRule.create(
             {
                 "name": "Transfer",
-                "route_id": cls.demand_route.id,
+                "route_id": demand_route.id,
                 "location_src_id": cls.warehouse.lot_stock_id.id,
-                "location_id": cls.demand_loc.id,
+                "location_dest_id": cls.demand_loc.id,
                 "action": "pull",
                 "picking_type_id": cls.warehouse.int_type_id.id,
                 "procure_method": "make_to_stock",
@@ -72,23 +64,20 @@ class TestStockRequestAnalytic(common.TransactionCase):
             {
                 "name": "Test Product",
                 "type": "product",
-                "route_ids": [(6, 0, cls.demand_route.ids)],
+                "route_ids": [(6, 0, demand_route.ids)],
             }
         )
-        new_test_user(
+        cls.user = new_test_user(
             cls.env,
             login="stock_request_user",
-            groups="%s,%s,%s"
-            % (
-                "stock_request.group_stock_request_user",
-                "analytic.group_analytic_accounting",
-                "stock.group_stock_user",
+            groups=(
+                "stock_request.group_stock_request_user,"
+                "analytic.group_analytic_accounting,"
+                "stock.group_stock_user"
             ),
-            company_ids=[(6, 0, [cls.main_company.id, cls.company_2.id])],
         )
 
-    def prepare_order_request_analytic(self, analytic, company, analytic_tags=None):
-        analytic_tags = analytic_tags or self.AccountAnalyticTag
+    def prepare_order_request_analytic(self, analytic_distribution, company):
         vals = {
             "company_id": company.id,
             "warehouse_id": self.warehouse.id,
@@ -102,8 +91,7 @@ class TestStockRequestAnalytic(common.TransactionCase):
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
                         "product_uom_qty": 5.0,
-                        "analytic_account_id": analytic.id,
-                        "analytic_tag_ids": [(4, tag.id) for tag in analytic_tags],
+                        "analytic_distribution": analytic_distribution,
                         "company_id": company.id,
                         "warehouse_id": self.warehouse.id,
                         "location_id": self.demand_loc.id,
@@ -114,97 +102,33 @@ class TestStockRequestAnalytic(common.TransactionCase):
         }
         return vals
 
-    def prepare_order_request_multi_analytic(self, analytic1, analytic2, company):
-        vals = {
-            "company_id": company.id,
-            "warehouse_id": self.warehouse.id,
-            "location_id": self.demand_loc.id,
-            "expected_date": self.expected_date,
-            "stock_request_ids": [
-                (
-                    0,
-                    0,
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 5.0,
-                        "analytic_account_id": analytic1.id,
-                        "company_id": company.id,
-                        "warehouse_id": self.warehouse.id,
-                        "location_id": self.demand_loc.id,
-                        "expected_date": self.expected_date,
-                    },
-                ),
-                (
-                    0,
-                    0,
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 5.0,
-                        "analytic_account_id": analytic2.id,
-                        "company_id": company.id,
-                        "warehouse_id": self.warehouse.id,
-                        "location_id": self.demand_loc.id,
-                        "expected_date": self.expected_date,
-                    },
-                ),
-            ],
-        }
-        return vals
-
     def test_stock_analytic(self):
-        analytic_tag = self.env.ref("analytic.tag_contract")
         vals = self.prepare_order_request_analytic(
-            self.analytic1, self.main_company, analytic_tags=analytic_tag
+            self.analytic_distribution,
+            self.main_company,
         )
         order = self.StockRequestOrder.create(vals)
         req = order.stock_request_ids
         order.action_confirm()
-        self.assertEqual(req.move_ids.mapped("analytic_account_id"), self.analytic1)
-        self.assertEqual(req.move_ids.mapped("analytic_tag_ids"), analytic_tag)
-        self.assertEqual(order.analytic_count, 1)
-        action = order.with_context(
-            analytic_type="analytic_account"
-        ).action_view_analytic()
-        self.assertTrue(action["res_id"], self.analytic1.id)
-        action2 = self.analytic1.action_view_stock_request()
-        self.assertTrue(action2["res_id"], order.id)
-
-    def test_stock_multi_analytic(self):
-        vals = self.prepare_order_request_multi_analytic(
-            self.analytic1, self.analytic3, self.main_company
-        )
-        order = self.StockRequestOrder.create(vals)
-        order.action_confirm()
-        self.assertEqual(order.analytic_count, 2)
-
-    def test_company(self):
-        with self.assertRaises(UserError):
-            vals = self.prepare_order_request_analytic(
-                self.analytic2, self.main_company
-            )
-            self.StockRequestOrder.create(vals)
+        self.assertEqual(req.move_ids.analytic_distribution, self.analytic_distribution)
 
     @users("stock_request_user")
     def test_default_analytic(self):
         """
         Create request order with a default analytic
         """
-        vals = self.prepare_order_request_analytic(
-            self.AccountAnalyticAccount.browse(), self.main_company
-        )
+        vals = self.prepare_order_request_analytic(False, self.main_company)
         vals.update(
             {
-                "default_analytic_account_id": self.analytic1.id,
+                "analytic_distribution": self.analytic_distribution,
             }
         )
-        order = self.StockRequestOrder.create(vals)
+        order = self.StockRequestOrder.with_user(self.user).create(vals)
         with Form(order) as order_form:
             with order_form.stock_request_ids.new() as line_form:
                 line_form.product_id = self.product
                 line_form.product_uom_qty = 5.0
-        self.assertEqual(
-            order.default_analytic_account_id,
-            order.stock_request_ids.mapped("analytic_account_id"),
-        )
+                self.assertEqual(
+                    line_form.analytic_distribution,
+                    self.analytic_distribution,
+                )

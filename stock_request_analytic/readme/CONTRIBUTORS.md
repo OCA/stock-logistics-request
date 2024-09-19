@@ -5,3 +5,4 @@
 - Denis Roussel \<<denis.roussel@acsone.eu>\>
 - [Tecnativa](https://www.tecnativa.com):
   - João Marques
+- Stefan Rijnhart \<<stefan@opener.amsterdam>\>
