@@ -26,7 +26,7 @@ addon | version | maintainers | summary
 [stock_request_kanban](stock_request_kanban/) | 17.0.1.0.0 |  | Adds a stock request order, and takes stock requests as lines
 [stock_request_mrp](stock_request_mrp/) | 17.0.1.0.0 |  | Manufacturing request for stock
 [stock_request_picking_type](stock_request_picking_type/) | 17.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | Add Stock Requests to the Inventory App
-[stock_request_purchase](stock_request_purchase/) | 17.0.1.0.0 |  | Internal request for stock
+[stock_request_purchase](stock_request_purchase/) | 17.0.1.0.1 |  | Internal request for stock
 [stock_request_stage](stock_request_stage/) | 17.0.1.0.0 |  | Adds the possibility to manage stock requests by stages
 [stock_request_submit](stock_request_submit/) | 17.0.1.0.0 |  | Add submit state on Stock Requests
 
