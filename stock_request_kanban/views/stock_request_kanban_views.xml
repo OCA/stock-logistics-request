@@ -68,6 +68,7 @@
         <field name="model">stock.request.kanban</field>
         <field name="arch" type="xml">
             <form string="Stock Requests">
+                <field name="company_id" invisible="1" />
                 <header />
                 <sheet>
                     <div class="oe_button_box" name="button_box" />
@@ -193,8 +194,8 @@
         <field name="view_mode">kanban,tree,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-            Click to add a Stock Request Kanban.
-          </p>
+                Click to add a Stock Request Kanban.
+            </p>
         </field>
     </record>
 </odoo>

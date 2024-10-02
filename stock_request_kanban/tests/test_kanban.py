@@ -30,7 +30,7 @@ class TestKanban(TestBaseKanban):
         self.ressuply_loc = self.env["stock.location"].create(
             {"name": "Ressuply", "location_id": self.warehouse.view_location_id.id}
         )
-        self.route = self.env["stock.location.route"].create(
+        self.route = self.env["stock.route"].create(
             {
                 "name": "Transfer",
                 "product_categ_selectable": False,
@@ -57,7 +57,7 @@ class TestKanban(TestBaseKanban):
                 "name": "Transfer",
                 "route_id": self.route.id,
                 "location_src_id": self.ressuply_loc.id,
-                "location_id": self.warehouse.lot_stock_id.id,
+                "location_dest_id": self.warehouse.lot_stock_id.id,
                 "action": "pull_push",
                 "picking_type_id": self.warehouse.int_type_id.id,
                 "procure_method": "make_to_stock",
@@ -197,4 +197,36 @@ class TestKanban(TestBaseKanban):
         self.assertEqual(wizard.status_state, 0)
         self.assertTrue(
             self.env["stock.request"].search([("kanban_id", "=", kanban_3.id)])
+        )
+
+    def test_product_kanban_count(self):
+        self.env["stock.request.kanban"].create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 1,
+            }
+        )
+        self.env["stock.request.kanban"].create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 1,
+            }
+        )
+        self.assertEqual(self.product.kanban_card_count, 2)
+        self.assertEqual(self.product.product_tmpl_id.kanban_card_count, 2)
+
+    def test_product_kanban_action(self):
+        prod_action = self.product.action_view_kanban_cards()
+        tmpl_action = self.product.product_tmpl_id.action_view_kanban_cards()
+        self.assertEqual(
+            prod_action.get("context", {}).get("default_product_id"),
+            self.product.id,
+            "Product variant not in action",
+        )
+        self.assertEqual(
+            tmpl_action.get("context", {}).get("default_product_id"),
+            self.product.id,
+            "Product template not in action",
         )
