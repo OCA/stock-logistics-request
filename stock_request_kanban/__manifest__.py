@@ -3,9 +3,9 @@
 
 {
     "name": "Stock Request kanban",
-    "version": "15.0.1.1.2",
+    "version": "16.0.1.0.0",
     "category": "Warehouse Management",
-    "website": "https://github.com/OCA/stock-logistics-warehouse",
+    "website": "https://github.com/OCA/stock-logistics-request",
     "author": "Creu Blanca, ForgeFlow, Odoo Community Association (OCA)",
     "license": "LGPL-3",
     "summary": "Adds a stock request order, and takes stock requests as lines",
