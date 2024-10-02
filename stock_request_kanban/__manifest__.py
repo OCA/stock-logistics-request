@@ -29,8 +29,6 @@
         "web.assets_backend": [
             "stock_request_kanban/static/src/js/stock_request_kanban_scan_controller.esm.js",
             "stock_request_kanban/static/src/js/stock_request_kanban_scan_view.esm.js",
-        ],
-        "web.assets_qweb": [
             "stock_request_kanban/static/src/xml/stock_request_kanban_scan.xml",
         ],
     },

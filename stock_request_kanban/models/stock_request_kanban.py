@@ -15,11 +15,17 @@ class StockRequestKanban(models.Model):
     active = fields.Boolean(default=True)
     product_template_id = fields.Many2one(related="product_id.product_tmpl_id")
 
-    @api.model
-    def create(self, vals):
-        if vals.get("name", "/") == "/":
-            vals["name"] = self.env["ir.sequence"].next_by_code("stock.request.kanban")
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list_upd = []
+        for vals in vals_list:
+            upd_vals = vals.copy()
+            if upd_vals.get("name", "/") == "/":
+                upd_vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "stock.request.kanban"
+                )
+            vals_list_upd.append(upd_vals)
+        return super().create(vals_list_upd)
 
     @api.model
     def get_barcode_format(self):

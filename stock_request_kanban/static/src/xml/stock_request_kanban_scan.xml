@@ -4,6 +4,7 @@
         t-name="StockRequestKanban.Buttons"
         class="btn-primary btn mr-1"
         type="button"
+        style="margin-right: 10px;"
     >
         Scan Kanban
     </button>

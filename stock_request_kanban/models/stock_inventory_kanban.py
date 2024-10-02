@@ -103,13 +103,17 @@ class StockInventoryKanban(models.Model):
     def _close_inventory_values(self):
         return {"state": "closed"}
 
-    @api.model
-    def create(self, vals):
-        if vals.get("name", "/") == "/":
-            vals["name"] = self.env["ir.sequence"].next_by_code(
-                "stock.inventory.kanban"
-            )
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list_upd = []
+        for vals in vals_list:
+            upd_vals = vals.copy()
+            if upd_vals.get("name", "/") == "/":
+                upd_vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "stock.inventory.kanban"
+                )
+            vals_list_upd.append(upd_vals)
+        return super().create(vals_list_upd)
 
     def calculate_kanbans(self):
         for rec in self:
