@@ -118,7 +118,8 @@ class TestStockRequest(BaseCommon):
                 default_code=default_code,
                 uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
-                type="product",
+                type="consu",
+                is_storable=True,
                 **vals,
             )
         )
@@ -970,41 +971,42 @@ class TestStockRequestBase(TestStockRequest):
             stock_request.route_id = self.route_2
 
     def test_stock_request_order_from_products(self):
+        # Setup for Product Template and Attributes
         template_a = self.env["product.template"].create({"name": "ProductTemplate"})
         product_attribute = self._create_product_attribute("Attribute")
-        product_att_value = self._create_product_attribute_value(
+
+        product_att_value1 = self._create_product_attribute_value(
             "Name-1", product_attribute.id
         )
-        product_tmpl_att_line = self._create_product_template_attribute_line(
-            template_a.id, product_attribute.id, product_att_value
-        )
-        template_a.attribute_line_ids |= product_tmpl_att_line
-        product_tmpl_att_value = self.env["product.template.attribute.value"].search(
-            []
-        )[-1]
-        product_a1 = self.env["product.product"].search(
-            [
-                (
-                    "product_template_variant_value_ids.name",
-                    "=",
-                    product_tmpl_att_value.name,
-                )
-            ]
-        )
-        product_att_value = self._create_product_attribute_value(
+        product_att_value2 = self._create_product_attribute_value(
             "Name-2", product_attribute.id
         )
-        template_a.attribute_line_ids.value_ids |= product_att_value
-        product_a2 = self.env["product.product"].search(
-            [("product_template_variant_value_ids.name", "=", product_att_value.name)]
-        )
-        product_att_value = self._create_product_attribute_value(
+        product_att_value3 = self._create_product_attribute_value(
             "Name-3", product_attribute.id
         )
-        template_a.attribute_line_ids.value_ids |= product_att_value
-        product_a3 = self.env["product.product"].search(
-            [("product_template_variant_value_ids.name", "=", product_att_value.name)]
+
+        product_tmpl_att_line = self._create_product_template_attribute_line(
+            template_a.id,
+            product_attribute.id,
+            product_att_value1 | product_att_value2 | product_att_value3,
         )
+        template_a.attribute_line_ids |= product_tmpl_att_line
+
+        # Trigger the creation of all possible variants
+        template_a._create_variant_ids()
+
+        # Search for the the generated variants
+        product_a1 = self.env["product.product"].search(
+            [("product_template_variant_value_ids.name", "=", "Name-1")]
+        )
+        product_a2 = self.env["product.product"].search(
+            [("product_template_variant_value_ids.name", "=", "Name-2")]
+        )
+        product_a3 = self.env["product.product"].search(
+            [("product_template_variant_value_ids.name", "=", "Name-3")]
+        )
+
+        # Setup for Product B with one inactive variant
         product_b1 = self._create_product("CODEB1", "Product B1", self.main_company.id)
         template_b = product_b1.product_tmpl_id
         # One archived variant of B
@@ -1015,6 +1017,7 @@ class TestStockRequestBase(TestStockRequest):
             product_tmpl_id=template_b.id,
             active=False,
         )
+
         order = self.request_order
 
         # Selecting some variants and creating an order
@@ -1137,9 +1140,9 @@ class TestStockRequestBase(TestStockRequest):
         group = self.env["procurement.group"].create({"name": "Procurement group"})
         product2 = self._create_product("SH2", "Shoes2", False)
         product3 = self._create_product("SH3", "Shoes3", False)
-        self.product.detailed_type = "consu"
-        product2.detailed_type = "consu"
-        product3.detailed_type = "consu"
+        self.product.type = "consu"
+        product2.type = "consu"
+        product3.type = "consu"
         vals = {
             "company_id": self.main_company.id,
             "warehouse_id": self.warehouse.id,
@@ -1659,7 +1662,8 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
                 default_code=default_code,
                 uom_id=self.uom_unit.id,
                 uom_po_id=self.uom_dozen.id,
-                type="product",
+                type="consu",
+                is_storable=True,
                 **vals,
             )
         )
