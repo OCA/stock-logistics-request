@@ -23,13 +23,8 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_move_line.py:0
-#, python-format
-msgid ""
-"<li><b>%(product_name)s</b>: Transferred quantity "
-"%(product_qty)s%(product_uom)s</li>"
+msgid "%(product_name)s : Transferred quantity %(product_qty)s %(product_uom)s"
 msgstr ""
-"<li><b>%(product_name)s</b>: Cantidad transferida "
-"%(product_qty)s%(product_uom)s</li>"
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request__message_needaction
@@ -175,7 +170,6 @@ msgstr "Compañía"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Company must be equal to the order"
 msgstr "La compañía debe ser la misma que la de la petición"
 
@@ -291,7 +285,6 @@ msgstr "Fecha prevista"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Expected date must be equal to the order"
 msgstr "La fecha prevista debe ser la misma que la del pedido"
 
@@ -370,8 +363,11 @@ msgstr "Si está marcado, los nuevos mensajes requieren su atención."
 
 #. module: stock_request
 #: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_sms_error
 #: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 
@@ -439,7 +435,6 @@ msgstr "Ubicación"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Location must be equal to the order"
 msgstr "La ubicación debe ser la misma que la del pedido"
 
@@ -496,7 +491,6 @@ msgstr "Nombre"
 
 #. module: stock_request
 #: model:ir.model.constraint,message:stock_request.constraint_stock_request_abstract_name_uniq
-#: model:ir.model.constraint,message:stock_request.constraint_stock_request_kanban_name_uniq
 msgid "Name must be unique"
 msgstr "El nombre debe ser único"
 
@@ -552,14 +546,12 @@ msgstr "Número de mensajes con error de entrega"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
-#, python-format
 msgid "Only orders on draft state can be unlinked"
 msgstr "Solo los pedidos en estado borrado pueden ser eliminadas"
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Only requests on draft state can be unlinked"
 msgstr "Sólo se pueden eliminar peticiones en estado borrador"
 
@@ -600,7 +592,6 @@ msgstr "Grupo de abastecimiento"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Procurement group must be equal to the order"
 msgstr "El grupo de abastecimiento debe coincidir"
 
@@ -704,7 +695,6 @@ msgstr "Cantidad real"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_move_line.py:0
-#, python-format
 msgid "Receipt confirmation %(picking_name)s for your Request %(request_name)s"
 msgstr ""
 "Confirmación de recibo %(picking_name)s para su Solicitud %(request_name)s"
@@ -746,7 +736,6 @@ msgstr "Cantidad Solicitada (UdM)"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Requested by must be equal to the order"
 msgstr "El solicitante debe coincidir"
 
@@ -771,6 +760,13 @@ msgstr "Ruta"
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_order__route_ids
 msgid "Routes"
 msgstr "Rutas"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_sms_error
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_sms_error
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
 
 #. module: stock_request
 #: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
@@ -894,14 +890,13 @@ msgstr "El nombre de la solicitud debe ser único"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Stock Request product quantity cannot be negative."
-msgstr "La cantidad de producto de la solicitud de stock no puede ser negativa."
+msgstr ""
+"La cantidad de producto de la solicitud de stock no puede ser negativa."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Stock Request product quantity has to be strictly positive."
 msgstr ""
 "La cantidad de producto de la solicitud de stock debe ser estrictamente "
@@ -958,21 +953,18 @@ msgstr "Estado enviado en solicitudes de stock"
 #. odoo-python
 #: code:addons/stock_request/models/stock_move.py:0
 #: code:addons/stock_request/models/stock_request_order.py:0
-#, python-format
 msgid "The company of the stock request must match with that of the location."
 msgstr "La compañía de la solicitud debe coincidir con la de la localización."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
-#, python-format
 msgid "The company of the stock request must match with that of the warehouse."
 msgstr "La compañía de la solicitud debe coincidir con la del almacén."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_move_line.py:0
-#, python-format
 msgid ""
 "The following requested items from Stock Request %(request_name)s have now "
 "been received in %(location_name)s using Picking %(picking_name)s:"
@@ -984,7 +976,6 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "The picking policy must be equal to the order"
 msgstr "La política de albaranes debe coincidir"
 
@@ -996,14 +987,12 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
-#, python-format
 msgid "There should be at least one request item for confirming the order."
 msgstr "Debe haber al menos un elemento de solicitud para confirmar el pedido."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
-#, python-format
 msgid "This action only works in the context of products"
 msgstr "Esta acción solo funciona en el contexto de productos"
 
@@ -1058,7 +1047,6 @@ msgstr "Almacén"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request.py:0
-#, python-format
 msgid "Warehouse must be equal to the order"
 msgstr "El almacén debe coincidir"
 
@@ -1079,7 +1067,6 @@ msgstr "Historial de comunicación del sitio web"
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_location.py:0
-#, python-format
 msgid ""
 "You cannot change the company of the location, as it is already assigned to "
 "stock request orders that belong to another company."
@@ -1090,7 +1077,6 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_location.py:0
-#, python-format
 msgid ""
 "You cannot change the company of the location, as it is already assigned to "
 "stock requests that belong to another company."
@@ -1101,7 +1087,6 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_route.py:0
-#, python-format
 msgid ""
 "You cannot change the company of the route, as it is already assigned to "
 "stock requests that belong to another company."
@@ -1112,7 +1097,6 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_warehouse.py:0
-#, python-format
 msgid ""
 "You cannot change the company of the warehouse, as it is already assigned to "
 "stock request orders that belong to another company."
@@ -1123,7 +1107,6 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_warehouse.py:0
-#, python-format
 msgid ""
 "You cannot change the company of the warehouse, as it is already assigned to "
 "stock requests that belong to another company."
@@ -1134,35 +1117,30 @@ msgstr ""
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
-#, python-format
 msgid "You have entered a location that is assigned to another company."
 msgstr "Ha seleccionado una localización que está asignada a otra compañía."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
-#, python-format
 msgid "You have entered a product that is assigned to another company."
 msgstr "Ha seleccionado un producto que está asignado a otra compañía."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
-#, python-format
 msgid "You have entered a route that is assigned to another company."
 msgstr "Ha seleccionado una ruta que está asignada a otra compañía."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
-#, python-format
 msgid "You have entered a warehouse that is assigned to another company."
 msgstr "Ha seleccionado un almacén que está asignado a otra compañía."
 
 #. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_abstract.py:0
-#, python-format
 msgid ""
 "You have to select a product unit of measure in the same category than the "
 "default unit of measure of the product"
@@ -1170,8 +1148,13 @@ msgstr ""
 "Debe seleccionada una unidad de medida de producto de la misma categoría que "
 "la unidad de medida por defecto del producto"
 
-#~ msgid "SMS Delivery error"
-#~ msgstr "Error de entrega de SMS"
+#, python-format
+#~ msgid ""
+#~ "<li><b>%(product_name)s</b>: Transferred quantity "
+#~ "%(product_qty)s%(product_uom)s</li>"
+#~ msgstr ""
+#~ "<li><b>%(product_name)s</b>: Cantidad transferida "
+#~ "%(product_qty)s%(product_uom)s</li>"
 
 #~ msgid "Last Modified on"
 #~ msgstr "Última Modificación el"
