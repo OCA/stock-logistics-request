@@ -35,7 +35,7 @@ class StockRequestOrder(models.Model):
         if len(purchases) > 1:
             action["domain"] = [("id", "in", purchases.ids)]
             action["views"] = [
-                (self.env.ref("purchase.purchase_order_tree").id, "tree"),
+                (self.env.ref("purchase.purchase_order_tree").id, "list"),
                 (self.env.ref("purchase.purchase_order_form").id, "form"),
             ]
         elif purchases:
