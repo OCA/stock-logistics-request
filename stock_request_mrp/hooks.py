@@ -24,7 +24,7 @@ def link_existing_mos_to_stock_request(env):
     stock_request_allocation_obj = env["stock.request.allocation"]
     mrp_production_obj = env["mrp.production"]
     mos_with_sr = mrp_production_obj.search([("origin", "ilike", "SR/%")])
-    logger.info("Linking %s MOs records" % len(mos_with_sr))
+    logger.info(f"Linking {len(mos_with_sr)} MOs records")
     stock_requests = stock_request_obj.search(
         [("name", "in", [mo.origin for mo in mos_with_sr])]
     )
@@ -55,7 +55,7 @@ def link_existing_mos_to_stock_request(env):
                 ]
 
             # Update allocations
-            logger.info("Updating Allocations for SR %s" % stock_request.name)
+            logger.info(f"Updating Allocations for SR {stock_request.name}")
             for ml in mo.finished_move_line_ids.filtered(
                 lambda m: m.exists() and m.move_id.allocation_ids
             ):

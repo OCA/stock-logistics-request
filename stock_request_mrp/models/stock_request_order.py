@@ -33,7 +33,7 @@ class StockRequestOrder(models.Model):
         if len(productions) > 1:
             action["domain"] = [("id", "in", productions.ids)]
             action["views"] = [
-                (self.env.ref("mrp.mrp_production_tree_view").id, "tree"),
+                (self.env.ref("mrp.mrp_production_tree_view").id, "list"),
                 (self.env.ref("mrp.mrp_production_form_view").id, "form"),
             ]
         elif productions:
