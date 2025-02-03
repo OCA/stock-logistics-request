@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <odoo>
-
     <template id="stock_move_lines_to_return">
         <table class="table table-condensed mt4 mb0">
             <t
@@ -76,12 +75,16 @@
                             <div
                                 t-if="request.return_type == 'supplier' and request.partner_id"
                             >
-                                <span><strong>Supplier Address:</strong></span>
+                                <span>
+                                    <strong>Supplier Address:</strong>
+                                </span>
                             </div>
                             <div
                                 t-if="request.return_type == 'customer' and request.partner_id"
                             >
-                                <span><strong>Customer Address:</strong></span>
+                                <span>
+                                    <strong>Customer Address:</strong>
+                                </span>
                             </div>
                             <div t-if="request.partner_id" name="partner_header">
                                 <div
@@ -89,10 +92,8 @@
                                     t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True, "phone_icons": True}'
                                 />
                                 <p t-if="request.sudo().partner_id.vat"><t
-                                        t-esc="res_company.country_id.vat_label or 'TIN'"
-                                    />: <span
-                                        t-field="request.sudo().partner_id.vat"
-                                    /></p>
+                                    t-esc="res_company.country_id.vat_label or 'TIN'"
+                                />: <span t-field="request.sudo().partner_id.vat" /></p>
                             </div>
                         </div>
                     </div>
@@ -101,8 +102,8 @@
                     <div class="clearfix" />
                     <br />
                     <h4>[<t t-esc="request.return_from_location.name" /> &#8594; <t
-                            t-esc="request.return_to_location.name"
-                        />]</h4>
+                        t-esc="request.return_to_location.name"
+                    />]</h4>
                     <t
                         t-call="stock_return_request.stock_move_lines_to_return"
                         name="move_lines"
@@ -117,7 +118,7 @@
                     <p t-esc="request.note" />
                 </div>
             </t>
-         </t>
+        </t>
     </template>
 
     <template id="report_stock_return_request">
@@ -137,5 +138,4 @@
             name="report_file"
         >stock_return_request.report_stock_return_request</field>
     </record>
-
 </odoo>

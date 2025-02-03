@@ -33,46 +33,46 @@
         <field name="model">stock.return.request</field>
         <field name="arch" type="xml">
             <form string="Stock Return Request">
-               <header>
-                   <button
+                <header>
+                    <button
                         name="action_confirm"
                         states="draft"
                         type="object"
                         string="Confirm"
                         class="oe_highlight"
                     />
-                   <button
+                    <button
                         name="action_validate"
                         states="confirmed"
                         type="object"
                         string="Validate"
                         class="oe_highlight"
                     />
-                   <button
+                    <button
                         name="do_print_return_request"
                         states="confirmed,done"
                         string="Print"
                         type="object"
                     />
-                   <button
+                    <button
                         name="action_cancel_to_draft"
                         states="cancel"
                         string="Set to Draft"
                         type="object"
                     />
-                   <button
+                    <button
                         name="action_cancel"
                         states="draft,confirmed"
                         type="object"
                         string="Cancel"
                     />
-                   <field
+                    <field
                         name="state"
                         widget="statusbar"
                         statusbar_visible="draft,confirmed,done"
                     />
-               </header>
-               <sheet string="Stock Return Request">
+                </header>
+                <sheet string="Stock Return Request">
                     <div class="oe_button_box" name="button_box">
                         <field name="returned_picking_ids" invisible="1" />
                         <button
@@ -118,69 +118,72 @@
                             />
                         </group>
                     </group>
-                <notebook>
-                    <page string="Products to Return" name="return_lines">
-                        <field name="line_ids">
-                            <form string="Returns">
-                                <notebook>
-                                    <page string="Return Line">
-                                        <group>
+                    <notebook>
+                        <page string="Products to Return" name="return_lines">
+                            <field name="line_ids">
+                                <form string="Returns">
+                                    <notebook>
+                                        <page string="Return Line">
                                             <group>
-                                                <field name="product_id" />
-                                                <field
+                                                <group>
+                                                    <field name="product_id" />
+                                                    <field
                                                         name="product_uom_id"
                                                         readonly="1"
                                                         groups="uom.group_uom"
                                                     />
-                                                <field name="tracking" invisible="1" />
-                                                <field
+                                                    <field
+                                                        name="tracking"
+                                                        invisible="1"
+                                                    />
+                                                    <field
                                                         name="lot_id"
                                                         domain="[('product_id', '=', product_id)]"
                                                         groups="stock.group_production_lot"
                                                         context="{'default_product_id': product_id}"
                                                         attrs="{'required': [('tracking', '!=', 'none')]}"
                                                     />
-                                                <field name="quantity" />
-                                                <field
+                                                    <field name="quantity" />
+                                                    <field
                                                         name="max_quantity"
                                                         readonly="1"
                                                     />
-                                                <field name="returnable_move_ids" />
+                                                    <field name="returnable_move_ids" />
+                                                </group>
                                             </group>
-                                        </group>
-                                    </page>
-                                 </notebook>
-                            </form>
-                            <tree editable="bottom">
-                                <field name="product_id" />
-                                <field name="product_uom_id" readonly="1" />
-                                <field name="tracking" invisible="1" />
-                                <button
+                                        </page>
+                                    </notebook>
+                                </form>
+                                <tree editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="product_uom_id" readonly="1" />
+                                    <field name="tracking" invisible="1" />
+                                    <button
                                         name="action_lot_suggestion"
                                         type="object"
                                         icon="fa-list-ol"
                                         class="btn-link oe_edit_only"
                                         attrs="{'invisible': [('tracking', '=', 'none')]}"
                                     />
-                                <field
+                                    <field
                                         name="lot_id"
                                         domain="[('product_id', '=', product_id)]"
                                         groups="stock.group_production_lot"
                                         context="{'default_product_id': product_id}"
                                         attrs="{'required': [('tracking', '!=', 'none')]}"
                                     />
-                                <field name="quantity" />
-                                <field name="max_quantity" readonly="1" />
-                            </tree>
-                        </field>
-                    </page>
-                    <page string="Comments" name="return_comments">
-                        <field
+                                    <field name="quantity" />
+                                    <field name="max_quantity" readonly="1" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Comments" name="return_comments">
+                            <field
                                 name="note"
                                 placeholder="Add a note that will be printed on the Request report"
                             />
-                    </page>
-                </notebook>
+                        </page>
+                    </notebook>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers" />
@@ -206,5 +209,4 @@
         parent="stock.menu_stock_warehouse_mgmt"
         sequence="99"
     />
-
 </odoo>

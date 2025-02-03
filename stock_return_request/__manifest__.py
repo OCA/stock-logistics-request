@@ -4,7 +4,7 @@
     "name": "Stock Return Request",
     "version": "15.0.1.0.2",
     "category": "Stock",
-    "website": "https://github.com/OCA/stock-logistics-workflow",
+    "website": "https://github.com/OCA/stock-logistics-request",
     "author": "Tecnativa, " "Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "application": False,
