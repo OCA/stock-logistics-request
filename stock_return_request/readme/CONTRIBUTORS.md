@@ -1,0 +1,7 @@
+- [Tecnativa](https://www.tecnativa.com):
+  - Sergio Teruel
+  - Pedro M. Baeza
+  - David Vidal
+  - César A. Sánchez
+- [Pro Thai](http://prothaitechnology.com):
+  - Prapassorn Sornkaew \<<prapassorn.s@prothaitechnology.com>\>
