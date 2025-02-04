@@ -90,6 +90,7 @@ Contributors
   - Pedro M. Baeza
   - David Vidal
   - César A. Sánchez
+  - Carlos Lopez
 
 - `Pro Thai <http://prothaitechnology.com>`__:
 

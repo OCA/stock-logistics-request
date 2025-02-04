@@ -1,8 +1,8 @@
 # Copyright 2019 Tecnativa - David Vidal
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_compare, float_is_zero
+from odoo.tools import float_compare, float_is_zero, float_repr, format_datetime
 
 
 class StockReturnRequest(models.Model):
@@ -13,16 +13,12 @@ class StockReturnRequest(models.Model):
 
     name = fields.Char(
         "Reference",
-        default=lambda self: _("New"),
+        default=lambda self: self.env._("New"),
         copy=False,
         readonly=True,
         required=True,
     )
-    partner_id = fields.Many2one(
-        comodel_name="res.partner",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
+    partner_id = fields.Many2one(comodel_name="res.partner")
     return_type = fields.Selection(
         selection=[
             ("supplier", "Return to Supplier"),
@@ -33,8 +29,6 @@ class StockReturnRequest(models.Model):
         help="Supplier - Search for incoming moves from this supplier\n"
         "Customer - Search for outgoing moves to this customer\n"
         "Internal - Search for outgoing moves to this location.",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     return_from_location = fields.Many2one(
         comodel_name="stock.location",
@@ -42,8 +36,6 @@ class StockReturnRequest(models.Model):
         help="Return from this location",
         required=True,
         domain='[("usage", "=", "internal")]',
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     return_to_location = fields.Many2one(
         comodel_name="stock.location",
@@ -51,8 +43,6 @@ class StockReturnRequest(models.Model):
         help="Return to this location",
         required=True,
         domain='[("usage", "=", "internal")]',
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     return_order = fields.Selection(
         selection=[
@@ -61,9 +51,7 @@ class StockReturnRequest(models.Model):
         ],
         default="date desc, id desc",
         required=True,
-        help="The returns will be performed searching moves in " "the given order.",
-        readonly=True,
-        states={"draft": [("readonly", False)]},
+        help="The returns will be performed searching moves in the given order.",
     )
     from_date = fields.Date(
         string="Search moves up to this date",
@@ -92,14 +80,9 @@ class StockReturnRequest(models.Model):
         readonly=True,
         copy=False,
     )
-    to_refund = fields.Boolean(
-        readonly=True,
-        states={"draft": [("readonly", False)]},
-    )
+    to_refund = fields.Boolean()
     show_to_refund = fields.Boolean(
         compute="_compute_show_to_refund",
-        default=lambda self: "to_refund" in self.env["stock.move"]._fields,
-        readonly=True,
         help="Whether to show it or not depending on the availability of"
         "the stock_account module (so a bridge module is not necessary)",
     )
@@ -108,8 +91,6 @@ class StockReturnRequest(models.Model):
         inverse_name="request_id",
         string="Stock Return",
         copy=True,
-        readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     note = fields.Text(
         string="Comments",
@@ -139,18 +120,14 @@ class StockReturnRequest(models.Model):
     def _default_warehouse_id(self):
         warehouse = self.env["stock.warehouse"].search(
             [
-                ("company_id", "=", self.env.user.company_id.id),
+                ("company_id", "=", self.env.company.id),
             ],
             limit=1,
         )
         return warehouse
 
     def _compute_show_to_refund(self):
-        for one in self:
-            if "to_refund" not in self.env["stock.move"]._fields:
-                one.show_to_refund = False
-                continue
-            one.show_to_refund = True
+        self.show_to_refund = "to_refund" in self.env["stock.move"]._fields
 
     def _prepare_return_picking(self, picking_dict, moves):
         """Extend to add more values if needed"""
@@ -162,11 +139,11 @@ class StockReturnRequest(models.Model):
         )
         picking_dict.update(
             {
-                "move_lines": [(6, 0, moves.ids)],
+                "move_ids": [(6, 0, moves.ids)],
                 "move_line_ids": [(6, 0, moves.mapped("move_line_ids").ids)],
                 "picking_type_id": return_picking_type.id,
                 "state": "draft",
-                "origin": _("Return of %s") % picking_dict.get("origin"),
+                "origin": self.env._("Return of %s", picking_dict.get("origin")),
                 "location_id": self.return_from_location.id,
                 "location_dest_id": self.return_to_location.id,
                 "stock_return_request_id": self.id,
@@ -185,14 +162,15 @@ class StockReturnRequest(models.Model):
                 }
             )[0]
             moves = picking_moves.filtered(
-                lambda x: x.origin_returned_move_id.picking_id == picking
+                lambda x, picking=picking: x.origin_returned_move_id.picking_id
+                == picking
             )
             new_picking = return_pickings.create(
                 self._prepare_return_picking(picking_dict, moves)
             )
-            new_picking.message_post_with_view(
+            new_picking.message_post_with_source(
                 "mail.message_origin_link",
-                values={"self": new_picking, "origin": picking},
+                render_values={"self": new_picking, "origin": picking},
                 subtype_id=self.env.ref("mail.mt_note").id,
             )
             return_pickings += new_picking
@@ -209,6 +187,7 @@ class StockReturnRequest(models.Model):
             "location_dest_id": line.request_id.return_to_location.id,
             "origin_returned_move_id": move.id,
             "procure_method": "make_to_stock",
+            "picking_id": False,
         }
         if self.show_to_refund:
             vals["to_refund"] = line.request_id.to_refund
@@ -225,7 +204,7 @@ class StockReturnRequest(models.Model):
                 line.product_id
             ).id
             or return_move.location_dest_id.id,
-            "qty_done": qty,
+            "quantity": qty,
         }
         if not quant:
             return vals
@@ -236,20 +215,12 @@ class StockReturnRequest(models.Model):
         return vals
 
     def action_confirm(self):
-        """Wrapper for multi. Avoid recompute as it delays the pickings
-        creation"""
-        with self.env.norecompute():
-            for one in self:
-                one._action_confirm()
-        self.recompute()
-
-    def _action_confirm(self):
         """Get moves and then try to reserve quantities. Fail if the quantites
         can't be assigned"""
         self.ensure_one()
         Quant = self.env["stock.quant"]
         if not self.line_ids:
-            raise ValidationError(_("Add some products to return"))
+            raise ValidationError(self.env._("Add some products to return"))
         returnable_moves = self.line_ids._get_returnable_move_ids()
         return_moves = self.env["stock.move"]
         failed_moves = []
@@ -273,7 +244,7 @@ class StockReturnRequest(models.Model):
                     vals_list = []
                     if return_move.location_id.usage == "internal":
                         try:
-                            quants = Quant._update_reserved_quantity(
+                            quants = Quant._get_reserve_quantity(
                                 line.product_id,
                                 return_move.location_id,
                                 qty,
@@ -314,7 +285,7 @@ class StockReturnRequest(models.Model):
                     # operation can be "manual" and the products would not be reserved
                     return_move._action_assign()
                     if return_move.state == "assigned":
-                        return_move.quantity_done = qty
+                        return_move.quantity = qty
                         return_moves += return_move
                         line.returnable_move_ids += return_move
                     else:
@@ -332,7 +303,7 @@ class StockReturnRequest(models.Model):
                 ]
             )
             raise ValidationError(
-                _(
+                self.env._(
                     "It wasn't possible to assign stock for this returns:\n"
                     "{failed_moves_str}"
                 ).format(failed_moves_str=failed_moves_str)
@@ -352,11 +323,9 @@ class StockReturnRequest(models.Model):
         self.state = "confirmed"
 
     def action_validate(self):
-        """Wrapper for multi"""
-        for one in self:
-            one._action_validate()
-
-    def _action_validate(self):
+        # check availability again not only on action_confirm
+        self.line_ids._get_returnable_move_ids()
+        self.returned_picking_ids.move_ids.picked = True
         self.returned_picking_ids._action_done()
         self.state = "done"
 
@@ -373,22 +342,33 @@ class StockReturnRequest(models.Model):
             return_request.mapped("returned_picking_ids").action_cancel()
             return_request.state = "cancel"
 
-    @api.model
-    def create(self, vals):
-        if "name" not in vals or vals["name"] == _("New"):
-            vals["name"] = self.env["ir.sequence"].next_by_code(
-                "stock.return.request"
-            ) or _("New")
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name") or vals["name"] == self.env._("New"):
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "stock.return.request"
+                ) or self.env._("New")
         return super().create(vals)
+
+    @api.ondelete(at_uninstall=False)
+    def _must_delete_request(self):
+        for record in self:
+            if record.state == "done":
+                raise UserError(self.env._("You cannot delete this record."))
 
     def action_view_pickings(self):
         """Display returned pickings"""
-        xmlid = "stock.action_picking_tree_all"
+        xmlid = "stock.action_picking_tree_incoming"
+        if self.return_type == "customer":
+            xmlid = "stock.action_picking_tree_outgoing"
+        elif self.return_type == "internal":
+            xmlid = "stock.action_picking_tree_internal"
         action = self.env["ir.actions.act_window"]._for_xml_id(xmlid)
         action["context"] = {}
-        pickings = self.mapped("returned_picking_ids")
+        pickings = self.returned_picking_ids
         if not pickings or len(pickings) > 1:
-            action["domain"] = "[('id', 'in', %s)]" % (pickings.ids)
+            action["domain"] = f"[('id', 'in', {pickings.ids})]"
         elif len(pickings) == 1:
             res = self.env.ref("stock.view_picking_form", False)
             action["views"] = [(res and res.id or False, "form")]
@@ -416,7 +396,7 @@ class StockReturnRequestLine(models.Model):
         comodel_name="product.product",
         string="Product",
         required=True,
-        domain=[("type", "=", "product")],
+        domain=[("is_storable", "=", True)],
     )
     product_uom_id = fields.Many2one(
         comodel_name="uom.uom",
@@ -428,8 +408,9 @@ class StockReturnRequestLine(models.Model):
         readonly=True,
     )
     lot_id = fields.Many2one(
-        comodel_name="stock.production.lot",
+        comodel_name="stock.lot",
         string="Lot / Serial",
+        domain="[('product_id', '=', product_id)]",
     )
     quantity = fields.Float(
         string="Quantiy to return",
@@ -439,7 +420,7 @@ class StockReturnRequestLine(models.Model):
     max_quantity = fields.Float(
         string="Maximum available quantity",
         digits="Product Unit of Measure",
-        readonly=True,
+        compute="_compute_max_quantity",
     )
     returnable_move_ids = fields.Many2many(
         comodel_name="stock.move",
@@ -511,17 +492,17 @@ class StockReturnRequestLine(models.Model):
                 )
                 # Don't count already returned
                 if return_moves:
-                    qty_returned = -sum(
+                    qty_returned = sum(
                         return_moves.mapped("move_line_ids")
-                        .filtered(lambda x: x.lot_id == line.lot_id)
-                        .mapped("qty_done")
+                        .filtered(lambda x, line=line: x.lot_id == line.lot_id)
+                        .mapped("quantity")
                     )
-                quantity_done = sum(
+                quantity = sum(
                     move.mapped("move_line_ids")
-                    .filtered(lambda x: x.lot_id == line.lot_id)
-                    .mapped("qty_done")
+                    .filtered(lambda x, line=line: x.lot_id == line.lot_id)
+                    .mapped("quantity")
                 )
-                qty_remaining = quantity_done - qty_returned
+                qty_remaining = quantity - qty_returned
                 # We add the move to the list if there are units that haven't
                 # been returned
                 if float_compare(qty_remaining, 0.0, precision_rounding=precision) > 0:
@@ -533,10 +514,10 @@ class StockReturnRequestLine(models.Model):
             if qty_to_complete:
                 qty_found = line.quantity - qty_to_complete
                 raise ValidationError(
-                    _(
+                    self.env._(
                         "Not enough moves to return this product.\n"
                         "It wasn't possible to find enough moves to return "
-                        "{line_quantity} {line_product_uom_id_name}"
+                        "{line_quantity} {line_product_uom_id_name} "
                         "of {line_product_id_displayname}. A maximum of {qty_found} "
                         "can be returned."
                     ).format(
@@ -548,72 +529,116 @@ class StockReturnRequestLine(models.Model):
                 )
         return moves_for_return
 
-    @api.model
-    def create(self, values):
-        res = super().create(values)
-        existing = self.search(
-            [
-                ("product_id", "=", res.product_id.id),
-                ("request_id.state", "in", ["draft", "confirm"]),
-                (
-                    "request_id.return_from_location",
-                    "=",
-                    res.request_id.return_from_location.id,
-                ),
-                (
-                    "request_id.return_to_location",
-                    "=",
-                    res.request_id.return_to_location.id,
-                ),
-                (
-                    "request_id.partner_id",
-                    "child_of",
-                    res.request_id.partner_id.commercial_partner_id.id,
-                ),
-                ("lot_id", "=", res.lot_id.id),
-            ]
-        )
-        if len(existing) > 1:
-            raise UserError(
-                _(
-                    "You cannot have two open Stock Return Requests with the same "
-                    "product ({product_id}), locations ({return_from_location}, "
-                    "{return_to_location}) partner ({partner_id}) and lot.\n"
-                    "Please first validate the first return request with this "
-                    "product before creating a new one."
-                ).format(
-                    product_id=res.product_id.display_name,
-                    return_from_location=res.request_id.return_from_location.display_name,
-                    return_to_location=res.request_id.return_to_location.display_name,
-                    partner_id=res.request_id.partner_id.name,
-                )
+    @api.model_create_multi
+    def create(self, vals_list):
+        new_records = super().create(vals_list)
+        for record in new_records:
+            existing = self.search_count(
+                [
+                    ("product_id", "=", record.product_id.id),
+                    ("request_id.state", "in", ["draft", "confirm"]),
+                    (
+                        "request_id.return_from_location",
+                        "=",
+                        record.request_id.return_from_location.id,
+                    ),
+                    (
+                        "request_id.return_to_location",
+                        "=",
+                        record.request_id.return_to_location.id,
+                    ),
+                    (
+                        "request_id.partner_id",
+                        "child_of",
+                        record.request_id.partner_id.commercial_partner_id.id,
+                    ),
+                    ("lot_id", "=", record.lot_id.id),
+                ]
             )
-        return res
+            if existing > 1:
+                raise UserError(
+                    self.env._(
+                        "You cannot have two open Stock Return Requests with the same "
+                        "product ({product_id}), locations ({return_from_location}, "
+                        "{return_to_location}) partner ({partner_id}) and lot.\n"
+                        "Please first validate the first return request with this "
+                        "product before creating a new one."
+                    ).format(
+                        product_id=record.product_id.display_name,
+                        return_from_location=record.request_id.return_from_location.display_name,
+                        return_to_location=record.request_id.return_to_location.display_name,
+                        partner_id=record.request_id.partner_id.name,
+                    )
+                )
+        return new_records
 
-    @api.onchange("product_id", "lot_id")
-    def onchange_product_id(self):
-        self.product_uom_id = self.product_id.uom_id
-        request = self.request_id
-        if request.return_type == "customer":
-            return
-        search_args = [
-            ("location_id", "child_of", request.return_from_location.id),
-            ("product_id", "=", self.product_id.id),
-        ]
-        if self.lot_id:
-            search_args.append(("lot_id", "=", self.lot_id.id))
-        else:
-            search_args.append(("lot_id", "=", False))
-        res = self.env["stock.quant"].read_group(search_args, ["quantity"], [])
-        max_quantity = res[0]["quantity"]
-        self.max_quantity = max_quantity
+    @api.depends("product_id", "lot_id")
+    def _compute_max_quantity(self):
+        self.max_quantity = 0
+        for line in self.filtered(lambda x: x.request_id.return_type != "customer"):
+            request = line.request_id
+            search_args = [
+                ("location_id", "child_of", request.return_from_location.id),
+                ("product_id", "=", line.product_id.id),
+            ]
+            if line.lot_id:
+                search_args.append(("lot_id", "=", line.lot_id.id))
+            else:
+                search_args.append(("lot_id", "=", False))
+            res = self.env["stock.quant"].read_group(search_args, ["quantity"], [])
+            line.max_quantity = res[0]["quantity"]
 
     def action_lot_suggestion(self):
+        self.ensure_one()
+        precision = self.env["decimal.precision"].precision_get(
+            "Product Unit of Measure"
+        )
+        new_wizard = self.env["suggest.return.request.lot"].create(
+            {"request_line_id": self.id}
+        )
+        moves = self.env["stock.move"].search(
+            self.with_context(ignore_rr_lots=True)._get_moves_domain(),
+            order=self.request_id.return_order,
+        )
+        suggested_lots_totals = {}
+        suggested_lots_moves = {}
+        vals_list = []
+        for line in moves.move_line_ids:
+            qty = line.move_id._get_lot_returnable_qty(line.lot_id)
+            if float_compare(qty, 0, precision_digits=precision) > 0:
+                suggested_lots_moves[line] = qty
+                suggested_lots_totals.setdefault(line.lot_id, 0)
+                suggested_lots_totals[line.lot_id] += qty
+        for lot, qty in suggested_lots_totals.items():
+            vals_list.append(
+                {
+                    "lot_id": lot.id,
+                    "name": f"{lot.name} - {float_repr(qty, precision)}",
+                    "lot_suggestion_mode": "sum",
+                    "wizard_id": new_wizard.id,
+                }
+            )
+        for move_line, qty in suggested_lots_moves.items():
+            date_str = format_datetime(self.env, move_line.date, dt_format=None)
+            name = (
+                f"{date_str} - {move_line.lot_id.name} - "
+                f"{move_line.reference} - {float_repr(qty, precision)}"
+            )
+            vals_list.append(
+                {
+                    "lot_id": move_line.lot_id.id,
+                    "name": name,
+                    "lot_suggestion_mode": "detail",
+                    "wizard_id": new_wizard.id,
+                }
+            )
+        if vals_list:
+            self.env["suggest.return.request.lot.line"].create(vals_list)
         return {
-            "name": _("Suggest Lot"),
+            "name": self.env._("Suggest Lot"),
             "type": "ir.actions.act_window",
             "res_model": "suggest.return.request.lot",
-            "view_type": "form",
             "view_mode": "form",
             "target": "new",
+            "res_id": new_wizard.id,
         }
