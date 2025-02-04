@@ -5,14 +5,15 @@
         <field name="model">suggest.return.request.lot</field>
         <field name="arch" type="xml">
             <form>
+                <field name="id" invisible="1" />
+                <field name="request_line_id" invisible="1" />
                 <field name="lot_suggestion_mode" />
                 <field
-                    name="suggested_lot"
-                    attrs="{'invisible': [('lot_suggestion_mode', '=', 'detail')]}"
-                />
-                <field
-                    name="suggested_lot_detail"
-                    attrs="{'invisible': [('lot_suggestion_mode', '=', 'sum')]}"
+                    name="suggested_lot_id"
+                    options="{'no_create': True, 'no_open': True}"
+                    placeholder="Select a lot"
+                    domain="[('lot_suggestion_mode', '=', lot_suggestion_mode), ('wizard_id', '=', id)]"
+                    required="1"
                 />
                 <footer>
                     <button

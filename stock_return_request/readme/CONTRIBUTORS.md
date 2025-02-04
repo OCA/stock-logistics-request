@@ -3,5 +3,6 @@
   - Pedro M. Baeza
   - David Vidal
   - César A. Sánchez
+  - Carlos Lopez
 - [Pro Thai](http://prothaitechnology.com):
   - Prapassorn Sornkaew \<<prapassorn.s@prothaitechnology.com>\>
