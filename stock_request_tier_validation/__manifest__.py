@@ -4,7 +4,7 @@
     "name": "Stock Request Tier Validation",
     "summary": "Extends the functionality of Stock Requests to "
     "support a tier validation process.",
-    "version": "15.0.1.0.1",
+    "version": "16.0.1.0.0",
     "category": "Warehouse",
     "website": "https://github.com/OCA/stock-logistics-request",
     "author": "ForgeFlow, Odoo Community Association (OCA)",
