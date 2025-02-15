@@ -6,7 +6,7 @@
     "support a tier validation process.",
     "version": "15.0.1.0.1",
     "category": "Warehouse",
-    "website": "https://github.com/OCA/stock-logistics-warehouse",
+    "website": "https://github.com/OCA/stock-logistics-request",
     "author": "ForgeFlow, Odoo Community Association (OCA)",
     "maintainers": ["LoisRForgeFlow", "etobella"],
     "license": "AGPL-3",
