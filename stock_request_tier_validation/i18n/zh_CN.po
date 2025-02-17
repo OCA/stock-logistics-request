@@ -29,6 +29,12 @@ msgid "Has Comment"
 msgstr ""
 
 #. module: stock_request_tier_validation
+#: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request__is_reevaluation_required
+#: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request_order__is_reevaluation_required
+msgid "Is Reevaluation Required"
+msgstr ""
+
+#. module: stock_request_tier_validation
 #: model:tier.definition,name:stock_request_tier_validation.stock_request_default_tier_definition
 #: model:tier.definition,name:stock_request_tier_validation.stock_request_order_default_tier_definition
 msgid "Manager review"
