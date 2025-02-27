@@ -9,7 +9,7 @@ from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 
 class TestStockRequestPartner(TestStockRequest):
     def setUp(self):
-        super(TestStockRequestPartner, self).setUp()
+        super().setUp()
         self.partner = self.env.ref("base.res_partner_12")
         self.partner2 = self.env.ref("base.res_partner_2")
 
