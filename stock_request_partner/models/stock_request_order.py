@@ -8,7 +8,7 @@ class StockRequestOrder(models.Model):
     _inherit = "stock.request.order"
 
     partner_id = fields.Many2one(
-        "res.partner", states={"draft": [("readonly", False)]}, readonly=True
+        "res.partner",
     )
 
     @api.onchange("partner_id")

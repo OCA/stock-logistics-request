@@ -9,7 +9,7 @@ class StockRequest(models.Model):
     _inherit = "stock.request"
 
     partner_id = fields.Many2one(
-        "res.partner", states={"draft": [("readonly", False)]}, readonly=True
+        "res.partner",
     )
 
     def _prepare_procurement_values(self, group_id=False):
