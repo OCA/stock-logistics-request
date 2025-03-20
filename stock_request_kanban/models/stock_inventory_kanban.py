@@ -98,13 +98,14 @@ class StockInventoryKanban(models.Model):
     def _close_inventory_values(self):
         return {"state": "closed"}
 
-    @api.model
-    def create(self, vals):
-        if vals.get("name", "/") == "/":
-            vals["name"] = self.env["ir.sequence"].next_by_code(
-                "stock.inventory.kanban"
-            )
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", "/") == "/":
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "stock.inventory.kanban"
+                )
+        return super().create(vals_list)
 
     def calculate_kanbans(self):
         for rec in self:
