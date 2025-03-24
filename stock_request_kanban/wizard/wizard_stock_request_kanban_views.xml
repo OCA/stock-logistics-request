@@ -30,7 +30,6 @@
                         <field name="status" />
                     </bold>
                 </div>
-                <field name="status_state" invisible="1" />
                 <field name="kanban_id" invisible="1" />
                 <field name="stock_request_id" invisible="1" />
                 <field name="_barcode_scanned" widget="barcode_handler" />

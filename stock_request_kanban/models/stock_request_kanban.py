@@ -3,7 +3,7 @@
 
 from reportlab.graphics.barcode import getCodes
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -14,6 +14,7 @@ class StockRequestKanban(models.Model):
 
     active = fields.Boolean(default=True)
     product_template_id = fields.Many2one(related="product_id.product_tmpl_id")
+    image_128 = fields.Image(related="product_id.image_128")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -51,7 +52,7 @@ class StockRequestKanban(models.Model):
             bcc.validate()
             bcc.encode()
             if bcc.encoded[1:-1] != barcode:
-                raise ValidationError(_("CRC is not valid"))
+                raise ValidationError(self.env._("CRC is not valid"))
         return barcode[:-1]
 
     @api.model

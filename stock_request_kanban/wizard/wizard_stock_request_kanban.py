@@ -2,7 +2,7 @@
 # Copyright 2017-2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class WizardStockRequestKanban(models.TransientModel):
@@ -28,7 +28,7 @@ class WizardStockRequestKanban(models.TransientModel):
         self.update(
             {
                 "status_state": 0,
-                "status": _(
+                "status": self.env._(
                     "Added kanban %(kanban)s for product %(product)s",
                     kanban=self.stock_request_id.kanban_id.name,
                     product=self.stock_request_id.product_id.display_name,

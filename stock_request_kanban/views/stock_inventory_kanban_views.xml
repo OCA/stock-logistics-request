@@ -4,11 +4,11 @@
         <field name="name">stock.inventory.kanban.tree</field>
         <field name="model">stock.inventory.kanban</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" readonly="state != 'draft'" />
                 <field name="count_missing_kanbans" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="view_stock_inventory_kanban_form" model="ir.ui.view">
@@ -118,7 +118,7 @@
         <field name="name">Stock Inventory Kanbans</field>
         <field name="res_model">stock.inventory.kanban</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
             Click to add a Stock Inventory Kanban.

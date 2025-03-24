@@ -17,13 +17,13 @@ Stock Request kanban
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fstock--logistics--request-lightgray.png?logo=github
-    :target: https://github.com/OCA/stock-logistics-request/tree/17.0/stock_request_kanban
+    :target: https://github.com/OCA/stock-logistics-request/tree/18.0/stock_request_kanban
     :alt: OCA/stock-logistics-request
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/stock-logistics-request-17-0/stock-logistics-request-17-0-stock_request_kanban
+    :target: https://translation.odoo-community.org/projects/stock-logistics-request-18-0/stock-logistics-request-18-0-stock_request_kanban
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/stock-logistics-request&target_branch=17.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/stock-logistics-request&target_branch=18.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
@@ -48,22 +48,22 @@ Configuration
 If the barcode does not contain a CRC check digit on the kanban card,
 you should:
 
-- Access on Development mode
-- Access 'Settings / Technical / Parameters / System Parameters'
-- Create a parameter with name 'stock_request_kanban.crc' and set it to
-  value to 0
+-  Access on Development mode
+-  Access 'Settings / Technical / Parameters / System Parameters'
+-  Create a parameter with name 'stock_request_kanban.crc' and set it to
+   value to 0
 
 If the barcode contains a CRC check digit and you want to ignore it:
 
-- Create a paramenter with name 'stock_request_kanban.ignore_crc' and
-  set it to value to 1
+-  Create a paramenter with name 'stock_request_kanban.ignore_crc' and
+   set it to value to 1
 
 If you want to change the format of the QR, you should:
 
-- Access on Development mode
-- Access 'Settings / Technical / Parameters / System Parameters'
-- Create a parameter with name 'stock_request_kanban.barcode_format' and
-  set the format of the barcode
+-  Access on Development mode
+-  Access 'Settings / Technical / Parameters / System Parameters'
+-  Create a parameter with name 'stock_request_kanban.barcode_format'
+   and set the format of the barcode
 
 Usage
 =====
@@ -71,11 +71,11 @@ Usage
 Creation
 --------
 
-- Go to 'Stock Requests / Stock Requests Kanban' and create a new
-  Kanban.
-- Indicate a product, quantity and location.
-- Press 'Save'.
-- Print the kanban and put it in the storage of the product
+-  Go to 'Stock Requests / Stock Requests Kanban' and create a new
+   Kanban.
+-  Indicate a product, quantity and location.
+-  Press 'Save'.
+-  Print the kanban and put it in the storage of the product
 
 Request kanban
 --------------
@@ -83,10 +83,10 @@ Request kanban
 This should be used if you want to create the kanban when the card is
 consumed.
 
-- Once the product is consumed, take the card
-- Go to 'Stock Requests / Order Kanban Card'
-- Scan the card
-- The stock request is created
+-  Once the product is consumed, take the card
+-  Go to 'Stock Requests / Order Kanban Card'
+-  Scan the card
+-  The stock request is created
 
 Request kanban batch
 --------------------
@@ -94,10 +94,10 @@ Request kanban batch
 This should be used when you will store the cards and create request
 orders for kanbans later.
 
-- Once the product is consumed, take the card and store it
-- Create a store request order
-- Press the scan button
-- Scan all the pending kanban cards
+-  Once the product is consumed, take the card and store it
+-  Create a store request order
+-  Press the scan button
+-  Scan all the pending kanban cards
 
 Bug Tracker
 ===========
@@ -105,7 +105,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/stock-logistics-request/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/stock-logistics-request/issues/new?body=module:%20stock_request_kanban%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/stock-logistics-request/issues/new?body=module:%20stock_request_kanban%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -121,8 +121,9 @@ Authors
 Contributors
 ------------
 
-- Enric Tobella <etobella@creublanca.es>
-- Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
+-  Enric Tobella <etobella@creublanca.es>
+-  Kitti Upariphutthiphong <kittiu@ecosoft.co.th>
+-  Marco Colombo <<marco.colombo@phi.technology>
 
 Maintainers
 -----------
@@ -148,6 +149,6 @@ Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-etobella| |maintainer-LoisRForgeFlow| 
 
-This module is part of the `OCA/stock-logistics-request <https://github.com/OCA/stock-logistics-request/tree/17.0/stock_request_kanban>`_ project on GitHub.
+This module is part of the `OCA/stock-logistics-request <https://github.com/OCA/stock-logistics-request/tree/18.0/stock_request_kanban>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

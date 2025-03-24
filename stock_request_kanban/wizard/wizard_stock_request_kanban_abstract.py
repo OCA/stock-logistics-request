@@ -2,7 +2,7 @@
 # Copyright 2017-2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, fields, models
+from odoo import fields, models
 
 
 class WizardStockRequestKanbanAbstract(models.AbstractModel):
@@ -18,7 +18,7 @@ class WizardStockRequestKanbanAbstract(models.AbstractModel):
         self.kanban_id = self.env["stock.request.kanban"].search_barcode(barcode)
         if not self.kanban_id:
             self.status = (
-                _(
+                self.env._(
                     "Barcode %s does not correspond to any "
                     "Kanban. Try with another barcode or "
                     "press Close to finish scanning."
