@@ -6,7 +6,7 @@
         <field name="name">stock.request.kanban.tree</field>
         <field name="model">stock.request.kanban</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-muted="active == 'false'"
                 decoration-bf="message_needaction==True"
             >
@@ -28,7 +28,7 @@
                 />
                 <field name="product_uom_qty" />
                 <field name="active" column_invisible="True" />
-            </tree>
+            </list>
         </field>
     </record>
     <record model="ir.ui.view" id="stock_request_kanban_search">
@@ -69,7 +69,6 @@
         <field name="model">stock.request.kanban</field>
         <field name="arch" type="xml">
             <form string="Stock Requests">
-                <field name="company_id" invisible="1" />
                 <header />
                 <sheet>
                     <div class="oe_button_box" name="button_box" />
@@ -153,11 +152,7 @@
                         </group>
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers" />
-                    <field name="activity_ids" widget="mail_activity" />
-                    <field name="message_ids" widget="mail_thread" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
@@ -175,14 +170,9 @@
                 <field name="location_id" />
                 <field name="product_qty" />
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click o_res_partner_kanban">
-                            <div class="o_kanban_image">
-                                <img
-                                    t-att-src="kanban_image('product.product', 'image_small', record.product_id.raw_value)"
-                                    alt="Kanban Image"
-                                />
-                            </div>
+                            <field name="image_128" widget="image" />
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title">
                                     <field name="display_name" />
@@ -220,7 +210,7 @@
         <field name="name">Stock Request Kanbans</field>
         <field name="res_model">stock.request.kanban</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 Click to add a Stock Request Kanban.

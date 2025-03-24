@@ -7,10 +7,7 @@
         <field name="model">stock.request</field>
         <field name="inherit_id" ref="stock_request.view_stock_request_tree" />
         <field name="arch" type="xml">
-            <tree position="attributes">
-                <attribute name="js_class">stock_request_kanban_list</attribute>
-            </tree>
-            <tree position="inside">
+            <list position="inside">
                 <header>
                     <button
                         name="action_scan_kanban"
@@ -20,7 +17,7 @@
                         display="always"
                     />
                 </header>
-            </tree>
+            </list>
         </field>
     </record>
 </odoo>
