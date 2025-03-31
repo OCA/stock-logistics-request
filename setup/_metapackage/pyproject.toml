@@ -1,8 +1,9 @@
 [project]
 name = "odoo-addons-oca-stock-logistics-request"
-version = "18.0.20241113.0"
+version = "18.0.20250331.0"
 dependencies = [
     "odoo-addon-stock_request==18.0.*",
+    "odoo-addon-stock_request_purchase==18.0.*",
 ]
 classifiers=[
     "Programming Language :: Python",
