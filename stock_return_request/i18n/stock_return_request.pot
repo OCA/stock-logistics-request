@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.0\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,12 +15,18 @@ msgstr ""
 
 #. module: stock_return_request
 #: model_terms:ir.ui.view,arch_db:stock_return_request.report_stock_return_request_document
-msgid "<span><strong>Customer Address:</strong></span>"
+msgid ""
+"<span>\n"
+"                                    <strong>Customer Address:</strong>\n"
+"                                </span>"
 msgstr ""
 
 #. module: stock_return_request
 #: model_terms:ir.ui.view,arch_db:stock_return_request.report_stock_return_request_document
-msgid "<span><strong>Supplier Address:</strong></span>"
+msgid ""
+"<span>\n"
+"                                    <strong>Supplier Address:</strong>\n"
+"                                </span>"
 msgstr ""
 
 #. module: stock_return_request
@@ -69,8 +75,8 @@ msgid "Add a note that will be printed on the Request report"
 msgstr ""
 
 #. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
 msgid "Add some products to return"
 msgstr ""
 
@@ -110,6 +116,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__create_uid
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__create_uid
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__create_uid
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__create_uid
 msgid "Created by"
 msgstr ""
 
@@ -117,6 +124,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__create_date
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__create_date
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__create_date
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__create_date
 msgid "Created on"
 msgstr ""
 
@@ -129,6 +137,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__display_name
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__display_name
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__display_name
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -166,6 +175,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__id
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__id
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__id
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__id
 msgid "ID"
 msgstr ""
 
@@ -181,12 +191,12 @@ msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_needaction
-#: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_unread
 msgid "If checked, new messages require your attention."
 msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_has_error
+#: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -196,24 +206,18 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
 msgid ""
 "It wasn't possible to assign stock for this returns:\n"
 "{failed_moves_str}"
 msgstr ""
 
 #. module: stock_return_request
-#: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request____last_update
-#: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line____last_update
-#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot____last_update
-msgid "Last Modified on"
-msgstr ""
-
-#. module: stock_return_request
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__write_uid
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__write_uid
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__write_uid
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__write_uid
 msgid "Last Updated by"
 msgstr ""
 
@@ -221,7 +225,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__write_date
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__write_date
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__write_date
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: stock_return_request
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__lot_id
+msgid "Lot"
 msgstr ""
 
 #. module: stock_return_request
@@ -231,17 +241,13 @@ msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__lot_suggestion_mode
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__lot_suggestion_mode
 msgid "Lot Suggestion Mode"
 msgstr ""
 
 #. module: stock_return_request
 #: model_terms:ir.ui.view,arch_db:stock_return_request.stock_move_lines_to_return
 msgid "Lot/Serial Number"
-msgstr ""
-
-#. module: stock_return_request
-#: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__message_main_attachment_id
-msgid "Main Attachment"
 msgstr ""
 
 #. module: stock_return_request
@@ -265,10 +271,13 @@ msgid "My Activity Deadline"
 msgstr ""
 
 #. module: stock_return_request
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__name
+msgid "Name"
+msgstr ""
+
+#. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#: code:addons/stock_return_request/models/stock_return_request.py:0
-#: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
 msgid "New"
 msgstr ""
 
@@ -293,11 +302,11 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
 msgid ""
 "Not enough moves to return this product.\n"
-"It wasn't possible to find enough moves to return {line_quantity} {line_product_uom_id_name}of {line_product_id_displayname}. A maximum of {qty_found} can be returned."
+"It wasn't possible to find enough moves to return {line_quantity} {line_product_uom_id_name} of {line_product_id_displayname}. A maximum of {qty_found} can be returned."
 msgstr ""
 
 #. module: stock_return_request
@@ -312,17 +321,12 @@ msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_needaction_counter
-msgid "Number of messages which requires an action"
+msgid "Number of messages requiring action"
 msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr ""
-
-#. module: stock_return_request
-#: model:ir.model.fields,help:stock_return_request.field_stock_return_request__message_unread_counter
-msgid "Number of unread messages"
 msgstr ""
 
 #. module: stock_return_request
@@ -442,8 +446,8 @@ msgid "Return from this location"
 msgstr ""
 
 #. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
 msgid "Return of %s"
 msgstr ""
 
@@ -483,13 +487,18 @@ msgid "Returned Pickings"
 msgstr ""
 
 #. module: stock_return_request
-#: model_terms:ir.ui.view,arch_db:stock_return_request.view_stock_return_request_form
-msgid "Returns"
+#: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__message_has_sms_error
+msgid "SMS Delivery error"
 msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__from_date
 msgid "Search moves up to this date"
+msgstr ""
+
+#. module: stock_return_request
+#: model_terms:ir.ui.view,arch_db:stock_return_request.stock_return_request_line_suggest_lot
+msgid "Select a lot"
 msgstr ""
 
 #. module: stock_return_request
@@ -528,7 +537,6 @@ msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_picking__stock_return_request_id
-#: model_terms:ir.ui.view,arch_db:stock_return_request.view_stock_return_request_form
 msgid "Stock Return Request"
 msgstr ""
 
@@ -538,24 +546,25 @@ msgid "Stock Return Request Report"
 msgstr ""
 
 #. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
 msgid "Suggest Lot"
 msgstr ""
 
 #. module: stock_return_request
+#: model_terms:ir.ui.view,arch_db:stock_return_request.view_stock_return_request_form
+msgid "Suggest Lots"
+msgstr ""
+
+#. module: stock_return_request
 #: model:ir.model,name:stock_return_request.model_suggest_return_request_lot
+#: model:ir.model,name:stock_return_request.model_suggest_return_request_lot_line
 msgid "Suggest lots for the return request line"
 msgstr ""
 
 #. module: stock_return_request
-#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__suggested_lot
-msgid "Suggested Lots"
-msgstr ""
-
-#. module: stock_return_request
-#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__suggested_lot_detail
-msgid "Suggested Lots Detailed"
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot__suggested_lot_id
+msgid "Suggested Lot"
 msgstr ""
 
 #. module: stock_return_request
@@ -588,11 +597,13 @@ msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields.selection,name:stock_return_request.selection__suggest_return_request_lot__lot_suggestion_mode__sum
+#: model:ir.model.fields.selection,name:stock_return_request.selection__suggest_return_request_lot_line__lot_suggestion_mode__sum
 msgid "Total by lot"
 msgstr ""
 
 #. module: stock_return_request
 #: model:ir.model.fields.selection,name:stock_return_request.selection__suggest_return_request_lot__lot_suggestion_mode__detail
+#: model:ir.model.fields.selection,name:stock_return_request.selection__suggest_return_request_lot_line__lot_suggestion_mode__detail
 msgid "Total by move"
 msgstr ""
 
@@ -614,16 +625,6 @@ msgstr ""
 #. module: stock_return_request
 #: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request_line__product_uom_id
 msgid "Unit of Measure"
-msgstr ""
-
-#. module: stock_return_request
-#: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__message_unread
-msgid "Unread Messages"
-msgstr ""
-
-#. module: stock_return_request
-#: model:ir.model.fields,field_description:stock_return_request.field_stock_return_request__message_unread_counter
-msgid "Unread Messages Counter"
 msgstr ""
 
 #. module: stock_return_request
@@ -649,14 +650,19 @@ msgid ""
 msgstr ""
 
 #. module: stock_return_request
-#: model:ir.model.fields,help:stock_return_request.field_suggest_return_request_lot__suggested_lot
-#: model:ir.model.fields,help:stock_return_request.field_suggest_return_request_lot__suggested_lot_detail
-msgid "You can return these lots"
+#: model:ir.model.fields,field_description:stock_return_request.field_suggest_return_request_lot_line__wizard_id
+msgid "Wizard"
 msgstr ""
 
 #. module: stock_return_request
+#. odoo-python
 #: code:addons/stock_return_request/models/stock_return_request.py:0
-#, python-format
+msgid "You cannot delete this record."
+msgstr ""
+
+#. module: stock_return_request
+#. odoo-python
+#: code:addons/stock_return_request/models/stock_return_request.py:0
 msgid ""
 "You cannot have two open Stock Return Requests with the same product ({product_id}), locations ({return_from_location}, {return_to_location}) partner ({partner_id}) and lot.\n"
 "Please first validate the first return request with this product before creating a new one."
