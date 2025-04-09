@@ -70,7 +70,7 @@ class TestStockRequestMrp(TestStockRequest):
             self.request_order.with_user(user).with_context(
                 default_company_id=self.main_company.id,
                 default_warehouse_id=self.warehouse.id,
-                default_location_id=self.warehouse.lot_stock_id,
+                default_location_id=self.warehouse.lot_stock_id.id,
             )
         )
         order_form.expected_date = fields.Datetime.now()
