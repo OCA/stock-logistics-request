@@ -526,6 +526,55 @@ class TestStockRequestBase(TestStockRequest):
         with self.assertRaises(exceptions.ValidationError):
             self.request_order.with_user(self.stock_request_user).create(vals)
 
+    def test_stock_request_order_validations_08(self):
+        """Testing editing stock request with different user when
+        stock_request_check_order_requested_by is False"""
+        self.main_company.stock_request_check_order_requested_by = False
+        expected_date = fields.Datetime.now()
+        vals = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "requested_by": self.stock_request_user.id,
+            "expected_date": expected_date,
+            "stock_request_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.product.id,
+                        "product_uom_id": self.product.uom_id.id,
+                        "product_uom_qty": 5.0,
+                        "requested_by": self.stock_request_manager.id,
+                        "company_id": self.main_company.id,
+                        "warehouse_id": self.warehouse.id,
+                        "location_id": self.warehouse.lot_stock_id.id,
+                        "expected_date": expected_date,
+                    },
+                )
+            ],
+        }
+
+        order = self.request_order.with_user(self.stock_request_manager).create(vals)
+
+        self.env["stock.request"].with_user(self.stock_request_user).create(
+            {
+                "order_id": order.id,
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "requested_by": self.stock_request_user.id,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+                "expected_date": expected_date,
+            }
+        )
+        self.assertTrue(
+            order.stock_request_count == 2,
+            "Stock request should be created when the config is disabled.",
+        )
+
     def test_stock_request_order_available_stock_01(self):
         self.main_company.stock_request_check_available_first = True
         self._create_stock_quant(self.product, self.warehouse.lot_stock_id, 6)

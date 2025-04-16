@@ -11,3 +11,5 @@
 - Kitti U. \<<kittiu@ecosoft.co.th>\>
 - Bernat Puig \<<bernat.puig@forgeflow.com>\>
 - Oriol Miranda \<<oriol.miranda@forgeflow.com>\>
+- [APSL-Nagarro](<https://apsl.tech>):
+  - Bernat Obrador \<<bobrador@apsl.net>\>

@@ -122,6 +122,9 @@ Contributors
 -  Kitti U. <kittiu@ecosoft.co.th>
 -  Bernat Puig <bernat.puig@forgeflow.com>
 -  Oriol Miranda <oriol.miranda@forgeflow.com>
+-  `APSL-Nagarro <https://apsl.tech>`__:
+
+   -  Bernat Obrador <bobrador@apsl.net>
 
 Maintainers
 -----------

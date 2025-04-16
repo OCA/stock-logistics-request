@@ -15,3 +15,7 @@ class ResCompany(models.Model):
     stock_request_check_available_first = fields.Boolean(
         string="Check available stock first"
     )
+    stock_request_check_order_requested_by = fields.Boolean(
+        string="Only allow edit stock request orders if requested by the same user",
+        default=True,
+    )
