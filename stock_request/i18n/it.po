@@ -147,6 +147,11 @@ msgid "Category"
 msgstr "Categoria"
 
 #. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Check Stock Request Order requested by"
+msgstr ""
+
+#. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_res_company__stock_request_check_available_first
 #: model:ir.model.fields,field_description:stock_request.field_res_config_settings__stock_request_check_available_first
 #: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
@@ -550,6 +555,12 @@ msgid "Number of messages with delivery error"
 msgstr "Numero di messaggi con errore di consegna"
 
 #. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__stock_request_check_order_requested_by
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__check_order_requested_by
+msgid "Only allow edit stock request orders if requested by the same user"
+msgstr ""
+
+#. module: stock_request
 #. odoo-python
 #: code:addons/stock_request/models/stock_request_order.py:0
 #, python-format
@@ -562,6 +573,13 @@ msgstr "Solo gli ordini in stato bozza possono essere scollegati"
 #, python-format
 msgid "Only requests on draft state can be unlinked"
 msgstr "Solo le richieste in stato bozza possono essere scollegate"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid ""
+"Only the user who submitted the request will be able to edit the stock "
+"request order."
+msgstr ""
 
 #. module: stock_request
 #: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__open_product_qty
