@@ -62,6 +62,17 @@
                                 >By default, available stock is not used</div>
                             </div>
                         </setting>
+                        <setting>
+                            <field
+                                name="check_order_requested_by"
+                                string="Check Stock Request Order requested by"
+                            />
+                            <div class="content-group">
+                                <div
+                                    class="text-muted"
+                                >Only the user who submitted the request will be able to edit the stock request order.</div>
+                            </div>
+                        </setting>
                     </block>
                     <h2>Purchases</h2>
                     <block id="stock_request_purchase">
