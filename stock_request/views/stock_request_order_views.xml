@@ -8,7 +8,13 @@
                 <field name="name" />
                 <field name="warehouse_id" groups="stock.group_stock_multi_locations" />
                 <field name="location_id" groups="stock.group_stock_multi_locations" />
-                <field name="state" />
+                <field
+                    name="state"
+                    widget="badge"
+                    decoration-info="state in ('draft', 'open')"
+                    decoration-success="state == 'done'"
+                    decoration-muted="state == 'cancel'"
+                />
             </list>
         </field>
     </record>
@@ -22,6 +28,7 @@
                         name="action_confirm"
                         string="Confirm"
                         type="object"
+                        class="oe_highlight"
                         invisible="state not in ['draft']"
                     />
                     <button
