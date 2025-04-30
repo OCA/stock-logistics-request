@@ -11,16 +11,31 @@ class StockRequestOrder(models.Model):
         copy=False,
     )
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        if (
-            self.env.company.stock_request_allow_separate_picking
-            and not res.procurement_group_id
-        ):
-            res.procurement_group_id = self.env["procurement.group"].create(
-                {"name": res.name}
-            )
-            for line in res.stock_request_ids:
-                line.procurement_group_id = res.procurement_group_id
-        return res
+    @api.model_create_multi
+    def create(self, vals_list):
+        orders = super().create(vals_list)
+
+        if not self.env.company.stock_request_allow_separate_picking:
+            return orders
+
+        orders_no_group = orders.filtered(lambda o: not o.procurement_group_id)
+        if not orders_no_group:
+            return orders
+
+        # Create and Assign procurement group
+        groups = self.env["procurement.group"].create(
+            [{"name": order.name} for order in orders]
+        )
+        for order, group in zip(orders_no_group, groups, strict=False):
+            order.procurement_group_id = group.id
+
+        # Assign procurement group into lines
+        all_lines = orders_no_group.mapped("stock_request_ids")
+        line_map = {
+            order.id: order.procurement_group_id.id for order in orders_no_group
+        }
+        for line in all_lines:
+            if line.order_id.id in line_map:
+                line.procurement_group_id = line_map[line.order_id.id]
+
+        return orders

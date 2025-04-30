@@ -11,17 +11,26 @@ class StockRequestAbstract(models.AbstractModel):
         copy=False,
     )
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        if (
-            self.env.company.stock_request_allow_separate_picking
-            and not res.procurement_group_id
-        ):
-            if res.order_id:
-                res.procurement_group_id = res.order_id.procurement_group_id
+    @api.model_create_multi
+    def create(self, vals_list):
+        requests = super().create(vals_list)
+
+        if not self.env.company.stock_request_allow_separate_picking:
+            return requests
+
+        requests_no_group = requests.filtered(
+            lambda request: not request.procurement_group_id
+        )
+        if not requests_no_group:
+            return requests
+
+        ProcurementGroup = self.env["procurement.group"]
+
+        for request in requests:
+            if request.order_id:
+                request.procurement_group_id = request.order_id.procurement_group_id
             else:
-                res.procurement_group_id = self.env["procurement.group"].create(
-                    {"name": res.name}
+                request.procurement_group_id = ProcurementGroup.create(
+                    {"name": request.name}
                 )
-        return res
+        return requests

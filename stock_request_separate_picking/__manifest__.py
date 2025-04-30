@@ -4,7 +4,7 @@
 {
     "name": "Stock Request Separate Picking",
     "summary": "Separate one picking per one stock request",
-    "version": "15.0.1.0.0",
+    "version": "18.0.1.0.0",
     "license": "LGPL-3",
     "website": "https://github.com/OCA/stock-logistics-request",
     "author": "Ecosoft, Odoo Community Association (OCA)",

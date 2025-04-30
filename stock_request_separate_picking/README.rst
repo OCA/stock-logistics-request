@@ -49,14 +49,6 @@ To configure this module:
 - Check "Allow Separate Picking" to separate one picking per one Stock
   Request / Stock Request Order.
 
-Changelog
-=========
-
-15.0.1.0.0 (2023-01-27)
------------------------
-
-First version.
-
 Bug Tracker
 ===========
 
@@ -81,6 +73,7 @@ Contributors
 - `Ecosoft <http://ecosoft.co.th>`__:
 
   - Pimolnat Suntian <pimolnats@ecosoft.co.th>
+  - Saran Lim. saranl@ecosoft.co.th
 
 Maintainers
 -----------

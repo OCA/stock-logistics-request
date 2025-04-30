@@ -7,21 +7,16 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="stock_request.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//div[@id='stock_request']" position="inside">
-                <div class="col-xs-12 col-md-6 o_setting_box">
-                    <div class="o_setting_left_pane">
-                        <field name="stock_request_allow_separate_picking" />
-                    </div>
-                    <div class="o_setting_right_pane">
-                        <label
-                            string="Allow Separate Picking"
-                            for="stock_request_allow_separate_picking"
-                        />
-                        <div class="text-muted">
-                            If checked, separate one picking per one Stock Request / Stock Request Order.
-                        </div>
-                    </div>
-                </div>
+            <xpath expr="//block[@id='stock_request']" position="inside">
+                <setting
+                    help="If checked, separate one picking per one Stock Request / Stock Request Order."
+                    class="text-muted"
+                >
+                    <field
+                        name="stock_request_allow_separate_picking"
+                        string="Allow Separate Picking"
+                    />
+                </setting>
             </xpath>
         </field>
     </record>

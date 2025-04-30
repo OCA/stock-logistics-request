@@ -1,16 +1,17 @@
 # Copyright 2023 Ecosoft Co., Ltd (http://ecosoft.co.th/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields
+from odoo import Command, fields
 
-from odoo.addons.stock_request.tests import test_stock_request
+from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 
 
-class TestStockRequestSeparatePicking(test_stock_request.TestStockRequest):
-    def setUp(self):
-        super().setUp()
-        self.expected_date = fields.Datetime.now()
-        self.main_company.stock_request_allow_separate_picking = True
+class TestStockRequestSeparatePicking(TestStockRequest):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.expected_date = fields.Datetime.now()
+        cls.main_company.stock_request_allow_separate_picking = True
 
     def test_create_stock_request(self):
         vals = {
@@ -22,7 +23,7 @@ class TestStockRequestSeparatePicking(test_stock_request.TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": self.expected_date,
         }
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         # Create stock requests
         stock_request_1 = self.stock_request.with_user(self.stock_request_user).create(
             vals
@@ -50,9 +51,7 @@ class TestStockRequestSeparatePicking(test_stock_request.TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": self.expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -65,7 +64,7 @@ class TestStockRequestSeparatePicking(test_stock_request.TestStockRequest):
                 )
             ],
         }
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         # Create stock request order
         stock_request_order_1 = self.request_order.with_user(
             self.stock_request_user
