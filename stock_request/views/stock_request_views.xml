@@ -31,7 +31,14 @@
                 <field name="qty_in_progress" />
                 <field name="qty_done" optional="show" />
                 <field name="qty_cancelled" optional="show" />
-                <field name="state" optional="show" />
+                <field
+                    name="state"
+                    optional="show"
+                    widget="badge"
+                    decoration-info="state in ('draft', 'open')"
+                    decoration-success="state == 'done'"
+                    decoration-muted="state == 'cancel'"
+                />
             </list>
         </field>
     </record>
@@ -109,6 +116,7 @@
                         name="action_confirm"
                         string="Confirm"
                         type="object"
+                        class="oe_highlight"
                         invisible="state != 'draft'"
                     />
                     <button

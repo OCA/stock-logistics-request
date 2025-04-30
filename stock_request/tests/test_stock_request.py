@@ -5,7 +5,7 @@
 from collections import Counter
 from datetime import datetime
 
-from odoo import exceptions, fields
+from odoo import Command, exceptions, fields
 from odoo.tests import common, new_test_user
 
 from odoo.addons.base.tests.common import BaseCommon
@@ -208,9 +208,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -260,7 +258,7 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(order.requested_by, order.stock_request_ids.requested_by)
 
     def test_onchanges(self):
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         vals = {
             "product_uom_id": self.product.uom_id.id,
             "product_uom_qty": 5.0,
@@ -333,9 +331,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -361,9 +357,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.wh2.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -390,9 +384,7 @@ class TestStockRequestBase(TestStockRequest):
             "requested_by": self.stock_request_user.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -423,9 +415,7 @@ class TestStockRequestBase(TestStockRequest):
             "procurement_group_id": procurement_group.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -451,9 +441,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.wh2.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -480,9 +468,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -509,9 +495,7 @@ class TestStockRequestBase(TestStockRequest):
             "picking_policy": "one",
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -537,9 +521,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -582,9 +564,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.location_child_1.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -624,9 +604,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -666,9 +644,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -686,7 +662,7 @@ class TestStockRequestBase(TestStockRequest):
 
         stock_request = order.stock_request_ids
 
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         order.with_user(self.stock_request_manager).action_confirm()
         self.assertEqual(order.state, "open")
         self.assertEqual(stock_request.state, "open")
@@ -737,7 +713,7 @@ class TestStockRequestBase(TestStockRequest):
             vals
         )
 
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         stock_request.with_user(self.stock_request_manager).action_confirm()
         self.assertEqual(stock_request.state, "open")
         self.assertEqual(len(stock_request.picking_ids), 1)
@@ -786,7 +762,7 @@ class TestStockRequestBase(TestStockRequest):
             .create(vals)
         )
         stock_request_2.product_uom_qty = 6.0
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         stock_request_1.sudo().action_confirm()
         stock_request_2.sudo().action_confirm()
         self.assertEqual(len(stock_request_1.sudo().picking_ids), 1)
@@ -835,9 +811,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -853,7 +827,7 @@ class TestStockRequestBase(TestStockRequest):
 
         order = self.request_order.with_user(self.stock_request_user).create(vals)
 
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
         order.with_user(self.stock_request_manager).action_confirm()
         stock_request = order.stock_request_ids
         self.assertEqual(len(order.picking_ids), 1)
@@ -900,9 +874,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -917,7 +889,7 @@ class TestStockRequestBase(TestStockRequest):
         }
 
         order = self.request_order.create(vals)
-        self.product.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
 
         order.with_user(self.stock_request_manager).action_confirm()
         stock_request = order.stock_request_ids
@@ -1117,9 +1089,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.virtual_loc.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1149,9 +1119,7 @@ class TestStockRequestBase(TestStockRequest):
             "location_id": self.virtual_loc.id,
             "procurement_group_id": group.id,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1162,9 +1130,7 @@ class TestStockRequestBase(TestStockRequest):
                         "location_id": self.virtual_loc.id,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": product2.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1175,9 +1141,7 @@ class TestStockRequestBase(TestStockRequest):
                         "location_id": self.virtual_loc.id,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": product3.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1191,9 +1155,9 @@ class TestStockRequestBase(TestStockRequest):
             ],
         }
         order = self.request_order.create(vals)
-        self.product.route_ids = [(6, 0, self.route.ids)]
-        product2.route_ids = [(6, 0, self.route.ids)]
-        product3.route_ids = [(6, 0, self.route.ids)]
+        self.product.route_ids = [Command.set(self.route.ids)]
+        product2.route_ids = [Command.set(self.route.ids)]
+        product3.route_ids = [Command.set(self.route.ids)]
         order.action_confirm()
         picking = order.picking_ids
         self.assertEqual(1, len(picking))
@@ -1257,13 +1221,13 @@ class TestStockRequestOrderState(TestStockRequest):
             "Product A",
             cls.main_company.id,
         )
-        cls.product_a.route_ids = [(6, 0, cls.route.ids)]
+        cls.product_a.route_ids = [Command.set(cls.route.ids)]
         cls.product_b = cls._create_product(
             "CODEB",
             "Product B",
             cls.main_company.id,
         )
-        cls.product_b.route_ids = [(6, 0, cls.route.ids)]
+        cls.product_b.route_ids = [Command.set(cls.route.ids)]
         expected_date = fields.Datetime.now()
         vals = {
             "company_id": cls.main_company.id,
@@ -1271,9 +1235,7 @@ class TestStockRequestOrderState(TestStockRequest):
             "location_id": cls.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": cls.product_a.id,
                         "product_uom_id": cls.product_a.uom_id.id,
@@ -1284,9 +1246,7 @@ class TestStockRequestOrderState(TestStockRequest):
                         "expected_date": expected_date,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": cls.product_b.id,
                         "product_uom_id": cls.product_b.uom_id.id,
@@ -1393,18 +1353,14 @@ class TestStockRequestOrderState(TestStockRequest):
             "expected_date": fields.Datetime.now(),
             "route_id": self.route.id,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
                         "product_uom_qty": 5.0,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1431,9 +1387,7 @@ class TestStockRequestOrderState(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": fields.Datetime.now(),
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1441,9 +1395,7 @@ class TestStockRequestOrderState(TestStockRequest):
                         "route_id": self.route.id,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1467,9 +1419,7 @@ class TestStockRequestOrderState(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": fields.Datetime.now(),
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1477,9 +1427,7 @@ class TestStockRequestOrderState(TestStockRequest):
                         "route_id": self.route.id,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1500,18 +1448,14 @@ class TestStockRequestOrderState(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": fields.Datetime.now(),
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
                         "product_uom_qty": 5.0,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1537,18 +1481,14 @@ class TestStockRequestOrderState(TestStockRequest):
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": fields.Datetime.now(),
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
                         "product_uom_qty": 5.0,
                     },
                 ),
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -1591,13 +1531,13 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
             self.env,
             login="stock_request_user",
             groups="stock_request.group_stock_request_user",
-            company_ids=[(6, 0, [self.main_company.id])],
+            company_ids=[Command.set([self.main_company.id])],
         )
         self.stock_request_manager = new_test_user(
             self.env,
             login="stock_request_manager",
             groups="stock_request.group_stock_request_manager",
-            company_ids=[(6, 0, [self.main_company.id])],
+            company_ids=[Command.set([self.main_company.id])],
         )
         self.product_test = self._create_product("PROD", "Product Test")
         self.stock_loc = self._create_location(
@@ -1619,11 +1559,9 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
             {
                 "name": "Backstock to Manufacturing (2 steps)",
                 "warehouse_selectable": True,
-                "warehouse_ids": [(6, 0, [self.warehouse.id])],
+                "warehouse_ids": [Command.set([self.warehouse.id])],
                 "rule_ids": [
-                    (
-                        0,
-                        False,
+                    Command.create(
                         {
                             "name": "Stock to Transit",
                             "location_src_id": self.stock_loc.id,
@@ -1635,9 +1573,7 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
                             "company_id": self.main_company.id,
                         },
                     ),
-                    (
-                        0,
-                        False,
+                    Command.create(
                         {
                             "name": "Transit to Manufacturing",
                             "location_src_id": self.transit_loc.id,
@@ -1652,7 +1588,7 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
                 ],
             }
         )
-        self.product_test.route_ids = [(6, 0, [self.route.id])]
+        self.product_test.route_ids = [Command.set([self.route.id])]
         self._create_stock_quant(self.stock_loc, self.product_test, 5)
 
     def _create_product(self, default_code, name, **vals):
@@ -1689,9 +1625,7 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
             "location_id": self.manufacturing_loc.id,
             "expected_date": expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product_test.id,
                         "product_uom_id": self.product_test.uom_id.id,
