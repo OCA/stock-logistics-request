@@ -25,7 +25,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[stock_request](stock_request/) | 18.0.1.0.0 | [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Internal request for stock
+[stock_request](stock_request/) | 18.0.1.1.0 | [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Internal request for stock
 [stock_request_mrp](stock_request_mrp/) | 18.0.1.0.0 | [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Manufacturing request for stock
 [stock_request_purchase](stock_request_purchase/) | 18.0.1.0.0 | [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Internal request for stock
 [stock_return_request](stock_return_request/) | 18.0.1.0.0 |  | Stock Return Request
