@@ -1,7 +1,7 @@
 # Copyright 2017-2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.tests import common, new_test_user
 
 from ..hooks import uninstall_hook
@@ -51,19 +51,17 @@ class TestStockRequestSubmit(common.TransactionCase):
                 default_code="SH",
                 uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=False,
-                detailed_type="product",
+                type="consu",
             )
         )
-        cls.product.route_ids = [(6, 0, cls.route.ids)]
+        cls.product.route_ids = [Command.set(cls.route.ids)]
         vals = {
             "company_id": cls.main_company.id,
             "warehouse_id": cls.warehouse.id,
             "location_id": cls.warehouse.lot_stock_id.id,
             "expected_date": fields.Datetime.now(),
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": cls.product.id,
                         "product_uom_id": cls.product.uom_id.id,
@@ -81,13 +79,13 @@ class TestStockRequestSubmit(common.TransactionCase):
             cls.env,
             login="stock_request_user2",
             groups="stock_request.group_stock_request_user",
-            company_ids=[(6, 0, [cls.main_company.id, cls.company_2.id])],
+            company_ids=[Command.set([cls.main_company.id, cls.company_2.id])],
         )
         cls.stock_request_manager = new_test_user(
             cls.env,
             login="stock_request_manager",
             groups="stock_request.group_stock_request_manager",
-            company_ids=[(6, 0, [cls.main_company.id, cls.company_2.id])],
+            company_ids=[Command.set([cls.main_company.id, cls.company_2.id])],
         )
         cls.order = cls.request_order.with_user(cls.stock_request_user).create(vals)
         cls.stock_request = cls.order.stock_request_ids

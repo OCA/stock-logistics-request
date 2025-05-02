@@ -12,6 +12,7 @@
                     name="action_submit"
                     string="Submit"
                     type="object"
+                    class="oe_highlight"
                     invisible="state != 'draft'"
                 />
             </button>
