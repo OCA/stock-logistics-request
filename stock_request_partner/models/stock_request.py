@@ -32,5 +32,6 @@ class StockRequest(models.Model):
 
     @api.constrains("order_id", "partner_id")
     def check_order_partner_id(self):
-        if self.order_id and self.order_id.partner_id != self.partner_id:
-            raise ValidationError(_("Partner must be equal to the order"))
+        for rec in self:
+            if rec.order_id and rec.order_id.partner_id != rec.partner_id:
+                raise ValidationError(_("Partner must be equal to the order"))

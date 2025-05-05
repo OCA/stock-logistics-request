@@ -21,7 +21,7 @@
                 }</attribute>
             </xpath>
             <xpath expr="//field[@name='stock_request_ids']/tree" position="inside">
-                <field name="partner_id" readonly="1" />
+                <field name="partner_id" readonly="1" force_save="1" />
             </xpath>
         </field>
     </record>
