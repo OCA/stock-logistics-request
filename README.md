@@ -22,7 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [stock_request](stock_request/) | 17.0.1.1.5 | [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Internal request for stock
-[stock_request_direction](stock_request_direction/) | 17.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | From or to your warehouse?
+[stock_request_direction](stock_request_direction/) | 17.0.1.1.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | From or to your warehouse?
 [stock_request_kanban](stock_request_kanban/) | 17.0.1.0.2 | [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) | Adds a stock request order, and takes stock requests as lines
 [stock_request_mrp](stock_request_mrp/) | 17.0.1.0.1 | [![LoisRForgeFlow](https://github.com/LoisRForgeFlow.png?size=30px)](https://github.com/LoisRForgeFlow) [![etobella](https://github.com/etobella.png?size=30px)](https://github.com/etobella) | Manufacturing request for stock
 [stock_request_picking_type](stock_request_picking_type/) | 17.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | Add Stock Requests to the Inventory App
