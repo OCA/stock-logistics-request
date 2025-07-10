@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<templates id="template" xml:space="preserve">
+    <button
+        t-name="StockRequestKanban.Buttons"
+        class="btn-primary btn mr-1"
+        type="button"
+        style="margin-right: 10px;"
+    >
+        Scan Kanban
+    </button>
+</templates>
