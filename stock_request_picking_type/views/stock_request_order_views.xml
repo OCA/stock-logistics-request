@@ -1,5 +1,4 @@
 <odoo>
-
     <record id="stock_request_order_search" model="ir.ui.view">
         <field name="name">stock.request.order.search</field>
         <field name="model">stock.request.order</field>
@@ -56,5 +55,4 @@
         parent="stock.menu_stock_warehouse_mgmt"
         sequence="30"
     />
-
 </odoo>
