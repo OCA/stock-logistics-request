@@ -31,7 +31,7 @@
                     'default_state': state,
                     }</attribute>
             </xpath>
-            <xpath expr="//tree/field[@name='warehouse_id']" position="after">
+            <xpath expr="//list/field[@name='warehouse_id']" position="after">
                 <field name="direction" column_invisible="1" />
             </xpath>
         </field>
