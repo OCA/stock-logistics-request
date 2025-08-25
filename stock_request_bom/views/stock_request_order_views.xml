@@ -9,10 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='picking_policy']" position="after">
                 <field name="product_bom_id" />
-                <field
-                    name="quantity_bom"
-                    attrs="{'invisible': [('product_bom_id', '=', False)]}"
-                />
+                <field name="quantity_bom" invisible="not product_bom_id" />
             </xpath>
         </field>
     </record>
