@@ -1,6 +1,7 @@
 # Copyright 2019-2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import api, models
+from odoo import _, api, models
+from odoo.exceptions import UserError
 
 
 class StockRequestOrder(models.Model):
@@ -16,3 +17,15 @@ class StockRequestOrder(models.Model):
         res = super()._get_under_validation_exceptions()
         res.append("route_id")
         return res
+
+    def action_confirm(self):
+        for order in self:
+            if order.validation_status == "rejected":
+                raise UserError(
+                    _(
+                        "You cannot confirm a stock request order that has been rejected."
+                    )
+                )
+            if order.validation_status == "pending":
+                order.validate_tier()
+        return super().action_confirm()

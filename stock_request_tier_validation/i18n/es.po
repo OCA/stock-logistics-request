@@ -136,6 +136,13 @@ msgstr "Estado de la Validación"
 msgid "Validations"
 msgstr "Validaciones"
 
+#. module: stock_request_tier_validation
+#. odoo-python
+#: code:addons/stock_request_tier_validation/models/stock_request_order.py:0
+#, python-format
+msgid "You cannot confirm a stock request order that has been rejected."
+msgstr "No puedes confirmar un pedido de existencias que ha sido rechazado."
+
 #~ msgid "Rejected"
 #~ msgstr "Rechazado"
 

@@ -119,6 +119,13 @@ msgid "Validated"
 msgstr "Approvata"
 
 #. module: stock_request_tier_validation
+#. odoo-python
+#: code:addons/stock_request_tier_validation/models/stock_request_order.py:0
+#, python-format
+msgid "You cannot confirm a stock request order that has been rejected."
+msgstr "Non puoi confermare una richiesta di magazzino che è stata rifiutata."
+
+#. module: stock_request_tier_validation
 #: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request__validated_message
 #: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request_order__validated_message
 msgid "Validated Message"
