@@ -74,6 +74,12 @@ msgid "Next Review"
 msgstr "Siguiente Revisión"
 
 #. module: stock_request_tier_validation
+#: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request__rejected
+#: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request_order__rejected
+msgid "Rejected"
+msgstr "Rechazado"
+
+#. module: stock_request_tier_validation
 #: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request__rejected_message
 #: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request_order__rejected_message
 msgid "Rejected Message"
@@ -113,6 +119,8 @@ msgid "To Validate Message"
 msgstr "Para validar el mensaje"
 
 #. module: stock_request_tier_validation
+#: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request__validated
+#: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request_order__validated
 #: model_terms:ir.ui.view,arch_db:stock_request_tier_validation.view_stock_request_filter
 #: model_terms:ir.ui.view,arch_db:stock_request_tier_validation.view_stock_request_order_filter
 msgid "Validated"
@@ -135,9 +143,6 @@ msgstr "Estado de la Validación"
 #: model:ir.model.fields,field_description:stock_request_tier_validation.field_stock_request_order__review_ids
 msgid "Validations"
 msgstr "Validaciones"
-
-#~ msgid "Rejected"
-#~ msgstr "Rechazado"
 
 #~ msgid ""
 #~ "<i class=\"fa fa-info-circle\"/>This Stock Request needs to be\n"
