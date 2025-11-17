@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.0\n"
+"Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -14,48 +14,27 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: stock_request_analytic
-#: model:ir.model,name:stock_request_analytic.model_account_analytic_account
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request__analytic_account_id
-msgid "Analytic Account"
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request__analytic_distribution
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_distribution
+msgid "Analytic Distribution"
 msgstr ""
 
 #. module: stock_request_analytic
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_account_ids
-#: model_terms:ir.ui.view,arch_db:stock_request_analytic.stock_request_order_form
-msgid "Analytic Accounts"
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request__analytic_distribution_search
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_distribution_search
+msgid "Analytic Distribution Search"
 msgstr ""
 
 #. module: stock_request_analytic
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_count
-msgid "Analytic Count"
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request__analytic_precision
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_precision
+msgid "Analytic Precision"
 msgstr ""
 
 #. module: stock_request_analytic
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_tag_count
-msgid "Analytic Tag Count"
-msgstr ""
-
-#. module: stock_request_analytic
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request__analytic_tag_ids
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__analytic_tag_ids
-#: model_terms:ir.ui.view,arch_db:stock_request_analytic.stock_request_order_form
-msgid "Analytic Tags"
-msgstr ""
-
-#. module: stock_request_analytic
-#: code:addons/stock_request_analytic/models/stock_request_order.py:0
-#, python-format
-msgid "Analytic type (analytic_type) not present in the context"
-msgstr ""
-
-#. module: stock_request_analytic
-#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__default_analytic_account_id
-msgid "Default Analytic Account"
-msgstr ""
-
-#. module: stock_request_analytic
-#: model:ir.model.fields,help:stock_request_analytic.field_stock_request_order__default_analytic_account_id
-msgid "Set this if you want to define a default analytic account on requests"
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request__distribution_analytic_account_ids
+#: model:ir.model.fields,field_description:stock_request_analytic.field_stock_request_order__distribution_analytic_account_ids
+msgid "Distribution Analytic Account"
 msgstr ""
 
 #. module: stock_request_analytic
@@ -66,15 +45,4 @@ msgstr ""
 #. module: stock_request_analytic
 #: model:ir.model,name:stock_request_analytic.model_stock_request_order
 msgid "Stock Request Order"
-msgstr ""
-
-#. module: stock_request_analytic
-#: model:ir.model.fields,field_description:stock_request_analytic.field_account_analytic_account__stock_request_ids
-#: model_terms:ir.ui.view,arch_db:stock_request_analytic.view_account_analytic_account_form
-msgid "Stock Requests"
-msgstr ""
-
-#. module: stock_request_analytic
-#: model:ir.model,name:stock_request_analytic.model_stock_rule
-msgid "Stock Rule"
 msgstr ""
