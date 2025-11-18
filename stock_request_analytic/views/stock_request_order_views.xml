@@ -14,7 +14,7 @@
                     widget="analytic_distribution"
                 />
             </xpath>
-            <xpath expr="//field[@name='stock_request_ids']/tree" position="inside">
+            <xpath expr="//field[@name='stock_request_ids']/list" position="inside">
                 <field
                     name="analytic_distribution"
                     groups="analytic.group_analytic_accounting"

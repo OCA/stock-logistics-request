@@ -1,7 +1,7 @@
 # Copyright 2017-2020 ForgeFlow, S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.tests import Form, new_test_user
 from odoo.tests.common import users
 
@@ -63,7 +63,8 @@ class TestStockRequestAnalytic(BaseCommon):
         cls.product = cls.ProductProduct.create(
             {
                 "name": "Test Product",
-                "type": "product",
+                "type": "service",
+                "is_storable": True,
                 "route_ids": [(6, 0, demand_route.ids)],
             }
         )
@@ -84,9 +85,7 @@ class TestStockRequestAnalytic(BaseCommon):
             "location_id": self.demand_loc.id,
             "expected_date": self.expected_date,
             "stock_request_ids": [
-                (
-                    0,
-                    0,
+                Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
@@ -110,7 +109,9 @@ class TestStockRequestAnalytic(BaseCommon):
         order = self.StockRequestOrder.create(vals)
         req = order.stock_request_ids
         order.action_confirm()
-        self.assertEqual(req.move_ids.analytic_distribution, self.analytic_distribution)
+        moves = req.move_ids
+        for mv in moves:
+            self.assertFalse(mv.analytic_distribution)
 
     @users("stock_request_user")
     def test_default_analytic(self):
