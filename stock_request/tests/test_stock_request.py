@@ -1345,135 +1345,6 @@ class TestStockRequestOrderState(TestStockRequest):
             "Quantity in progress should be the rounded down after confirmation",
         )
 
-    def test_route_id_propagation_on_creation(self):
-        order_vals = {
-            "company_id": self.main_company.id,
-            "warehouse_id": self.warehouse.id,
-            "location_id": self.warehouse.lot_stock_id.id,
-            "expected_date": fields.Datetime.now(),
-            "route_id": self.route.id,
-            "stock_request_ids": [
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 5.0,
-                    },
-                ),
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 10.0,
-                    },
-                ),
-            ],
-        }
-        order = self.request_order.create(order_vals)
-        self.assertEqual(len(order.stock_request_ids), 2)
-        order.write({"route_id": self.route_3})
-        for request in order.stock_request_ids:
-            self.assertEqual(
-                request.route_id.id,
-                order.route_id.id,
-                "The route_id from stock.request.order has not "
-                "been set in the associated stock.requests.",
-            )
-
-    def test_compute_route_id_consistency_1(self):
-        order_vals = {
-            "company_id": self.main_company.id,
-            "warehouse_id": self.warehouse.id,
-            "location_id": self.warehouse.lot_stock_id.id,
-            "expected_date": fields.Datetime.now(),
-            "stock_request_ids": [
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 5.0,
-                        "route_id": self.route.id,
-                    },
-                ),
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 10.0,
-                        "route_id": self.route_3.id,
-                    },
-                ),
-            ],
-        }
-        order = self.request_order.create(order_vals)
-        order._compute_route_id()
-        self.assertFalse(
-            order.route_id,
-            "Route ID should be False due to inconsistent routes in stock requests.",
-        )
-
-    def test_compute_route_id_consistency_2(self):
-        order_vals = {
-            "company_id": self.main_company.id,
-            "warehouse_id": self.warehouse.id,
-            "location_id": self.warehouse.lot_stock_id.id,
-            "expected_date": fields.Datetime.now(),
-            "stock_request_ids": [
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 5.0,
-                        "route_id": self.route.id,
-                    },
-                ),
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 10.0,
-                        "route_id": self.route.id,
-                    },
-                ),
-            ],
-        }
-        order = self.request_order.create(order_vals)
-        order._compute_route_id()
-        self.assertEqual(order.route_id, self.route)
-
-    def test_inverse_route_id_propagation(self):
-        order_vals = {
-            "company_id": self.main_company.id,
-            "warehouse_id": self.warehouse.id,
-            "location_id": self.warehouse.lot_stock_id.id,
-            "expected_date": fields.Datetime.now(),
-            "stock_request_ids": [
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 5.0,
-                    },
-                ),
-                Command.create(
-                    {
-                        "product_id": self.product.id,
-                        "product_uom_id": self.product.uom_id.id,
-                        "product_uom_qty": 10.0,
-                    },
-                ),
-            ],
-        }
-        order = self.request_order.create(order_vals)
-        order.route_id = self.route.id
-        order._inverse_route_id()
-        for request in order.stock_request_ids:
-            self.assertEqual(
-                request.route_id.id,
-                self.route.id,
-                "Route ID should propagate to all stock requests.",
-            )
-
     def test_onchange_route_id_propagation(self):
         order_vals = {
             "company_id": self.main_company.id,
@@ -1641,3 +1512,69 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
         order = self.request_order.with_user(self.stock_request_user).create(vals)
         order.with_user(self.stock_request_manager).action_confirm()
         self.assertEqual(len(order.mapped("picking_ids")), 2)
+
+    def test_route_consistency(self):
+        vals = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "route_id": self.route.id,
+            "expected_date": fields.Datetime.now(),
+        }
+        order = self.request_order.with_user(self.stock_request_user).create(vals)
+        self.assertEqual(
+            order.route_id, self.route, "Order should have the initial route set"
+        )
+        self.product_test.route_ids = [Command.set(self.route.ids)]
+        line_vals = {
+            "product_id": self.product_test.id,
+            "product_uom_id": self.product_test.uom_id.id,
+            "product_uom_qty": 5.0,
+            "order_id": order.id,
+        }
+        line = self.env["stock.request"].new(line_vals)
+        line.onchange_product_id()
+        self.assertEqual(
+            line.route_id, self.route, "Line should auto-fill route from Order"
+        )
+        line_vals["route_id"] = line.route_id.id
+        line1 = self.stock_request.with_user(self.stock_request_user).create(line_vals)
+        self.assertEqual(line1.route_id, self.route)
+        self.assertEqual(
+            order.route_id,
+            self.route,
+            "Order route should be preserved after adding line",
+        )
+        line2 = self.stock_request.with_user(self.stock_request_user).create(
+            {
+                "order_id": order.id,
+                "product_id": self.product_test.id,
+                "product_uom_id": self.product_test.uom_id.id,
+                "product_uom_qty": 1.0,
+            }
+        )
+        self.assertEqual(
+            order.route_id,
+            self.route,
+            "Order route should be preserved when adding line",
+        )
+        # Test clearing route on line clears order route
+        line1.route_id = False
+        line1.onchange_route_id()
+        self.assertFalse(
+            order.route_id, "Order route should be cleared when line route is cleared"
+        )
+        # Test setting route on order propagates to lines
+        order.route_id = self.route
+        order._onchange_route_id()
+        self.assertEqual(
+            line1.route_id, self.route, "Line 1 should have route propagated"
+        )
+        self.assertEqual(
+            line2.route_id, self.route, "Line 2 should have route propagated"
+        )
+        # Test clearing route on order clears all lines
+        order.route_id = False
+        order._onchange_route_id()
+        self.assertFalse(line1.route_id, "Line 1 route should be cleared")
+        self.assertFalse(line2.route_id, "Line 2 route should be cleared")

@@ -136,8 +136,7 @@ class StockRequestOrder(models.Model):
 
     route_id = fields.Many2one(
         "stock.route",
-        compute="_compute_route_id",
-        inverse="_inverse_route_id",
+        string="Route",
         readonly=True,
         store=True,
         help="The route related to a stock request order",
@@ -188,25 +187,10 @@ class StockRequestOrder(models.Model):
             result |= location
         return result
 
-    @api.depends("stock_request_ids")
-    def _compute_route_id(self):
-        for order in self:
-            if order.stock_request_ids:
-                first_route = order.stock_request_ids[0].route_id or False
-                if any(r.route_id != first_route for r in order.stock_request_ids):
-                    first_route = False
-                order.route_id = first_route
-
-    def _inverse_route_id(self):
-        for order in self:
-            if order.route_id:
-                order.stock_request_ids.write({"route_id": order.route_id.id})
-
     @api.onchange("route_id")
     def _onchange_route_id(self):
-        if self.route_id:
-            for request in self.stock_request_ids:
-                request.route_id = self.route_id
+        for request in self.stock_request_ids:
+            request.route_id = self.route_id
 
     @api.depends("stock_request_ids.state")
     def _compute_state(self):

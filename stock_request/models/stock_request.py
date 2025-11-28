@@ -350,6 +350,31 @@ class StockRequest(models.Model):
             "reference": self.name,
         }
 
+    @api.onchange("product_id")
+    def onchange_product_id(self):
+        if self.product_id:
+            self.product_uom_id = self.product_id.uom_id
+            order_route = self.order_id.route_id or self.env["stock.route"].browse(
+                self.env.context.get("default_route_id")
+            )
+            if order_route:
+                is_compatible = True
+                if order_route.product_selectable:
+                    product_routes = (
+                        self.product_id.route_ids
+                        | self.product_id.categ_id.total_route_ids
+                    )
+                    if order_route not in product_routes:
+                        is_compatible = False
+                if is_compatible:
+                    self.route_id = order_route.id
+
+    @api.onchange("route_id")
+    def onchange_route_id(self):
+        if self.order_id and self.order_id.route_id:
+            if self.route_id != self.order_id.route_id:
+                self.order_id.route_id = False
+
     def _prepare_stock_request_allocation(self, move):
         return {
             "stock_request_id": self.id,
@@ -461,6 +486,23 @@ class StockRequest(models.Model):
             if "order_id" in upd_vals:
                 order_id = self.env["stock.request.order"].browse(upd_vals["order_id"])
                 upd_vals["expected_date"] = order_id.expected_date
+                if (
+                    not upd_vals.get("route_id")
+                    and order_id.route_id
+                    and upd_vals.get("product_id")
+                ):
+                    product = self.env["product.product"].browse(upd_vals["product_id"])
+                    order_route = order_id.route_id
+                    is_compatible = True
+                    if order_route.product_selectable:
+                        product_routes = (
+                            product.route_ids | product.categ_id.total_route_ids
+                        )
+                        if order_route not in product_routes:
+                            is_compatible = False
+
+                    if is_compatible:
+                        upd_vals["route_id"] = order_route.id
             else:
                 upd_vals["expected_date"] = self._get_expected_date()
             vals_list_upd.append(upd_vals)
