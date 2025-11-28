@@ -459,10 +459,14 @@ class StockReturnRequestLine(models.Model):
             domain += [
                 ("location_dest_id", "=", self.request_id.return_from_location.id)
             ]
-        # Return to supplier. Search for moves that came from that location
+        # Return to supplier. Search for moves that brought products to current location
         else:
             domain += [
-                ("location_id", "child_of", self.request_id.return_to_location.id)
+                (
+                    "location_dest_id",
+                    "child_of",
+                    self.request_id.return_from_location.id,
+                )
             ]
         return domain
 
