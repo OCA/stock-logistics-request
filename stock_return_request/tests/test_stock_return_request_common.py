@@ -195,6 +195,7 @@ class StockReturnRequestCase(TransactionCase):
                             "location_id": cls.supplier_loc.id,
                             "location_dest_id": cls.wh1.lot_stock_id.id,
                             "quantity": 20,
+                            "picked": True,
                         },
                     ),
                     Command.create(
@@ -206,6 +207,7 @@ class StockReturnRequestCase(TransactionCase):
                             "location_id": cls.supplier_loc.id,
                             "location_dest_id": cls.wh1.lot_stock_id.id,
                             "quantity": 10,
+                            "picked": True,
                         },
                     ),
                 ],
