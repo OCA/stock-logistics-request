@@ -8,8 +8,12 @@
         <field name="inherit_id" ref="stock_request.stock_request_order_form" />
         <field name="arch" type="xml">
             <xpath expr="//field[@name='picking_policy']" position="after">
-                <field name="product_bom_id" />
-                <field name="quantity_bom" invisible="not product_bom_id" />
+                <field name="product_bom_id" readonly="state != 'draft'" />
+                <field
+                    name="quantity_bom"
+                    invisible="not product_bom_id"
+                    readonly="state != 'draft'"
+                />
             </xpath>
         </field>
     </record>
