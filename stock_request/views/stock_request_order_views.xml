@@ -138,6 +138,7 @@
                             'default_procurement_group_id': procurement_group_id,
                             'default_company_id': company_id,
                             'default_state': state,
+                            'default_route_id': route_id,
                             }"
                                 readonly="state != 'draft'"
                             >
