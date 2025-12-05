@@ -4,14 +4,14 @@
 from odoo import api, models
 
 
-class ProcurementGroup(models.Model):
-    _inherit = "procurement.group"
+class StockRule(models.Model):
+    _inherit = "stock.rule"
 
     @api.model
     def run(self, procurements, raise_user_error=True):
-        indexes_to_pop = []
+        """Override to update the origin with the stock request order name."""
         new_procs = []
-        for i, procurement in enumerate(procurements):
+        for procurement in procurements:
             if "stock_request_id" in procurement.values and procurement.values.get(
                 "stock_request_id"
             ):
@@ -19,11 +19,10 @@ class ProcurementGroup(models.Model):
                     procurement.values.get("stock_request_id")
                 )
                 if req.order_id:
+                    # Replace the origin with the order name
                     new_procs.append(procurement._replace(origin=req.order_id.name))
-                    indexes_to_pop.append(i)
-        if new_procs:
-            indexes_to_pop.reverse()
-            for index in indexes_to_pop:
-                procurements.pop(index)
-            procurements.extend(new_procs)
-        return super().run(procurements, raise_user_error=raise_user_error)
+                else:
+                    new_procs.append(procurement)
+            else:
+                new_procs.append(procurement)
+        return super().run(new_procs, raise_user_error=raise_user_error)

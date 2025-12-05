@@ -5,7 +5,7 @@
         <field name="type">ir.actions.server</field>
         <field name="state">code</field>
         <field
-            name="groups_id"
+            name="group_ids"
             eval="[(4, ref('stock_request.group_stock_request_user')),
             (4, ref('stock_request.group_stock_request_manager'))]"
         />
@@ -23,7 +23,7 @@ action = records.env['stock.request.order']._create_from_product_multiselect(rec
         <field name="type">ir.actions.server</field>
         <field name="state">code</field>
         <field
-            name="groups_id"
+            name="group_ids"
             eval="[(4, ref('stock_request.group_stock_request_user')),
             (4, ref('stock_request.group_stock_request_manager'))]"
         />
