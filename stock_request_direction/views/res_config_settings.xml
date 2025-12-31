@@ -1,0 +1,7 @@
+<odoo>
+    <!-- Copyright (c) 2019 Open Source Integrators
+         License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html). -->
+    <record model="res.config.settings" id="res_config_settings_direction">
+        <field name="stock_request_allow_virtual_loc" eval="1" />
+    </record>
+</odoo>
