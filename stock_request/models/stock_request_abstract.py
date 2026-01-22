@@ -157,10 +157,7 @@ class StockRequest(models.AbstractModel):
                 and rec.product_id.company_id != rec.company_id
             ):
                 raise ValidationError(
-                    _(
-                        "You have entered a product that is assigned "
-                        "to another company."
-                    )
+                    _("You have entered a product that is assigned to another company.")
                 )
             if (
                 rec.location_id.company_id
@@ -185,10 +182,7 @@ class StockRequest(models.AbstractModel):
                 and rec.route_id.company_id != rec.company_id
             ):
                 raise ValidationError(
-                    _(
-                        "You have entered a route that is "
-                        "assigned to another company."
-                    )
+                    _("You have entered a route that is assigned to another company.")
                 )
 
     @api.constrains("product_id")
