@@ -12,8 +12,7 @@ class StockMoveLine(models.Model):
     @api.model
     def _stock_request_confirm_done_message_content(self, message_data):
         title = Markup("<h3>%s</h3>") % _(
-            "Receipt confirmation %(picking_name)s for your Request "
-            "%(request_name)s",
+            "Receipt confirmation %(picking_name)s for your Request %(request_name)s",
             picking_name=message_data["picking_name"],
             request_name=message_data["request_name"],
         )
