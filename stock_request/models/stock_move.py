@@ -1,7 +1,7 @@
 # Copyright 2017-2020 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -43,7 +43,7 @@ class StockMove(models.Model):
             for rec in self
         ):
             raise ValidationError(
-                _(
+                self.env._(
                     "The company of the stock request must match with "
                     "that of the location."
                 )

@@ -25,7 +25,7 @@ class TestStockRequest(BaseCommon):
         )
         cls.main_company = cls.env.ref("base.main_company")
         cls.warehouse = cls.env.ref("stock.warehouse0")
-        cls.categ_unit = cls.env.ref("uom.product_uom_categ_unit")
+        cls.uom_unit = cls.env.ref("uom.product_uom_unit")
         cls.virtual_loc = cls.env.ref("stock.stock_location_customers")
         # common data
         cls.company_2 = cls.env["res.company"].create(
@@ -71,9 +71,8 @@ class TestStockRequest(BaseCommon):
         cls.uom_dozen = cls.env["uom.uom"].create(
             {
                 "name": "Test-DozenA",
-                "category_id": cls.categ_unit.id,
-                "factor_inv": 12,
-                "uom_type": "bigger",
+                "relative_uom_id": cls.uom_unit.id,
+                "relative_factor": 12,
                 "rounding": 0.001,
             }
         )
@@ -232,20 +231,12 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(order.location_id, self.wh2.lot_stock_id)
         self.assertEqual(order.warehouse_id, stock_request.warehouse_id)
 
-        procurement_group = self.env["procurement.group"].create({"name": "TEST"})
-        order.procurement_group_id = procurement_group
-        order.onchange_procurement_group_id()
-        self.assertEqual(
-            order.procurement_group_id, order.stock_request_ids.procurement_group_id
-        )
+        procurement_group = self.env["stock.reference"].create({"name": "TEST"})
+        order.reference_ids = [Command.set(procurement_group.ids)]
+        order.onchange_reference_ids()
+        self.assertEqual(order.reference_ids, order.stock_request_ids.reference_ids)
 
-        order.procurement_group_id = procurement_group
-        order.onchange_procurement_group_id()
-        self.assertEqual(
-            order.procurement_group_id, order.stock_request_ids.procurement_group_id
-        )
         order.picking_policy = "one"
-
         order.onchange_picking_policy()
         self.assertEqual(order.picking_policy, order.stock_request_ids.picking_policy)
 
@@ -282,7 +273,6 @@ class TestStockRequestBase(TestStockRequest):
             {
                 "name": "Wheat",
                 "uom_id": self.env.ref("uom.product_uom_kgm").id,
-                "uom_po_id": self.env.ref("uom.product_uom_kgm").id,
             }
         )
 
@@ -404,15 +394,13 @@ class TestStockRequestBase(TestStockRequest):
     def test_stock_request_order_validations_04(self):
         """Testing the discrepancy in procurement_group_id between
         stock request and order"""
-        procurement_group = self.env["procurement.group"].create(
-            {"name": "Procurement"}
-        )
+        procurement_group = self.env["stock.reference"].create({"name": "Procurement"})
         expected_date = fields.Datetime.now()
         vals = {
             "company_id": self.main_company.id,
             "warehouse_id": self.warehouse.id,
             "location_id": self.warehouse.lot_stock_id.id,
-            "procurement_group_id": procurement_group.id,
+            "reference_ids": [Command.set(procurement_group.ids)],
             "expected_date": expected_date,
             "stock_request_ids": [
                 Command.create(
@@ -1044,7 +1032,7 @@ class TestStockRequestBase(TestStockRequest):
         # If a user does not have stock request rights, they can still trigger
         # the action from the products, so test that they get a friendlier
         # error message.
-        self.stock_request_user.groups_id -= self.stock_request_user_group
+        self.stock_request_user.group_ids -= self.stock_request_user_group
         with self.assertRaises(exceptions.AccessError):
             order.with_user(self.stock_request_user)._create_from_product_multiselect(
                 template_a + template_b
@@ -1107,7 +1095,7 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(order.stock_request_ids[0].location_id, self.virtual_loc)
 
     def test_cancellation(self):
-        group = self.env["procurement.group"].create({"name": "Procurement group"})
+        group = self.env["stock.reference"].create({"name": "Procurement group"})
         product2 = self._create_product("SH2", "Shoes2", False)
         product3 = self._create_product("SH3", "Shoes3", False)
         self.product.type = "consu"
@@ -1117,13 +1105,13 @@ class TestStockRequestBase(TestStockRequest):
             "company_id": self.main_company.id,
             "warehouse_id": self.warehouse.id,
             "location_id": self.virtual_loc.id,
-            "procurement_group_id": group.id,
+            "reference_ids": [Command.set(group.ids)],
             "stock_request_ids": [
                 Command.create(
                     {
                         "product_id": self.product.id,
                         "product_uom_id": self.product.uom_id.id,
-                        "procurement_group_id": group.id,
+                        "reference_ids": [Command.set(group.ids)],
                         "product_uom_qty": 5.0,
                         "company_id": self.main_company.id,
                         "warehouse_id": self.warehouse.id,
@@ -1134,7 +1122,7 @@ class TestStockRequestBase(TestStockRequest):
                     {
                         "product_id": product2.id,
                         "product_uom_id": self.product.uom_id.id,
-                        "procurement_group_id": group.id,
+                        "reference_ids": [Command.set(group.ids)],
                         "product_uom_qty": 5.0,
                         "company_id": self.main_company.id,
                         "warehouse_id": self.warehouse.id,
@@ -1145,7 +1133,7 @@ class TestStockRequestBase(TestStockRequest):
                     {
                         "product_id": product3.id,
                         "product_uom_id": self.product.uom_id.id,
-                        "procurement_group_id": group.id,
+                        "reference_ids": [Command.set(group.ids)],
                         "product_uom_qty": 5.0,
                         "company_id": self.main_company.id,
                         "warehouse_id": self.warehouse.id,
@@ -1597,7 +1585,7 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
                 name=name,
                 default_code=default_code,
                 uom_id=self.uom_unit.id,
-                uom_po_id=self.uom_dozen.id,
+                uom_ids=[Command.set(self.uom_dozen.ids)],
                 type="consu",
                 is_storable=True,
                 **vals,

@@ -3,7 +3,7 @@
 
 from markupsafe import Markup
 
-from odoo import _, api, models
+from odoo import api, models
 
 
 class StockMoveLine(models.Model):
@@ -11,13 +11,13 @@ class StockMoveLine(models.Model):
 
     @api.model
     def _stock_request_confirm_done_message_content(self, message_data):
-        title = Markup("<h3>%s</h3>") % _(
+        title = Markup("<h3>%s</h3>") % self.env._(
             "Receipt confirmation %(picking_name)s for your Request %(request_name)s",
             picking_name=message_data["picking_name"],
             request_name=message_data["request_name"],
         )
 
-        body = Markup("<p>%s</p>") % _(
+        body = Markup("<p>%s</p>") % self.env._(
             "The following requested items from Stock Request %(request_name)s "
             "have now been received in %(location_name)s using Picking "
             "%(picking_name)s:",
@@ -26,7 +26,7 @@ class StockMoveLine(models.Model):
             picking_name=message_data["picking_name"],
         )
 
-        items = Markup("<ul><li><b>%s</b></li></ul>") % _(
+        items = Markup("<ul><li><b>%s</b></li></ul>") % self.env._(
             "%(product_name)s : Transferred quantity %(product_qty)s %(product_uom)s",
             product_name=message_data["product_name"],
             product_qty=message_data["product_qty"],

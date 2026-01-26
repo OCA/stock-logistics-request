@@ -111,8 +111,9 @@
                                 options="{'no_create': True}"
                             />
                             <field
-                                name="procurement_group_id"
+                                name="reference_ids"
                                 groups="stock.group_adv_location"
+                                widget="many2many_tags"
                             />
                             <field
                                 name="company_id"
@@ -122,7 +123,6 @@
                             />
                             <field name="warehouse_id" invisible="1" />
                             <field name="location_id" invisible="1" />
-                            <field name="procurement_group_id" invisible="1" />
                             <field name="company_id" invisible="1" />
                         </group>
                     </group>
@@ -135,7 +135,7 @@
                             'default_picking_policy': picking_policy,
                             'default_warehouse_id': warehouse_id,
                             'default_location_id': location_id,
-                            'default_procurement_group_id': procurement_group_id,
+                            'default_reference_ids': reference_ids,
                             'default_company_id': company_id,
                             'default_state': state,
                             'default_route_id': route_id,
@@ -146,7 +146,7 @@
                                     <field name="name" readonly="1" optional="show" />
                                     <field name="product_id" />
                                     <field
-                                        name="allowed_uom_categ_id"
+                                        name="allowed_uom_ids"
                                         column_invisible="1"
                                     />
                                     <field
@@ -172,10 +172,7 @@
                                     />
                                     <field name="product_uom_id" column_invisible="1" />
                                     <field name="location_id" column_invisible="1" />
-                                    <field
-                                        name="procurement_group_id"
-                                        column_invisible="1"
-                                    />
+                                    <field name="reference_ids" column_invisible="1" />
                                     <field name="company_id" column_invisible="1" />
                                     <field name="state" optional="show" />
                                 </list>
@@ -210,7 +207,7 @@
                     name="cancel"
                     domain="[('state','=','cancel')]"
                 />
-                <group expand="0" string="Group By">
+                <group>
                     <filter
                         string="Warehouse"
                         name="warehouse"

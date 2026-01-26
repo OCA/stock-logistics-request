@@ -1,7 +1,7 @@
 # Copyright 2017-2020 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
@@ -103,24 +103,26 @@ class StockRequest(models.Model):
     product_id = fields.Many2one()
     product_uom_id = fields.Many2one()
     product_uom_qty = fields.Float()
-    procurement_group_id = fields.Many2one()
+    reference_ids = fields.Many2many()
     company_id = fields.Many2one()
     route_id = fields.Many2one()
 
-    _sql_constraints = [
-        ("name_uniq", "unique(name, company_id)", "Stock Request name must be unique")
-    ]
+    _name_uniq = models.Constraint(
+        "unique(name, company_id)", "Stock Request name must be unique"
+    )
 
     @api.constrains("state", "product_qty")
     def _check_qty(self):
         for rec in self:
             if rec.state == "draft" and rec.product_qty <= 0:
                 raise ValidationError(
-                    _("Stock Request product quantity has to be strictly positive.")
+                    self.env._(
+                        "Stock Request product quantity has to be strictly positive."
+                    )
                 )
             elif rec.state != "draft" and rec.product_qty < 0:
                 raise ValidationError(
-                    _("Stock Request product quantity cannot be negative.")
+                    self.env._("Stock Request product quantity cannot be negative.")
                 )
 
     def _get_all_origin_moves(self, move):
@@ -201,7 +203,9 @@ class StockRequest(models.Model):
                 stock_request.order_id
                 and stock_request.order_id.requested_by != stock_request.requested_by
             ):
-                raise ValidationError(_("Requested by must be equal to the order"))
+                raise ValidationError(
+                    self.env._("Requested by must be equal to the order")
+                )
 
     @api.constrains("order_id", "warehouse_id")
     def check_order_warehouse_id(self):
@@ -210,7 +214,9 @@ class StockRequest(models.Model):
                 stock_request.order_id
                 and stock_request.order_id.warehouse_id != stock_request.warehouse_id
             ):
-                raise ValidationError(_("Warehouse must be equal to the order"))
+                raise ValidationError(
+                    self.env._("Warehouse must be equal to the order")
+                )
 
     @api.constrains("order_id", "location_id")
     def check_order_location(self):
@@ -219,17 +225,18 @@ class StockRequest(models.Model):
                 stock_request.order_id
                 and stock_request.order_id.location_id != stock_request.location_id
             ):
-                raise ValidationError(_("Location must be equal to the order"))
+                raise ValidationError(self.env._("Location must be equal to the order"))
 
-    @api.constrains("order_id", "procurement_group_id")
-    def check_order_procurement_group(self):
+    @api.constrains("order_id", "reference_ids")
+    def check_order_reference_ids(self):
         for stock_request in self:
             if (
                 stock_request.order_id
-                and stock_request.order_id.procurement_group_id
-                != stock_request.procurement_group_id
+                and stock_request.order_id.reference_ids != stock_request.reference_ids
             ):
-                raise ValidationError(_("Procurement group must be equal to the order"))
+                raise ValidationError(
+                    self.env._("References must be equal to the order")
+                )
 
     @api.constrains("order_id", "company_id")
     def check_order_company(self):
@@ -238,7 +245,7 @@ class StockRequest(models.Model):
                 stock_request.order_id
                 and stock_request.order_id.company_id != stock_request.company_id
             ):
-                raise ValidationError(_("Company must be equal to the order"))
+                raise ValidationError(self.env._("Company must be equal to the order"))
 
     @api.constrains("order_id", "expected_date")
     def check_order_expected_date(self):
@@ -247,7 +254,9 @@ class StockRequest(models.Model):
                 stock_request.order_id
                 and stock_request.order_id.expected_date != stock_request.expected_date
             ):
-                raise ValidationError(_("Expected date must be equal to the order"))
+                raise ValidationError(
+                    self.env._("Expected date must be equal to the order")
+                )
 
     @api.constrains("order_id", "picking_policy")
     def check_order_picking_policy(self):
@@ -258,7 +267,7 @@ class StockRequest(models.Model):
                 != stock_request.picking_policy
             ):
                 raise ValidationError(
-                    _("The picking policy must be equal to the order")
+                    self.env._("The picking policy must be equal to the order")
                 )
 
     def _action_confirm(self):
@@ -318,7 +327,7 @@ class StockRequest(models.Model):
             and float_compare(self.qty_cancelled, 0, precision_digits=precision) > 0
         )
 
-    def _prepare_procurement_values(self, group_id=False):
+    def _prepare_procurement_values(self, reference_ids=False):
         """Prepare specific key for moves or other components that
         will be created from a procurement rule
         coming from a stock request. This method could be override
@@ -329,7 +338,9 @@ class StockRequest(models.Model):
             "date_planned": self.expected_date,
             "warehouse_id": self.warehouse_id,
             "stock_request_allocation_ids": self.id,
-            "group_id": group_id or self.procurement_group_id.id or False,
+            "reference_ids": reference_ids
+            or self.reference_ids
+            or self.env["stock.reference"],
             "route_ids": self.route_id,
             "stock_request_id": self.id,
         }
@@ -339,7 +350,6 @@ class StockRequest(models.Model):
 
     def _prepare_stock_move(self, qty):
         return {
-            "name": self.product_id.display_name,
             "company_id": self.company_id.id,
             "product_id": self.product_id.id,
             "product_uom_qty": qty,
@@ -380,9 +390,9 @@ class StockRequest(models.Model):
 
     def _action_launch_procurement_rule(self):
         """
-        Launch procurement group (if not enough stock is available) run method
+        Launch stock rule (if not enough stock is available) run method
         with required/custom fields genrated by a
-        stock request. procurement group will launch '_run_move',
+        stock request. stock rule will launch '_run_move',
         '_run_buy' or '_run_manufacture'
         depending on the stock request product rule.
         """
@@ -416,12 +426,12 @@ class StockRequest(models.Model):
                     continue
 
             values = request._prepare_procurement_values(
-                group_id=request.procurement_group_id
+                reference_ids=request.reference_ids
             )
             try:
                 procurements = []
                 procurements.append(
-                    self.env["procurement.group"].Procurement(
+                    self.env["stock.rule"].Procurement(
                         request.product_id,
                         request.product_uom_qty,
                         request.product_uom_id,
@@ -432,7 +442,7 @@ class StockRequest(models.Model):
                         values,
                     )
                 )
-                self.env["procurement.group"].run(procurements)
+                self.env["stock.rule"].run(procurements)
             except UserError as error:
                 errors.append(str(error))
         if errors:
@@ -466,7 +476,10 @@ class StockRequest(models.Model):
             vals_list_upd.append(upd_vals)
         return super().create(vals_list_upd)
 
-    def unlink(self):
+    def _check_before_unlink(self):
         if self.filtered(lambda r: r.state != "draft"):
-            raise UserError(_("Only requests on draft state can be unlinked"))
+            raise UserError(self.env._("Only requests on draft state can be unlinked"))
+
+    def unlink(self):
+        self._check_before_unlink()
         return super().unlink()

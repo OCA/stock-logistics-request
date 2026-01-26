@@ -1,7 +1,7 @@
 # Copyright 2018 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, api, models
+from odoo import api, models
 from odoo.exceptions import ValidationError
 
 
@@ -19,7 +19,7 @@ class StockRoute(models.Model):
             for rec in self
         ):
             raise ValidationError(
-                _(
+                self.env._(
                     "You cannot change the company of the route, as it is "
                     "already assigned to stock requests that belong to "
                     "another company."
