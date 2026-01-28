@@ -18,7 +18,7 @@ class WizardStockRequestOrderKanban(models.TransientModel):
         if self.order_id.stock_request_ids.filtered(
             lambda r: r.kanban_id == self.kanban_id
         ):
-            self.status = self.env._("Barcode %s is on the order") % barcode
+            self.status = self.env._("Barcode %s is on the order", barcode)
             self.status_state = 1
             return False
         if self.order_id.state != "draft":
@@ -30,11 +30,10 @@ class WizardStockRequestOrderKanban(models.TransientModel):
         elif self.order_id.company_id != self.kanban_id.company_id:
             raise ValidationError(self.env._("Company must be the same"))
         if (
-            self.kanban_id.procurement_group_id
-            and self.order_id.procurement_group_id
-            != self.kanban_id.procurement_group_id
+            self.kanban_id.reference_ids
+            and self.order_id.reference_ids != self.kanban_id.reference_ids
         ):
-            raise ValidationError(self.env._("Procurement group must be the same"))
+            raise ValidationError(self.env._("References must be the same"))
         if self.order_id.location_id != self.kanban_id.location_id:
             raise ValidationError(self.env._("Location must be the same"))
         if self.order_id.warehouse_id != self.kanban_id.warehouse_id:

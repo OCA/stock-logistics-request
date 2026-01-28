@@ -2,7 +2,7 @@
 # Copyright 2017-2024 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import fields, models
+from odoo import Command, fields, models
 
 
 class WizardStockRequestKanban(models.TransientModel):
@@ -39,7 +39,7 @@ class WizardStockRequestKanban(models.TransientModel):
     def stock_request_kanban_values(self):
         return {
             "company_id": self.kanban_id.company_id.id,
-            "procurement_group_id": self.kanban_id.procurement_group_id.id or False,
+            "reference_ids": [Command.set(self.kanban_id.reference_ids.ids)],
             "location_id": self.kanban_id.location_id.id or False,
             "warehouse_id": self.kanban_id.warehouse_id.id or False,
             "product_id": self.kanban_id.product_id.id,

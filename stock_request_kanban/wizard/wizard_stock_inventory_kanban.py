@@ -22,13 +22,13 @@ class WizardStockInventoryKanban(models.TransientModel):
         if not self.inventory_kanban_id.kanban_ids.filtered(
             lambda r: r == self.kanban_id
         ):
-            self.status = self.env._("Barcode %s is not in the inventory") % barcode
+            self.status = self.env._("Barcode %s is not in the inventory", barcode)
             self.status_state = 1
             return False
         if self.inventory_kanban_id.scanned_kanban_ids.filtered(
             lambda r: r == self.kanban_id
         ):
-            self.status = self.env._("Barcode %s is already scanned") % barcode
+            self.status = self.env._("Barcode %s is already scanned", barcode)
             self.status_state = 1
             return False
         return res

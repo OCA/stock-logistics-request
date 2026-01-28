@@ -17,13 +17,11 @@ class WizardStockRequestKanbanAbstract(models.AbstractModel):
     def on_barcode_scanned(self, barcode):
         self.kanban_id = self.env["stock.request.kanban"].search_barcode(barcode)
         if not self.kanban_id:
-            self.status = (
-                self.env._(
-                    "Barcode %s does not correspond to any "
-                    "Kanban. Try with another barcode or "
-                    "press Close to finish scanning."
-                )
-                % barcode
+            self.status = self.env._(
+                "Barcode %s does not correspond to any "
+                "Kanban. Try with another barcode or "
+                "press Close to finish scanning.",
+                barcode,
             )
             self.status_state = 1
             return
