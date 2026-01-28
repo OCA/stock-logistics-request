@@ -12,7 +12,7 @@ class TestKanban(TestBaseKanban):
         super().setUp()
         self.main_company = self.env.ref("base.main_company")
         self.warehouse = self.env.ref("stock.warehouse0")
-        self.categ_unit = self.env.ref("uom.product_uom_categ_unit")
+        self.uom_unit = self.env.ref("uom.product_uom_unit")
 
         # common data
         self.company_2 = self.env["res.company"].create({"name": "Comp2"})
@@ -45,9 +45,8 @@ class TestKanban(TestBaseKanban):
         self.uom_dozen = self.env["uom.uom"].create(
             {
                 "name": "Test-DozenA",
-                "category_id": self.categ_unit.id,
-                "factor_inv": 12,
-                "uom_type": "bigger",
+                "relative_uom_id": self.uom_unit.id,
+                "relative_factor": 12,
                 "rounding": 0.001,
             }
         )

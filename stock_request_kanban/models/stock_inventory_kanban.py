@@ -2,7 +2,7 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
 from odoo import api, fields, models
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class StockInventoryKanban(models.Model):
@@ -74,19 +74,13 @@ class StockInventoryKanban(models.Model):
             rec.count_missing_kanbans = len(rec.missing_kanban_ids)
 
     def _get_inventory_kanban_domain(self):
-        domain = []
+        domain = Domain(1, "=", 1)
         if self.warehouse_ids:
-            domain = expression.AND(
-                (domain, [("warehouse_id", "in", self.warehouse_ids.ids)])
-            )
+            domain &= Domain("warehouse_id", "in", self.warehouse_ids.ids)
         if self.product_ids:
-            domain = expression.AND(
-                (domain, [("product_id", "in", self.product_ids.ids)])
-            )
+            domain &= Domain("product_id", "in", self.product_ids.ids)
         if self.location_ids:
-            domain = expression.AND(
-                (domain, [("location_id", "in", self.location_ids.ids)])
-            )
+            domain &= Domain("location_id", "in", self.location_ids.ids)
         return domain
 
     def _start_inventory_values(self):

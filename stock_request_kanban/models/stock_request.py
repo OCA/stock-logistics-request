@@ -15,5 +15,5 @@ class StockRequest(models.Model):
             "views": [[False, "form"]],
             "target": "new",
             "type": "ir.actions.act_window",
-            "context": self._context,
+            "context": self.env.context,
         }

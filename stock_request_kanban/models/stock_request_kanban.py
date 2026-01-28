@@ -15,6 +15,13 @@ class StockRequestKanban(models.Model):
     active = fields.Boolean(default=True)
     product_template_id = fields.Many2one(related="product_id.product_tmpl_id")
     image_128 = fields.Image(related="product_id.image_128")
+    reference_ids = fields.Many2many(
+        comodel_name="stock.reference",
+        relation="stock_request_kanban_stock_reference_rel",
+        column1="stock_request_kanban_id",
+        column2="stock_reference_id",
+        string="References",
+    )
 
     @api.model_create_multi
     def create(self, vals_list):
