@@ -19,6 +19,11 @@ class TestStockRequestPurchase(TestStockRequest):
                 "seller_ids": [(0, 0, {"partner_id": cls.supplier.id, "delay": 5})],
             }
         )
+        cls.group_purchase_user = cls.env.ref("purchase.group_purchase_user")
+        cls.stock_request_user.write({"group_ids": [(4, cls.group_purchase_user.id)]})
+        cls.stock_request_manager.write(
+            {"group_ids": [(4, cls.group_purchase_user.id)]}
+        )
 
     def test_create_request_01(self):
         """Single Stock request with buy rule"""

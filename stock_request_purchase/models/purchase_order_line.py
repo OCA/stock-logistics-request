@@ -1,7 +1,7 @@
 # Copyright 2017-20 ForgeFlow S.L. (https://www.forgeflow.com)
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
 
@@ -78,7 +78,7 @@ class PurchaseOrderLine(models.Model):
             for pol in self
         ):
             raise ValidationError(
-                _(
+                self.env._(
                     "You cannot link a purchase order line "
                     "to a stock request that belongs to "
                     "another company."
