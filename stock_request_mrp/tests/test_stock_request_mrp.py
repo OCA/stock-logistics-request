@@ -17,8 +17,8 @@ class TestStockRequestMrp(TestStockRequest):
 
     def setUp(self):
         super().setUp()
-        self.stock_request_user.write({"groups_id": [(4, self.mrp_user_group.id)]})
-        self.stock_request_manager.write({"groups_id": [(4, self.mrp_user_group.id)]})
+        self.stock_request_user.write({"group_ids": [(4, self.mrp_user_group.id)]})
+        self.stock_request_manager.write({"group_ids": [(4, self.mrp_user_group.id)]})
         self.route_manufacture = self.warehouse.manufacture_pull_id.route_id
         self.product.write({"route_ids": [(6, 0, self.route_manufacture.ids)]})
         self.raw_1 = self._create_product("SL", "Sole", False)
@@ -31,9 +31,8 @@ class TestStockRequestMrp(TestStockRequest):
         self.uom_pair = self.env["uom.uom"].create(
             {
                 "name": "Test-Pair",
-                "category_id": self.categ_unit.id,
-                "factor_inv": 2,
-                "uom_type": "bigger",
+                "relative_uom_id": self.uom_unit.id,
+                "relative_factor": 2,
                 "rounding": 0.001,
             }
         )
@@ -112,7 +111,7 @@ class TestStockRequestMrp(TestStockRequest):
     def test_stock_request_order_action_cancel(self):
         order = self._create_stock_request(self.stock_request_user, [(self.product, 5)])
         order.action_confirm()
-        production = fields.first(order.stock_request_ids.production_ids)
+        production = order.stock_request_ids.production_ids[:1]
         self.assertEqual(production.state, "confirmed")
         order.with_context(bypass_confirm_wizard=True).action_cancel()
         self.assertEqual(production.state, "cancel")
@@ -120,7 +119,7 @@ class TestStockRequestMrp(TestStockRequest):
     def test_stock_request_order_production_action_cancel(self):
         order = self._create_stock_request(self.stock_request_user, [(self.product, 5)])
         order.action_confirm()
-        production = fields.first(order.stock_request_ids.production_ids)
+        production = order.stock_request_ids.production_ids[:1]
         self.assertEqual(production.state, "confirmed")
         production.action_cancel()
         self.assertEqual(order.state, "cancel")
