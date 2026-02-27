@@ -61,6 +61,26 @@ class StockReturnRequestCase(TransactionCase):
                 "company_id": cls.company.id,
             }
         )
+        cls.picking_type_in = cls.env["stock.picking.type"].create(
+            {
+                "name": "pick type in",
+                "sequence_code": "1",
+                "code": "incoming",
+                "company_id": cls.company.id,
+                "warehouse_id": cls.wh1.id,
+            }
+        )
+        cls.picking_type_out = cls.env["stock.picking.type"].create(
+            {
+                "name": "pick type out",
+                "sequence_code": "2",
+                "code": "outgoing",
+                "company_id": cls.company.id,
+                "warehouse_id": cls.wh1.id,
+            }
+        )
+        cls.picking_type_in.return_picking_type_id = cls.picking_type_out
+        cls.picking_type_out.return_picking_type_id = cls.picking_type_in
         # Locations (WH1 locations are created automatically)
         location_obj = cls.env["stock.location"]
         cls.supplier_loc = location_obj.create(
@@ -118,7 +138,7 @@ class StockReturnRequestCase(TransactionCase):
                 "location_dest_id": cls.wh1.lot_stock_id.id,
                 "partner_id": cls.partner_supplier.id,
                 "company_id": cls.company.id,
-                "picking_type_id": cls.wh1.in_type_id.id,
+                "picking_type_id": cls.picking_type_in.id,
                 "move_ids": [
                     Command.create(
                         {
@@ -294,7 +314,7 @@ class StockReturnRequestCase(TransactionCase):
                 "location_dest_id": cls.customer_loc.id,
                 "company_id": cls.company.id,
                 "partner_id": cls.partner_customer.id,
-                "picking_type_id": cls.wh1.out_type_id.id,
+                "picking_type_id": cls.picking_type_out.id,
                 "move_ids": [
                     Command.create(
                         {

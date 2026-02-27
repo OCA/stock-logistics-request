@@ -56,7 +56,7 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
         picking_customer_lot = self.picking_obj.create(
             {
                 "partner_id": self.partner_customer.id,
-                "picking_type_id": self.wh1.out_type_id.id,
+                "picking_type_id": self.picking_type_out.id,
                 "move_ids": [
                     Command.create(
                         {
