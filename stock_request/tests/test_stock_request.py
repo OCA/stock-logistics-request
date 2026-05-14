@@ -732,6 +732,7 @@ class TestStockRequestBase(TestStockRequest):
 
     def test_create_request_03(self):
         """Multiple stock requests"""
+        group = self.env["stock.reference"].create({"name": "Procurement group"})
         vals = {
             "product_id": self.product.id,
             "product_uom_id": self.product.uom_id.id,
@@ -739,6 +740,7 @@ class TestStockRequestBase(TestStockRequest):
             "company_id": self.main_company.id,
             "warehouse_id": self.warehouse.id,
             "location_id": self.warehouse.lot_stock_id.id,
+            "reference_ids": [Command.set(group.ids)],
         }
 
         stock_request_1 = (
