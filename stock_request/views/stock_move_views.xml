@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">stock.move.form</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="move_dest_ids" position="after">
+                <field
+                    name="allocation_ids"
+                    string="Stock Request Allocations"
+                    readonly="1"
+                >
+                    <list>
+                        <field name="stock_request_id" />
+                        <field name="stock_move_id" />
+                        <field name="product_id" />
+                        <field name="requested_product_uom_qty" />
+                        <field
+                            name="product_uom_id"
+                            options="{'no_open': True, 'no_create': True}"
+                            groups="uom.group_uom"
+                        />
+                        <field name="requested_product_qty" />
+                        <field name="allocated_product_qty" />
+                        <field name="open_product_qty" />
+                    </list>
+                </field>
+            </field>
+        </field>
+    </record>
+</odoo>
