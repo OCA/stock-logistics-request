@@ -60,7 +60,6 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
                 "move_ids": [
                     Command.create(
                         {
-                            "name": self.prod_3.name,
                             "product_id": self.prod_3.id,
                             "product_uom_qty": 10.0,
                             "quantity": 10.0,
@@ -244,7 +243,6 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
             Command.create(
                 {
                     "product_id": self.prod_3.id,
-                    "name": self.prod_3.name,
                     "product_uom": self.prod_3.uom_id.id,
                     "location_id": picking.location_id.id,
                     "location_dest_id": picking.location_dest_id.id,

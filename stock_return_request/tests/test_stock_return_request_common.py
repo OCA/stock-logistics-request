@@ -122,7 +122,6 @@ class StockReturnRequestCase(TransactionCase):
                 "move_ids": [
                     Command.create(
                         {
-                            "name": cls.prod_1.name,
                             "product_id": cls.prod_1.id,
                             "product_uom_qty": 10.0,
                             "product_uom": cls.prod_1.uom_id.id,
@@ -134,7 +133,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_2.name,
                             "product_id": cls.prod_2.id,
                             "product_uom_qty": 20.0,
                             "product_uom": cls.prod_2.uom_id.id,
@@ -146,7 +144,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_3.name,
                             "product_id": cls.prod_3.id,
                             "product_uom_qty": 30.0,
                             "picked": True,
@@ -157,7 +154,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_1.name,
                             "product_id": cls.prod_1.id,
                             "product_uom_qty": 50.0,
                             "picked": True,
@@ -168,7 +164,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_1.name,
                             "product_id": cls.prod_1.id,
                             "product_uom_qty": 75.0,
                             "picked": True,
@@ -195,7 +190,6 @@ class StockReturnRequestCase(TransactionCase):
                             "location_id": cls.supplier_loc.id,
                             "location_dest_id": cls.wh1.lot_stock_id.id,
                             "quantity": 20,
-                            "picked": True,
                         },
                     ),
                     Command.create(
@@ -207,7 +201,6 @@ class StockReturnRequestCase(TransactionCase):
                             "location_id": cls.supplier_loc.id,
                             "location_dest_id": cls.wh1.lot_stock_id.id,
                             "quantity": 10,
-                            "picked": True,
                         },
                     ),
                 ],
@@ -221,7 +214,6 @@ class StockReturnRequestCase(TransactionCase):
                 "move_ids": [
                     Command.create(
                         {
-                            "name": cls.prod_1.name,
                             "product_id": cls.prod_1.id,
                             "product_uom_qty": 90.0,
                             "product_uom": cls.prod_1.uom_id.id,
@@ -233,7 +225,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_2.name,
                             "product_id": cls.prod_2.id,
                             "product_uom_qty": 80.0,
                             "product_uom": cls.prod_2.uom_id.id,
@@ -245,7 +236,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_3.name,
                             "product_id": cls.prod_3.id,
                             "product_uom_qty": 70.0,
                             "product_uom": cls.prod_3.uom_id.id,
@@ -298,7 +288,6 @@ class StockReturnRequestCase(TransactionCase):
                 "move_ids": [
                     Command.create(
                         {
-                            "name": cls.prod_1.name,
                             "product_id": cls.prod_1.id,
                             "product_uom_qty": 10.0,
                             "product_uom": cls.prod_1.uom_id.id,
@@ -310,7 +299,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_2.name,
                             "product_id": cls.prod_2.id,
                             "product_uom_qty": 20.0,
                             "product_uom": cls.prod_2.uom_id.id,
@@ -331,7 +319,6 @@ class StockReturnRequestCase(TransactionCase):
                 "move_ids": [
                     Command.create(
                         {
-                            "name": cls.prod_1.name,
                             "product_id": cls.prod_1.id,
                             "product_uom_qty": 10.0,
                             "product_uom": cls.prod_1.uom_id.id,
@@ -343,7 +330,6 @@ class StockReturnRequestCase(TransactionCase):
                     ),
                     Command.create(
                         {
-                            "name": cls.prod_2.name,
                             "product_id": cls.prod_2.id,
                             "product_uom_qty": 10.0,
                             "product_uom": cls.prod_2.uom_id.id,

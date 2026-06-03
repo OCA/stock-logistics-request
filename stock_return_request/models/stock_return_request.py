@@ -305,8 +305,9 @@ class StockReturnRequest(models.Model):
             raise ValidationError(
                 self.env._(
                     "It wasn't possible to assign stock for this returns:\n"
-                    "{failed_moves_str}"
-                ).format(failed_moves_str=failed_moves_str)
+                    "%(failed_moves_str)s",
+                    failed_moves_str=failed_moves_str,
+                )
             )
         # Finish move traceability
         for move in return_moves:
@@ -517,10 +518,9 @@ class StockReturnRequestLine(models.Model):
                     self.env._(
                         "Not enough moves to return this product.\n"
                         "It wasn't possible to find enough moves to return "
-                        "{line_quantity} {line_product_uom_id_name} "
-                        "of {line_product_id_displayname}. A maximum of {qty_found} "
-                        "can be returned."
-                    ).format(
+                        "%(line_quantity)s %(line_product_uom_id_name)s "
+                        "of %(line_product_id_displayname)s. "
+                        "A maximum of %(qty_found)s can be returned.",
                         line_quantity=line.quantity,
                         line_product_uom_id_name=line.product_uom_id.name,
                         line_product_id_displayname=line.product_id.display_name,
@@ -558,12 +558,12 @@ class StockReturnRequestLine(models.Model):
             if existing > 1:
                 raise UserError(
                     self.env._(
-                        "You cannot have two open Stock Return Requests with the same "
-                        "product ({product_id}), locations ({return_from_location}, "
-                        "{return_to_location}) partner ({partner_id}) and lot.\n"
+                        "You cannot have two open Stock Return Requests "
+                        "with the same product (%(product_id)s), "
+                        "locations (%(return_from_location)s, %(return_to_location)s) "
+                        "partner (%(partner_id)s) and lot. "
                         "Please first validate the first return request with this "
-                        "product before creating a new one."
-                    ).format(
+                        "product before creating a new one.",
                         product_id=record.product_id.display_name,
                         return_from_location=record.request_id.return_from_location.display_name,
                         return_to_location=record.request_id.return_to_location.display_name,
