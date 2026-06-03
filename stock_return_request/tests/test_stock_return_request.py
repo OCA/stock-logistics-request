@@ -338,6 +338,19 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
         with self.assertRaisesRegex(UserError, "You cannot delete this record"):
             self.return_request_supplier.unlink()
 
+    def test_onchange_locations_internal(self):
+        request = self.return_request_obj.new(
+            {
+                "return_type": "internal",
+                "partner_id": self.partner_customer.id,
+                "return_from_location": self.customer_loc.id,
+                "return_to_location": self.supplier_loc.id,
+            }
+        )
+
+        request.onchange_locations()
+        self.assertFalse(request.partner_id)
+
     def test_return_request_suggest_lot(self):
         """
         Test that the return request suggests the lot,
@@ -392,6 +405,22 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
         self.assertAlmostEqual(prod_3_qty_lot_1, 60.0)
         self.assertAlmostEqual(sum(moves.mapped("quantity")), 30.0)
 
+    def test_action_view_pickings_internal(self):
+        request = self.return_request_obj.create(
+            {
+                "return_type": "internal",
+                "return_from_location": self.wh1.lot_stock_id.id,
+                "return_to_location": self.location_child_1.id,
+            }
+        )
+
+        action = request.action_view_pickings()
+
+        self.assertEqual(
+            action["type"],
+            "ir.actions.act_window",
+        )
+
     def test_return_request_max_quantty(self):
         """
         Quantity of return request line
@@ -413,3 +442,25 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
             ValidationError, "Not enough moves to return this product"
         ):
             self.return_request_supplier.action_confirm()
+
+    def test_action_view_pickings_internal_action(self):
+        request = self.return_request_obj.create(
+            {
+                "return_type": "internal",
+                "return_from_location": self.wh1.lot_stock_id.id,
+                "return_to_location": self.location_child_1.id,
+            }
+        )
+
+        action = request.action_view_pickings()
+
+        expected = self.env["ir.actions.act_window"]._for_xml_id(
+            "stock.action_picking_tree_internal"
+        )
+
+        self.assertEqual(action["name"], expected["name"])
+
+    def test_do_print_return_request(self):
+        action = self.return_request_customer.do_print_return_request()
+        self.assertTrue(action)
+        self.assertIsInstance(action, dict)
