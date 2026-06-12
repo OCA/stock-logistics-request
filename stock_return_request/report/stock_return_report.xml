@@ -104,16 +104,15 @@
                     <h4>[<t t-out="request.return_from_location.name" /> &#8594; <t
                         t-out="request.return_to_location.name"
                     />]</h4>
+
                     <t
-                        t-call="stock_return_request.stock_move_lines_to_return"
-                        name="move_ids"
-                    >
-                        <t
-                            t-set="move_ids"
-                            t-value="request.returned_picking_ids.mapped('move_line_ids')"
-                        />
-                        <t t-set="request_type" t-value="request.return_type" />
-                    </t>
+                        t-set="move_ids"
+                        t-value="request.returned_picking_ids.mapped('move_line_ids')"
+                    />
+
+                    <t t-set="request_type" t-value="request.return_type" />
+
+                    <t t-call="stock_return_request.stock_move_lines_to_return" />
                     <br />
                     <p t-out="request.note" />
                 </div>

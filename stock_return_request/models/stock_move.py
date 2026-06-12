@@ -1,6 +1,6 @@
 # Copyright 2019 Tecnativa - David Vidal
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class StockMove(models.Model):
@@ -12,6 +12,7 @@ class StockMove(models.Model):
         compute="_compute_qty_returnable",
     )
 
+    @api.depends("state", "quantity")
     def _compute_qty_returnable(self):
         """Looks for chained returned moves to compute how much quantity
         from the original can be returned"""
