@@ -1,7 +1,7 @@
 # Copyright 2017 ForgeFlow S.L.
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from odoo import exceptions, fields
 from odoo.tests import new_test_user
@@ -814,6 +814,70 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request_2.qty_cancelled, 6)
         self.assertEqual(stock_request_2.state, "cancel")
 
+    def test_create_request_04(self):
+        """Use different expected date"""
+        expected_date = datetime.now() + timedelta(days=30)
+        expected_date = expected_date.replace(microsecond=0)
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.uom_dozen.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": fields.Datetime.to_string(expected_date),
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        self.assertEqual(stock_request.expected_date, expected_date)
+
+    def test_create_request_05(self):
+        """Default expected date"""
+        now = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.uom_dozen.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        expected_date = stock_request.expected_date.replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        self.assertEqual(expected_date, now)
+
+    def test_create_request_06(self):
+        """Expected date from order"""
+        expected_date = datetime.now() + timedelta(days=30)
+        expected_date = expected_date.replace(microsecond=0)
+        vals = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": expected_date,
+        }
+        order = self.request_order.with_user(self.stock_request_user).create(vals)
+
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.uom_dozen.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": False,
+            "order_id": order.id,
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        self.assertEqual(stock_request.expected_date, expected_date)
+
     def test_cancel_request(self):
         expected_date = fields.Datetime.now()
         vals = {
@@ -1121,6 +1185,26 @@ class TestStockRequestBase(TestStockRequest):
         order.stock_request_ids.onchange_warehouse_id()
         self.assertEqual(order.stock_request_ids[0].location_id, self.virtual_loc)
 
+    def test_duplicate(self):
+        expected_date = datetime.now() + timedelta(days=30)
+        expected_date = expected_date.replace(microsecond=0)
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.uom_dozen.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": fields.Datetime.to_string(expected_date),
+        }
+
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+
+        duplicate_request = stock_request.copy()
+        self.assertEqual(duplicate_request.expected_date, expected_date)
+
     def test_cancellation(self):
         group = self.env["procurement.group"].create({"name": "Procurement group"})
         product2 = self._create_product("SH2", "Shoes2", False)
@@ -1223,6 +1307,40 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(sr2.qty_cancelled, 4)
         self.assertEqual(sr3.state, "cancel")
         self.assertEqual(sr3.qty_cancelled, 5)
+
+    def test_unlink(self):
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.uom_dozen.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        try:
+            stock_request.unlink()
+        except Exception:
+            self.fail()
+
+    def test_unlink_raise(self):
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.uom_dozen.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        self.product.route_ids = [(6, 0, self.route.ids)]
+        stock_request.sudo().action_confirm()
+        with self.assertRaises(exceptions.UserError):
+            stock_request.unlink()
 
 
 class TestStockRequestOrderState(TestStockRequest):

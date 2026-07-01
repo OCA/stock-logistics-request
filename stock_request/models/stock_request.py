@@ -451,10 +451,10 @@ class StockRequest(models.Model):
             upd_vals = vals.copy()
             if upd_vals.get("name", "/") == "/":
                 upd_vals["name"] = self.env["ir.sequence"].next_by_code("stock.request")
-            if "order_id" in upd_vals:
+            if upd_vals.get("order_id"):
                 order = self.env["stock.request.order"].browse(upd_vals["order_id"])
                 upd_vals["expected_date"] = order.expected_date
-            else:
+            elif not upd_vals.get("expected_date"):
                 upd_vals["expected_date"] = self._get_expected_date()
             vals_list_upd.append(upd_vals)
         return super().create(vals_list_upd)
