@@ -15,8 +15,10 @@ class ProcurementGroup(models.Model):
             if "stock_request_id" in procurement.values and procurement.values.get(
                 "stock_request_id"
             ):
-                req = self.env["stock.request"].browse(
-                    procurement.values.get("stock_request_id")
+                req = (
+                    self.env["stock.request"]
+                    .sudo()
+                    .browse(procurement.values.get("stock_request_id"))
                 )
                 if req.order_id:
                     new_procs.append(procurement._replace(origin=req.order_id.name))
