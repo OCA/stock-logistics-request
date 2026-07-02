@@ -11,7 +11,9 @@ class StockWarehouse(models.Model):
     @api.constrains("company_id")
     def _check_company_stock_request(self):
         if any(
-            self.env["stock.request"].search(
+            self.env["stock.request"]
+            .sudo()
+            .search(
                 [
                     ("company_id", "!=", rec.company_id.id),
                     ("warehouse_id", "=", rec.id),
@@ -28,7 +30,9 @@ class StockWarehouse(models.Model):
                 )
             )
         if any(
-            self.env["stock.request.order"].search(
+            self.env["stock.request.order"]
+            .sudo()
+            .search(
                 [
                     ("company_id", "!=", rec.company_id.id),
                     ("warehouse_id", "=", rec.id),
