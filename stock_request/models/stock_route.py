@@ -12,7 +12,9 @@ class StockRoute(models.Model):
     def _check_company_stock_request(self):
         if any(
             rec.company_id
-            and self.env["stock.request"].search(
+            and self.env["stock.request"]
+            .sudo()
+            .search(
                 [("company_id", "!=", rec.company_id.id), ("route_id", "=", rec.id)],
                 limit=1,
             )
