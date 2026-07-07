@@ -8,7 +8,7 @@ class StockRequestOrder(models.Model):
     _inherit = ["stock.request.order", "tier.validation"]
     _state_from = ["draft"]
     _state_to = ["open"]
-
+    _tier_validation_state_field_is_computed = True
     _tier_validation_manual_config = False
 
     @api.model
