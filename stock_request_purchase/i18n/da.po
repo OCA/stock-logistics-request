@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2026-07-09 09:46+0000\n"
+"Last-Translator: Laura V <laura.valls@forgeflow.com>\n"
 "Language-Team: none\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15.2\n"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_purchase_order__display_name
@@ -21,7 +23,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request_order__display_name
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_rule__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Vis navn"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_purchase_order__id
@@ -30,56 +32,56 @@ msgstr ""
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request_order__id
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_rule__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: stock_request_purchase
 #: model_terms:ir.ui.view,arch_db:stock_request_purchase.stock_request_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request_purchase.view_stock_request_form
 msgid "Purchase"
-msgstr ""
+msgstr "Indkøb"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request__purchase_count
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request_order__purchase_count
 msgid "Purchase Count"
-msgstr ""
+msgstr "Antal indkøb"
 
 #. module: stock_request_purchase
 #: model:ir.model,name:stock_request_purchase.model_purchase_order
 msgid "Purchase Order"
-msgstr ""
+msgstr "Indkøbsordre"
 
 #. module: stock_request_purchase
 #: model:ir.model,name:stock_request_purchase.model_purchase_order_line
 msgid "Purchase Order Line"
-msgstr ""
+msgstr "Indkøbsordrelinje"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request__purchase_line_ids
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request_order__purchase_line_ids
 msgid "Purchase Order Lines"
-msgstr ""
+msgstr "Indkøbsordrelinjer"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request__purchase_ids
 #: model:ir.model.fields,field_description:stock_request_purchase.field_stock_request_order__purchase_ids
 msgid "Purchase Orders"
-msgstr ""
+msgstr "Indkøbsordrer"
 
 #. module: stock_request_purchase
 #: model:ir.model,name:stock_request_purchase.model_stock_request
 msgid "Stock Request"
-msgstr ""
+msgstr "Lageranmodning"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_purchase_order__stock_request_count
 msgid "Stock Request #"
-msgstr ""
+msgstr "Lageranmodning nr."
 
 #. module: stock_request_purchase
 #: model:ir.model,name:stock_request_purchase.model_stock_request_order
 msgid "Stock Request Order"
-msgstr ""
+msgstr "Lageranmodningsordre"
 
 #. module: stock_request_purchase
 #: model:ir.model.fields,field_description:stock_request_purchase.field_purchase_order__stock_request_ids
@@ -87,12 +89,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:stock_request_purchase.purchase_order_form
 #: model_terms:ir.ui.view,arch_db:stock_request_purchase.purchase_order_line_form2
 msgid "Stock Requests"
-msgstr ""
+msgstr "Lageranmodninger"
 
 #. module: stock_request_purchase
 #: model:ir.model,name:stock_request_purchase.model_stock_rule
 msgid "Stock Rule"
-msgstr ""
+msgstr "Lagerregel"
 
 #. module: stock_request_purchase
 #. odoo-python
@@ -101,6 +103,8 @@ msgid ""
 "You cannot link a purchase order line to a stock request that belongs to "
 "another company."
 msgstr ""
+"Du kan ikke knytte en indkøbsordrelinje til en lageranmodning, der tilhører "
+"en anden virksomhed."
 
 #. module: stock_request_purchase
 #. odoo-python
@@ -108,3 +112,4 @@ msgstr ""
 msgid ""
 "You have linked to a purchase order line that belongs to another company."
 msgstr ""
+"Du har knyttet til en indkøbsordrelinje, der tilhører en anden virksomhed."
