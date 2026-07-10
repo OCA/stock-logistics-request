@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2017-2024 ForgeFlow
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl). -->
+<odoo>
+    <record id="view_stock_request_tree" model="ir.ui.view">
+        <field name="name">stock.request.tree</field>
+        <field name="model">stock.request</field>
+        <field name="inherit_id" ref="stock_request.view_stock_request_tree" />
+        <field name="arch" type="xml">
+            <list position="inside">
+                <header>
+                    <button
+                        name="action_scan_kanban"
+                        string="Scan Kanban"
+                        type="object"
+                        class="btn-primary ms-1"
+                        display="always"
+                    />
+                </header>
+            </list>
+        </field>
+    </record>
+</odoo>
