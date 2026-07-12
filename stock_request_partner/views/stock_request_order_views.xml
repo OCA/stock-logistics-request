@@ -14,13 +14,14 @@
                     'default_picking_policy': picking_policy,
                     'default_warehouse_id': warehouse_id,
                     'default_location_id': location_id,
-                    'default_procurement_group_id': procurement_group_id,
+                    'default_reference_ids': reference_ids,
                     'default_company_id': company_id,
                     'default_state': state,
+                    'default_route_id': route_id,
                     'default_partner_id': partner_id,
                 }</attribute>
             </xpath>
-            <xpath expr="//field[@name='stock_request_ids']/tree" position="inside">
+            <xpath expr="//field[@name='stock_request_ids']/list" position="inside">
                 <field name="partner_id" readonly="1" force_save="1" />
             </xpath>
         </field>

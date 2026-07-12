@@ -8,10 +8,11 @@ from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 
 
 class TestStockRequestPartner(TestStockRequest):
-    def setUp(self):
-        super().setUp()
-        self.partner = self.env.ref("base.res_partner_12")
-        self.partner2 = self.env.ref("base.res_partner_2")
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.partner = cls.env["res.partner"].create({"name": "Test Partner"})
+        cls.partner2 = cls.env["res.partner"].create({"name": "Test Partner 2"})
 
     def test_stock_request_partner_to_picking(self):
         vals = {
@@ -32,12 +33,14 @@ class TestStockRequestPartner(TestStockRequest):
     def test_stock_request_order(self):
         expected_date = fields.Datetime.now()
         product2 = self._create_product("SH2", "Shoes 2", False)
+        reference = self.env["stock.reference"].create({"name": "Test Reference"})
         vals = {
             "partner_id": self.partner.id,
             "company_id": self.main_company.id,
             "warehouse_id": self.warehouse.id,
             "location_id": self.warehouse.lot_stock_id.id,
             "expected_date": expected_date,
+            "reference_ids": [(6, 0, reference.ids)],
             "stock_request_ids": [
                 (
                     0,
@@ -51,6 +54,7 @@ class TestStockRequestPartner(TestStockRequest):
                         "warehouse_id": self.warehouse.id,
                         "location_id": self.warehouse.lot_stock_id.id,
                         "expected_date": expected_date,
+                        "reference_ids": [(6, 0, reference.ids)],
                     },
                 ),
                 (
@@ -65,6 +69,7 @@ class TestStockRequestPartner(TestStockRequest):
                         "warehouse_id": self.warehouse.id,
                         "location_id": self.warehouse.lot_stock_id.id,
                         "expected_date": expected_date,
+                        "reference_ids": [(6, 0, reference.ids)],
                     },
                 ),
             ],
@@ -79,3 +84,4 @@ class TestStockRequestPartner(TestStockRequest):
         product2.route_ids = [(6, 0, self.route.ids)]
         order.with_user(self.stock_request_manager).action_confirm()
         self.assertEqual(len(order.picking_ids), 1)
+        self.assertEqual(order.picking_ids.partner_id, self.partner2)
