@@ -24,34 +24,27 @@ class StockPickingType(models.Model):
                 ("state", "in", ("submitted", "open")),
             ],
         }
-        for field in domains:
-            data = self.env["stock.request.order"].read_group(
-                domains[field]
+        for field_name, domain in domains.items():
+            data = self.env["stock.request.order"]._read_group(
+                domain
                 + [
                     ("state", "not in", ("done", "cancel")),
                     ("picking_type_id", "in", self.ids),
                 ],
                 ["picking_type_id"],
-                ["picking_type_id"],
+                ["__count"],
             )
-            count = {
-                x["picking_type_id"] and x["picking_type_id"][0]: x[
-                    "picking_type_id_count"
-                ]
-                for x in data
-            }
+            counts = {picking_type.id: count for picking_type, count in data}
             for record in self:
-                record[field] = count.get(record.id, 0)
+                record[field_name] = counts.get(record.id, 0)
 
     def get_stock_request_order_picking_type_action(self):
         return self._get_action("stock_request_picking_type.action_picking_dashboard")
 
     @api.depends("code")
     def _compute_show_picking_type(self):
+        res = super()._compute_show_picking_type()
         for record in self:
-            record.show_picking_type = record.code in [
-                "incoming",
-                "outgoing",
-                "internal",
-                "stock_request_order",
-            ]
+            if record.code == "stock_request_order":
+                record.show_picking_type = True
+        return res

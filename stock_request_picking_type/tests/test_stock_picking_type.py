@@ -4,27 +4,12 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields
-from odoo.tests import common
+from odoo.tests import new_test_user
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
-class TestStockRequest(common.TransactionCase):
-    @classmethod
-    def _create_user(cls, name, group_ids, company_ids):
-        return (
-            cls.env["res.users"]
-            .with_context(**{"no_reset_password": True})
-            .create(
-                {
-                    "name": name,
-                    "password": "demo",
-                    "login": name,
-                    "email": "@".join([name, "test.com"]),
-                    "groups_id": [(6, 0, group_ids)],
-                    "company_ids": [(6, 0, company_ids)],
-                }
-            )
-        )
-
+class TestStockRequest(BaseCommon):
     @classmethod
     def _create_product(cls, default_code, name, company_id, **vals):
         return cls.env["product.product"].create(
@@ -33,7 +18,8 @@ class TestStockRequest(common.TransactionCase):
                 default_code=default_code,
                 uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
-                type="product",
+                type="consu",
+                is_storable=True,
                 **vals,
             )
         )
@@ -61,10 +47,11 @@ class TestStockRequest(common.TransactionCase):
         )
 
         cls.product = cls._create_product("Shoes", "SH", False)
-        cls.stock_request_manager = cls._create_user(
-            "stock_request_manager",
-            [cls.stock_request_manager_group.id],
-            [cls.main_company.id],
+        cls.stock_request_manager = new_test_user(
+            cls.env,
+            login="stock_request_manager",
+            groups="stock_request.group_stock_request_manager",
+            company_ids=[(6, 0, cls.main_company.ids)],
         )
 
         cls.ressuply_loc = cls.env["stock.location"].create(
@@ -106,10 +93,6 @@ class TestStockRequest(common.TransactionCase):
 
 
 class TestStockPickingType(TestStockRequest):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
     def test_compute_sr_count(self):
         expected_date = fields.Datetime.now()
         late_expected_date = fields.Datetime.now() - relativedelta(days=1)

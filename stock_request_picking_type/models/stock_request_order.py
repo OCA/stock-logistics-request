@@ -19,19 +19,15 @@ class StockRequestOrder(models.Model):
 
     @api.depends("warehouse_id")
     def _compute_picking_type_id(self):
-        companies = self.env.context.get("allowed_company_ids", []).copy()
+        companies = list(self.env.context.get("allowed_company_ids", []))
         companies.append(False)
         for order in self:
-            order.picking_type_id = (
-                self.env["stock.picking.type"]
-                .search(
-                    [
-                        ("code", "=", "stock_request_order"),
-                        "|",
-                        ("warehouse_id.company_id", "in", companies),
-                        ("warehouse_id", "=", self.warehouse_id.id or False),
-                    ],
-                    limit=1,
-                )
-                .id
+            order.picking_type_id = self.env["stock.picking.type"].search(
+                [
+                    ("code", "=", "stock_request_order"),
+                    "|",
+                    ("warehouse_id.company_id", "in", companies),
+                    ("warehouse_id", "=", order.warehouse_id.id or False),
+                ],
+                limit=1,
             )

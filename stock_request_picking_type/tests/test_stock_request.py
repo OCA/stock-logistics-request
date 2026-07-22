@@ -3,27 +3,12 @@
 
 
 from odoo import fields
-from odoo.tests import Form, common
+from odoo.tests import Form, new_test_user
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
-class TestStockRequest(common.TransactionCase):
-    @classmethod
-    def _create_user(cls, name, group_ids, company_ids):
-        return (
-            cls.env["res.users"]
-            .with_context(no_reset_password=True)
-            .create(
-                {
-                    "name": name,
-                    "password": "demo",
-                    "login": name,
-                    "email": "@".join([name, "test.com"]),
-                    "groups_id": [(6, 0, group_ids)],
-                    "company_ids": [(6, 0, company_ids)],
-                }
-            )
-        )
-
+class TestStockRequest(BaseCommon):
     @classmethod
     def _create_product(cls, default_code, name, company_id, **vals):
         return cls.env["product.product"].create(
@@ -32,7 +17,8 @@ class TestStockRequest(common.TransactionCase):
                 default_code=default_code,
                 uom_id=cls.env.ref("uom.product_uom_unit").id,
                 company_id=company_id,
-                type="product",
+                type="consu",
+                is_storable=True,
                 **vals,
             )
         )
@@ -67,18 +53,15 @@ class TestStockRequest(common.TransactionCase):
 
         cls.product = cls._create_product("SH", "Shoes", False)
         cls.product_company_2 = cls._create_product("SH_2", "Shoes", cls.company_2.id)
-        cls.stock_request_user = cls._create_user(
-            "stock_request_user",
-            [cls.stock_request_user_group.id],
-            [cls.main_company.id, cls.company_2.id],
+        cls.stock_request_user = new_test_user(
+            cls.env,
+            login="stock_request_user",
+            groups="stock_request.group_stock_request_user",
+            company_ids=[(6, 0, (cls.main_company | cls.company_2).ids)],
         )
 
 
 class TestStockRequestOrder(TestStockRequest):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
     def test_onchanges_order(self):
         expected_date = fields.Datetime.now()
 

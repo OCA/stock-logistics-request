@@ -1,10 +1,21 @@
 <odoo>
-
     <record id="stock_request_order_search" model="ir.ui.view">
         <field name="name">stock.request.order.search</field>
         <field name="model">stock.request.order</field>
         <field name="inherit_id" ref="stock_request.stock_request_order_search" />
         <field name="arch" type="xml">
+            <xpath expr="//filter[@name='draft']" position="after">
+                <filter
+                    string="To Do"
+                    name="todo"
+                    domain="[('state', '=', 'submitted')]"
+                />
+                <filter
+                    string="Late"
+                    name="late"
+                    domain="[('expected_date', '&lt;', datetime.datetime.combine(context_today(), datetime.time(0, 0, 0))), ('state', 'in', ('submitted', 'open'))]"
+                />
+            </xpath>
             <xpath expr='//filter[@name="location"]' position="after">
                 <filter
                     string="Operation Type"
@@ -36,7 +47,7 @@
         <field name="name">Stock Request Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">stock.request.order</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="view_id" eval="False" />
         <field name="search_view_id" ref="stock_request_order_search" />
         <field name="domain">[('picking_type_id', '=', active_id)]</field>
@@ -56,5 +67,4 @@
         parent="stock.menu_stock_warehouse_mgmt"
         sequence="30"
     />
-
 </odoo>

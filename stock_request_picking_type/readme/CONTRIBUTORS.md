@@ -3,3 +3,4 @@
 - Raphael Lee \<<rlee@opensourceintegrators.com>\>
 - \[APSL-Nagarro\](<https://apsl.tech>):
   - Antoni Marroig \<<amarroig@apsl.net>\>
+- Jimmy SC94 <jimmysolizcejas1994@gmail.com>
