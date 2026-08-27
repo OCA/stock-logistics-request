@@ -685,6 +685,53 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(order.state, "done")
         self.assertEqual(stock_request.state, "done")
 
+    def test_compute_move_ids_cyclic_origin_moves(self):
+        """A cycle in ``move_orig_ids`` must not raise RecursionError.
+
+        Returning both legs of a two-step inter-warehouse transfer that share
+        a transit location links each leg's return move back to the other,
+        so ``move_orig_ids`` becomes circular. Computing ``move_ids`` /
+        ``picking_ids`` used to recurse infinitely over that graph.
+        """
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.product.uom_id.id,
+            "product_uom_qty": 1.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        self.product.route_ids = [Command.set(self.route.ids)]
+        stock_request.with_user(self.stock_request_manager).action_confirm()
+
+        move_a = stock_request.allocation_ids.stock_move_id.sudo()
+        self.assertTrue(move_a, "The confirmed request should have a stock move")
+        move_b = (
+            self.env["stock.move"]
+            .sudo()
+            .create(
+                {
+                    "product_id": self.product.id,
+                    "product_uom_qty": 1.0,
+                    "product_uom": self.product.uom_id.id,
+                    "location_id": self.warehouse.lot_stock_id.id,
+                    "location_dest_id": self.warehouse.lot_stock_id.id,
+                    "company_id": self.main_company.id,
+                }
+            )
+        )
+        # Build the cycle: A -> B -> A.
+        move_a.move_orig_ids = [Command.link(move_b.id)]
+        move_b.move_orig_ids = [Command.link(move_a.id)]
+
+        request_sudo = stock_request.sudo()
+        request_sudo.invalidate_recordset(["move_ids", "picking_ids", "picking_count"])
+        # Must not raise RecursionError, and must collect both moves once.
+        self.assertEqual(request_sudo.move_ids, move_a | move_b)
+
     def test_create_request_02(self):
         """Use different UoM's"""
 

@@ -126,10 +126,18 @@ class StockRequest(models.Model):
                 )
 
     def _get_all_origin_moves(self, move):
-        all_moves = move
-        if move.move_orig_ids:
-            for orig_move in move.move_orig_ids:
-                all_moves |= self._get_all_origin_moves(orig_move)
+        # Collect the move and all its transitive origin moves. The traversal
+        # is iterative and keeps track of the moves already visited because
+        # ``move_orig_ids`` can form a cyclic graph (e.g. returning both legs
+        # of a two-step inter-warehouse transfer that share a transit
+        # location links each leg's return to the other). A naive recursion
+        # over such a cycle raises RecursionError.
+        all_moves = self.env["stock.move"]
+        moves_to_visit = move
+        while moves_to_visit:
+            moves_to_visit -= all_moves
+            all_moves |= moves_to_visit
+            moves_to_visit = moves_to_visit.move_orig_ids
         return all_moves
 
     @api.depends("allocation_ids", "allocation_ids.stock_move_id")
