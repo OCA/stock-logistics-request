@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_stock_return_request_tree" model="ir.ui.view">
+        <field name="model">stock.return.request</field>
+        <field name="arch" type="xml">
+            <list
+                decoration-muted="state=='cancel'"
+                decoration-info="state=='draft'"
+                decoration-danger="state=='confirmed'"
+            >
+                <field name="name" />
+                <field name="partner_id" />
+                <field
+                    name="return_from_location"
+                    groups="stock.group_stock_multi_locations"
+                />
+                <field
+                    name="return_to_location"
+                    groups="stock.group_stock_multi_locations"
+                />
+                <field name="return_type" />
+                <field name="show_to_refund" column_invisible="1" />
+                <field
+                    name="to_refund"
+                    invisible="not show_to_refund or return_type == 'internal'"
+                />
+                <field name="state" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_stock_return_request_form" model="ir.ui.view">
+        <field name="model">stock.return.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="action_confirm"
+                        invisible="state != 'draft'"
+                        type="object"
+                        string="Confirm"
+                        class="oe_highlight"
+                    />
+                    <button
+                        name="action_validate"
+                        invisible="state != 'confirmed'"
+                        type="object"
+                        string="Validate"
+                        class="oe_highlight"
+                    />
+                    <button
+                        name="do_print_return_request"
+                        invisible="state not in  ('confirmed', 'done')"
+                        string="Print"
+                        type="object"
+                    />
+                    <button
+                        name="action_cancel_to_draft"
+                        invisible="state != 'cancel'"
+                        string="Set to Draft"
+                        type="object"
+                    />
+                    <button
+                        name="action_cancel"
+                        invisible="state not in  ('draft', 'confirmed')"
+                        type="object"
+                        string="Cancel"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,confirmed,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <field name="returned_picking_ids" invisible="1" />
+                        <button
+                            name="action_view_pickings"
+                            string="Pickings"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-truck"
+                            invisible="not returned_picking_ids"
+                        />
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="partner_id"
+                                required="return_type != 'internal'"
+                                invisible="return_type == 'internal'"
+                                readonly="state != 'draft'"
+                            />
+                            <field name="return_type" readonly="state != 'draft'" />
+                            <field name="return_order" readonly="state != 'draft'" />
+                            <field name="show_to_refund" invisible="1" />
+                            <field name="return_from_location" invisible="1" />
+                            <field name="return_to_location" invisible="1" />
+                        </group>
+                        <group>
+                            <field name="from_date" readonly="state != 'draft'" />
+                            <field
+                                name="return_from_location"
+                                groups="stock.group_stock_multi_locations"
+                                readonly="state != 'draft'"
+                                options="{'no_create_edit': True}"
+                            />
+                            <field
+                                name="return_to_location"
+                                groups="stock.group_stock_multi_locations"
+                                readonly="state != 'draft'"
+                                options="{'no_create_edit': True}"
+                            />
+                            <field
+                                name="picking_types"
+                                widget="many2many_tags"
+                                readonly="state != 'draft'"
+                                options="{'no_create': True}"
+                            />
+                            <field
+                                name="to_refund"
+                                invisible="not show_to_refund or return_type == 'internal'"
+                                readonly="state != 'draft'"
+                            />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products to Return" name="return_lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <form>
+                                    <notebook>
+                                        <page string="Return Line">
+                                            <group>
+                                                <group>
+                                                    <field name="product_id" />
+                                                    <field
+                                                        name="product_uom_id"
+                                                        groups="uom.group_uom"
+                                                    />
+                                                    <field
+                                                        name="tracking"
+                                                        invisible="1"
+                                                    />
+                                                    <field
+                                                        name="lot_id"
+                                                        domain="[('product_id', '=', product_id)]"
+                                                        groups="stock.group_production_lot"
+                                                        context="{'default_product_id': product_id}"
+                                                        required="tracking != 'none'"
+                                                    />
+                                                    <field name="quantity" />
+                                                    <field name="max_quantity" />
+                                                    <field name="returnable_move_ids" />
+                                                </group>
+                                            </group>
+                                        </page>
+                                    </notebook>
+                                </form>
+                                <list editable="bottom">
+                                    <field
+                                        name="product_id"
+                                        context="{'default_is_storable': True}"
+                                    />
+                                    <field
+                                        name="product_uom_id"
+                                        groups="uom.group_uom"
+                                    />
+                                    <field name="tracking" column_invisible="1" />
+                                    <button
+                                        name="action_lot_suggestion"
+                                        type="object"
+                                        title="Suggest Lots"
+                                        icon="fa-list-ol"
+                                        class="btn-link oe_edit_only"
+                                        invisible="tracking not in ('lot', 'serial') or parent.state != 'draft'"
+                                        groups="stock.group_production_lot"
+                                    />
+                                    <field
+                                        name="lot_id"
+                                        groups="stock.group_production_lot"
+                                        context="{'default_product_id': product_id}"
+                                        required="tracking != 'none'"
+                                    />
+                                    <field name="quantity" />
+                                    <field name="max_quantity" optional="hide" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Comments" name="return_comments">
+                            <field
+                                name="note"
+                                placeholder="Add a note that will be printed on the Request report"
+                            />
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_return_request_tree" model="ir.actions.act_window">
+        <field name="name">Return Requests</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.return.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        action="action_stock_return_request_tree"
+        id="menu_stock_return_request"
+        groups="stock.group_stock_user"
+        name="Return Request"
+        parent="stock.menu_stock_warehouse_mgmt"
+        sequence="99"
+    />
+</odoo>
