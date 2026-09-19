@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="stock_request_order_view_form" model="ir.ui.view">
+        <field name="name">stock.request.order.form.inherit.matrix</field>
+        <field name="model">stock.request.order</field>
+        <field name="inherit_id" ref="stock_request.stock_request_order_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='stock_request_ids']/list/field[@name='product_id']"
+                position="attributes"
+            >
+                <attribute name="string">Product Variant</attribute>
+                <attribute name="widget">stock_request_product_many2one</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath
+                expr="//field[@name='stock_request_ids']/list/field[@name='product_id']"
+                position="after"
+            >
+                <field
+                    name="product_template_id"
+                    string="Product"
+                    widget="stock_request_product_many2one"
+                    optional="show"
+                    required="not product_id"
+                    placeholder="Type to find a product..."
+                />
+                <field
+                    name="product_template_attribute_value_ids"
+                    column_invisible="1"
+                />
+                <field name="is_configurable_product" column_invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='stock_request_ids']" position="before">
+                <field name="grid" invisible="1" />
+                <field name="grid_product_tmpl_id" invisible="1" />
+                <field name="grid_update" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

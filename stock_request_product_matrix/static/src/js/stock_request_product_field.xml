@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="stock_request_product_matrix.StockRequestProductField">
+        <div class="d-flex align-items-center gap-1">
+            <Many2One t-props="m2oProps" cssClass="'w-100'" />
+            <button
+                t-if="isConfigurableTemplate and hasVariant and orderInDraft"
+                type="button"
+                class="btn btn-link fa fa-pencil px-2"
+                tabindex="-1"
+                draggable="false"
+                t-att-aria-label="configurationButtonHelp"
+                t-att-data-tooltip="configurationButtonHelp"
+                t-on-click="onEditConfiguration"
+            />
+        </div>
+    </t>
+
+</templates>
