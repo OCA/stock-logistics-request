@@ -1,0 +1,11 @@
+- [Tecnativa](https://www.tecnativa.com):
+  - Sergio Teruel
+  - Pedro M. Baeza
+  - David Vidal
+  - César A. Sánchez
+  - Carlos Lopez
+- [Pro Thai](http://prothaitechnology.com):
+  - Prapassorn Sornkaew \<<prapassorn.s@prothaitechnology.com>\>
+  
+- [APSL-Nagarro](https://www.apsl.tech):
+  - Vicent Cubells \<<vicent.cubells@nagarro.com>\>
