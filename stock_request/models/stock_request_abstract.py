@@ -72,7 +72,7 @@ class StockRequest(models.AbstractModel):
     )
     product_uom_qty = fields.Float(
         "Quantity",
-        digits="Product Unit of Measure",
+        digits="Product Unit",
         required=True,
         help="Quantity, specified in the unit of measure indicated in the request.",
     )
@@ -81,7 +81,7 @@ class StockRequest(models.AbstractModel):
         compute="_compute_product_qty",
         store=True,
         copy=False,
-        digits="Product Unit of Measure",
+        digits="Product Unit",
         help="Quantity in the default UoM of the product",
     )
     reference_ids = fields.Many2many(

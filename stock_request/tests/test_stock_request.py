@@ -1413,6 +1413,20 @@ class TestStockRequestOrderState(TestStockRequest):
             "Quantity in progress should be the rounded down after confirmation",
         )
 
+    def test_product_unit_precision(self):
+        self.env.ref("uom.decimal_product_uom").digits = 3
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 0.125,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.virtual_loc.id,
+            }
+        )
+        self.assertEqual(stock_request.product_uom_qty, 0.125)
+
     def test_route_id_propagation_on_creation(self):
         order_vals = {
             "company_id": self.main_company.id,
