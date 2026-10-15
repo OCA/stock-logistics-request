@@ -8,7 +8,7 @@ from odoo.exceptions import ValidationError
 class StockRequest(models.AbstractModel):
     _name = "stock.request.abstract"
     _description = "Stock Request Template"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]  # noqa: RUF012
 
     @api.model
     def default_get(self, fields):
@@ -40,14 +40,12 @@ class StockRequest(models.AbstractModel):
     name = fields.Char(copy=False, required=True, readonly=True, default="/")
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
-        string="Warehouse",
         check_company=True,
         ondelete="cascade",
         required=True,
     )
     location_id = fields.Many2one(
         comodel_name="stock.location",
-        string="Location",
         domain="not allow_virtual_location and "
         "[('usage', 'in', ['internal', 'transit'])] or []",
         ondelete="cascade",
@@ -55,7 +53,6 @@ class StockRequest(models.AbstractModel):
     )
     product_id = fields.Many2one(
         "product.product",
-        "Product",
         domain=[("type", "in", ["product", "consu"])],
         ondelete="cascade",
         required=True,
@@ -95,11 +92,10 @@ class StockRequest(models.AbstractModel):
         "procurement rules will be grouped into one big picking.",
     )
     company_id = fields.Many2one(
-        "res.company", "Company", required=True, default=lambda self: self.env.company
+        "res.company", required=True, default=lambda self: self.env.company
     )
     route_id = fields.Many2one(
         "stock.route",
-        string="Route",
         domain="[('id', 'in', route_ids)]",
         ondelete="restrict",
     )

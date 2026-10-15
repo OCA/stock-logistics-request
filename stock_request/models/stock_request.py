@@ -361,7 +361,7 @@ class StockRequest(models.Model):
             "company_id": self.company_id.id,
             "product_id": self.product_id.id,
             "product_uom_qty": qty,
-            "product_uom": self.product_id.uom_id.id,
+            "uom_id": self.product_id.uom_id.id,
             "location_id": self.location_id.id,
             "location_dest_id": self.location_id.id,
             "state": "draft",
@@ -419,19 +419,19 @@ class StockRequest(models.Model):
                 continue
 
             # If stock is available we use it and we do not execute rule
-            if request.company_id.stock_request_check_available_first:
-                if (
-                    float_compare(
-                        request.product_id.sudo()
-                        .with_context(location=request.location_id.id)
-                        .free_qty,
-                        request.product_uom_qty,
-                        precision_digits=precision,
-                    )
-                    >= 0
-                ):
-                    request._action_use_stock_available()
-                    continue
+            if (
+                request.company_id.stock_request_check_available_first
+                and float_compare(
+                    request.product_id.sudo()
+                    .with_context(location=request.location_id.id)
+                    .free_qty,
+                    request.product_uom_qty,
+                    precision_digits=precision,
+                )
+                >= 0
+            ):
+                request._action_use_stock_available()
+                continue
 
             values = request._prepare_procurement_values(
                 reference_ids=request.reference_ids

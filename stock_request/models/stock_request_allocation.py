@@ -9,7 +9,6 @@ class StockRequestAllocation(models.Model):
     _description = "Stock Request Allocation"
 
     stock_request_id = fields.Many2one(
-        string="Stock Request",
         comodel_name="stock.request",
         required=True,
         ondelete="cascade",
@@ -22,7 +21,6 @@ class StockRequestAllocation(models.Model):
         store=True,
     )
     stock_move_id = fields.Many2one(
-        string="Stock Move",
         comodel_name="stock.move",
         required=True,
         ondelete="cascade",

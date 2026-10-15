@@ -3,7 +3,6 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
 from collections import Counter
-from datetime import datetime
 
 from odoo import Command, exceptions, fields
 from odoo.tests import common, new_test_user
@@ -12,6 +11,8 @@ from odoo.addons.base.tests.common import BaseCommon
 
 
 class TestStockRequest(BaseCommon):
+    _test_user_groups = None
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -73,7 +74,6 @@ class TestStockRequest(BaseCommon):
                 "name": "Test-DozenA",
                 "relative_uom_id": cls.uom_unit.id,
                 "relative_factor": 12,
-                "rounding": 0.001,
             }
         )
 
@@ -105,9 +105,7 @@ class TestStockRequest(BaseCommon):
             }
         )
 
-        cls.env["ir.config_parameter"].sudo().set_param(
-            "stock.no_auto_scheduler", "True"
-        )
+        cls.env["ir.config_parameter"].sudo().set_bool("stock.no_auto_scheduler", True)
 
     @classmethod
     def _create_product(cls, default_code, name, company_id, **vals):
@@ -199,6 +197,35 @@ class TestStockRequestBase(TestStockRequest):
 
         self.assertEqual(order.location_id, self.warehouse.lot_stock_id)
 
+    def test_read_access_stock_user(self):
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "requested_by": self.stock_request_manager.id,
+            }
+        )
+        stock_user = new_test_user(
+            self.env, login="stock_user", groups="stock.group_stock_user"
+        )
+        both_user = new_test_user(
+            self.env,
+            login="stock_request_stock_user",
+            groups="stock_request.group_stock_request_user,stock.group_stock_user",
+        )
+        domain = [("id", "=", stock_request.id)]
+        self.assertEqual(
+            self.stock_request.with_user(stock_user).search(domain), stock_request
+        )
+        # A requester that is also a stock user only reads their own or
+        # followed requests
+        self.assertFalse(self.stock_request.with_user(both_user).search(domain))
+        stock_request.message_subscribe(partner_ids=both_user.partner_id.ids)
+        self.assertEqual(
+            self.stock_request.with_user(both_user).search(domain), stock_request
+        )
+
     def test_onchanges_order(self):
         expected_date = fields.Datetime.now()
         vals = {
@@ -240,7 +267,7 @@ class TestStockRequestBase(TestStockRequest):
         order.onchange_picking_policy()
         self.assertEqual(order.picking_policy, order.stock_request_ids.picking_policy)
 
-        order.expected_date = datetime.now()
+        order.expected_date = fields.Datetime.now()
         order.onchange_expected_date()
         self.assertEqual(order.expected_date, order.stock_request_ids.expected_date)
 
@@ -652,6 +679,8 @@ class TestStockRequestBase(TestStockRequest):
 
         self.product.route_ids = [Command.set(self.route.ids)]
         order.with_user(self.stock_request_manager).action_confirm()
+        order = order.with_user(self.stock_request_manager)
+        stock_request = stock_request.with_user(self.stock_request_manager)
         self.assertEqual(order.state, "open")
         self.assertEqual(stock_request.state, "open")
 
@@ -716,7 +745,7 @@ class TestStockRequestBase(TestStockRequest):
                 {
                     "product_id": self.product.id,
                     "product_uom_qty": 1.0,
-                    "product_uom": self.product.uom_id.id,
+                    "uom_id": self.product.uom_id.id,
                     "location_id": self.warehouse.lot_stock_id.id,
                     "location_dest_id": self.warehouse.lot_stock_id.id,
                     "company_id": self.main_company.id,
@@ -750,6 +779,7 @@ class TestStockRequestBase(TestStockRequest):
 
         self.product.route_ids = [Command.set(self.route.ids)]
         stock_request.with_user(self.stock_request_manager).action_confirm()
+        stock_request = stock_request.with_user(self.stock_request_manager)
         self.assertEqual(stock_request.state, "open")
         self.assertEqual(len(stock_request.picking_ids), 1)
         self.assertEqual(len(stock_request.move_ids), 1)
@@ -866,6 +896,7 @@ class TestStockRequestBase(TestStockRequest):
 
         self.product.route_ids = [Command.set(self.route.ids)]
         order.with_user(self.stock_request_manager).action_confirm()
+        order = order.with_user(self.stock_request_manager)
         stock_request = order.stock_request_ids
         self.assertEqual(len(order.picking_ids), 1)
         self.assertEqual(len(order.move_ids), 1)
@@ -934,18 +965,18 @@ class TestStockRequestBase(TestStockRequest):
         self.assertTrue(order.picking_ids)
 
         action = order.action_view_transfer()
-        self.assertEqual("domain" in action.keys(), True)
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("domain" in action, True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], order.picking_ids[0].id)
 
         action = order.action_view_stock_requests()
-        self.assertEqual("domain" in action.keys(), True)
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("domain" in action, True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], stock_request[0].id)
 
         action = stock_request.action_view_transfer()
-        self.assertEqual("domain" in action.keys(), True)
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("domain" in action, True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], stock_request.picking_ids[0].id)
 
         action = stock_request.picking_ids[0].action_view_stock_request()
@@ -1344,7 +1375,7 @@ class TestStockRequestOrderState(TestStockRequest):
         product_half_up = self._create_product(
             "HALFUP", "HalfUp Product", self.main_company.id
         )
-        product_half_up.uom_id.rounding = 1.0
+        self.env.ref("uom.decimal_product_uom").digits = 0
         vals = {
             "product_id": product_half_up.id,
             "product_uom_id": product_half_up.uom_id.id,
@@ -1365,7 +1396,7 @@ class TestStockRequestOrderState(TestStockRequest):
         product_half_up = self._create_product(
             "HALFUP", "HalfUp Product", self.main_company.id
         )
-        product_half_up.uom_id.rounding = 1.0
+        self.env.ref("uom.decimal_product_uom").digits = 0
         vals = {
             "product_id": product_half_up.id,
             "product_uom_id": product_half_up.uom_id.id,
@@ -1677,4 +1708,5 @@ class TestStockRequestOrderChainedTransfers(common.TransactionCase):
         }
         order = self.request_order.with_user(self.stock_request_user).create(vals)
         order.with_user(self.stock_request_manager).action_confirm()
+        order = order.with_user(self.stock_request_manager)
         self.assertEqual(len(order.mapped("picking_ids")), 2)

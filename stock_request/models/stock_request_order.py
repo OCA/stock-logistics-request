@@ -8,7 +8,7 @@ from odoo.exceptions import UserError, ValidationError
 class StockRequestOrder(models.Model):
     _name = "stock.request.order"
     _description = "Stock Request Order"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]  # noqa: RUF012
     _order = "id desc"
 
     @api.model
@@ -60,14 +60,12 @@ class StockRequestOrder(models.Model):
     )
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
-        string="Warehouse",
         check_company=True,
         ondelete="cascade",
         required=True,
     )
     location_id = fields.Many2one(
         comodel_name="stock.location",
-        string="Location",
         domain="not allow_virtual_location and "
         "[('usage', 'in', ['internal', 'transit'])] or []",
         ondelete="cascade",
@@ -88,7 +86,6 @@ class StockRequestOrder(models.Model):
     )
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         required=True,
         default=lambda self: self.env.company,
     )
@@ -409,22 +406,22 @@ class StockRequestOrder(models.Model):
             )
         expected = self.default_get(["expected_date"])["expected_date"]
         order = self.env["stock.request.order"].create(
-            dict(
-                expected_date=expected,
-                stock_request_ids=[
+            {
+                "expected_date": expected,
+                "stock_request_ids": [
                     (
                         0,
                         0,
-                        dict(
-                            product_id=product.id,
-                            product_uom_id=product.uom_id.id,
-                            product_uom_qty=1.0,
-                            expected_date=expected,
-                        ),
+                        {
+                            "product_id": product.id,
+                            "product_uom_id": product.uom_id.id,
+                            "product_uom_qty": 1.0,
+                            "expected_date": expected,
+                        },
                     )
                     for product in products
                 ],
-            )
+            }
         )
         action = self.env["ir.actions.act_window"]._for_xml_id(
             "stock_request.stock_request_order_action"
