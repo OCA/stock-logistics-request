@@ -88,5 +88,4 @@ class StockRequestAllocation(models.Model):
                 rec.open_product_qty = (
                     rec.requested_product_qty - rec.allocated_product_qty
                 )
-                if rec.open_product_qty < 0.0:
-                    rec.open_product_qty = 0.0
+                rec.open_product_qty = max(rec.open_product_qty, 0.0)

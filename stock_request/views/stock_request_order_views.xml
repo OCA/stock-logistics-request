@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record model="ir.ui.view" id="stock_request_order_tree">
+    <record id="stock_request_order_tree" model="ir.ui.view">
         <field name="name">stock.request.order.tree</field>
         <field name="model">stock.request.order</field>
         <field name="arch" type="xml">
@@ -18,7 +18,7 @@
             </list>
         </field>
     </record>
-    <record model="ir.ui.view" id="stock_request_order_form">
+    <record id="stock_request_order_form" model="ir.ui.view">
         <field name="name">stock.request.order.form</field>
         <field name="model">stock.request.order</field>
         <field name="arch" type="xml">
@@ -184,7 +184,7 @@
             </form>
         </field>
     </record>
-    <record model="ir.ui.view" id="stock_request_order_search">
+    <record id="stock_request_order_search" model="ir.ui.view">
         <field name="name">stock.request.order.search</field>
         <field name="model">stock.request.order</field>
         <field name="arch" type="xml">
@@ -224,7 +224,7 @@
             </search>
         </field>
     </record>
-    <record model="ir.actions.act_window" id="stock_request_order_action">
+    <record id="stock_request_order_action" model="ir.actions.act_window">
         <field name="name">Stock Request Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">stock.request.order</field>
