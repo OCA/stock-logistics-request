@@ -1,0 +1,1144 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* stock_request
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-07-06 16:46+0000\n"
+"Last-Translator: Laura V <laura.valls@forgeflow.com>\n"
+"Language-Team: none\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.15.2\n"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_move_line.py:0
+msgid ""
+"%(product_name)s : Transferred quantity %(product_qty)s %(product_uom)s"
+msgstr "%(product_name)s: Overført antal %(product_qty)s %(product_uom)s"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_needaction
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_needaction
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_needaction
+msgid "Action Needed"
+msgstr "Handling påkrævet"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Activates Stock Request Orders"
+msgstr "Aktiverer lageranmodningsordrer"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_ids
+msgid "Activities"
+msgstr "Aktiviteter"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_exception_decoration
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_exception_decoration
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Markering af undtagelsesaktivitet"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_state
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_state
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_state
+msgid "Activity State"
+msgstr "Aktivitetsstatus"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_type_icon
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_type_icon
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivitetstypeikon"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Add State to Stock Request and Stock Request Orders if activated."
+msgstr ""
+"Tilføjer status til lageranmodninger og lageranmodningsordrer, hvis "
+"aktiveret."
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__allocated_product_qty
+msgid "Allocated Quantity"
+msgstr "Allokeret antal"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Allow All Locations Types"
+msgstr "Tillad alle adressetyper"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__stock_request_allow_virtual_loc
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__stock_request_allow_virtual_loc
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__allow_virtual_location
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__allow_virtual_location
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__allow_virtual_location
+msgid "Allow Virtual locations on Stock Requests"
+msgstr "Tillad virtuelle adresser på lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__allowed_uom_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__allowed_uom_ids
+msgid "Allowed Uom"
+msgstr "Tilladt enhed"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Analytic"
+msgstr "Analytisk"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Analytic accounting in Stock Requests"
+msgstr "Analytisk bogføring i lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_attachment_count
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_attachment_count
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_attachment_count
+msgid "Attachment Count"
+msgstr "Antal vedhæftninger"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid ""
+"By default only internal and transit locations are allowed in Stock Request "
+"and Orders."
+msgstr ""
+"Som standard tillades kun interne adresser og transitadresser i "
+"lageranmodninger og -ordrer."
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "By default, available stock is not used"
+msgstr "Som standard bruges tilgængeligt lager ikke"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
+msgid "Cancel"
+msgstr "Annullér"
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__cancel
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Cancelled"
+msgstr "Annulleret"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__stock_request_check_available_first
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__stock_request_check_available_first
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Check available stock first"
+msgstr "Tjek tilgængeligt lager først"
+
+#. module: stock_request
+#: model_terms:ir.actions.act_window,help:stock_request.action_stock_request_form
+msgid "Click to add a Stock Request."
+msgstr "Klik for at tilføje en lageranmodning."
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_res_company
+msgid "Companies"
+msgstr "Virksomheder"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__company_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__company_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__company_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__company_id
+msgid "Company"
+msgstr "Virksomhed"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Company must be equal to the order"
+msgstr "Virksomheden skal svare til ordren"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_res_config_settings
+msgid "Config Settings"
+msgstr "Konfigurationsindstillinger"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
+msgid "Confirm"
+msgstr "Bekræft"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__create_uid
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__create_uid
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__create_uid
+msgid "Created by"
+msgstr "Oprettet af"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__create_date
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__create_date
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__create_date
+msgid "Created on"
+msgstr "Oprettet den"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Current requests"
+msgstr "Aktuelle anmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__expected_date
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__expected_date
+msgid "Date when you expect to receive the goods."
+msgstr "Dato, hvor du forventer at modtage varerne."
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__picking_count
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__picking_count
+msgid "Delivery Orders"
+msgstr "Leveringsordrer"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__display_name
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_location__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_move__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_move_line__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_picking__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_route__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_rule__display_name
+#: model:ir.model.fields,field_description:stock_request.field_stock_warehouse__display_name
+msgid "Display Name"
+msgstr "Vis navn"
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__done
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
+msgid "Done"
+msgstr "Udført"
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__draft
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Draft"
+msgstr "Kladde"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Enable Analytic Accounting in Stock Requests"
+msgstr "Aktivér analytisk bogføring i lageranmodninger"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Enable Orders"
+msgstr "Aktivér ordrer"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Enable Stock Requests Kanban cards"
+msgstr "Aktivér kanbankort for lageranmodninger"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Enable Stock Requests for Manufacturing"
+msgstr "Aktivér lageranmodninger til produktion"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Enable Stock Requests for Purchases"
+msgstr "Aktivér lageranmodninger til indkøb"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Enable Submitted State"
+msgstr "Aktivér status 'Indsendt'"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__expected_date
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__expected_date
+msgid "Expected Date"
+msgstr "Forventet dato"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Expected date must be equal to the order"
+msgstr "Forventet dato skal svare til ordren"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Finished"
+msgstr "Færdig"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_follower_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_follower_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_follower_ids
+msgid "Followers"
+msgstr "Følgere"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_partner_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_partner_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Følgere (partnere)"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__activity_type_icon
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__activity_type_icon
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font Awesome-ikon, f.eks. fa-opgaver"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__group_stock_request_order
+msgid "Group Stock Request Order"
+msgstr "Gruppér lageranmodningsordre"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__has_message
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__has_message
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__has_message
+msgid "Has Message"
+msgstr "Har besked"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_company__id
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_location__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_move__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_move_line__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_picking__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_route__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_rule__id
+#: model:ir.model.fields,field_description:stock_request.field_stock_warehouse__id
+msgid "ID"
+msgstr "ID"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_exception_icon
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_exception_icon
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_exception_icon
+msgid "Icon"
+msgstr "Ikon"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__activity_exception_icon
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__activity_exception_icon
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ikon for uventet aktivitet."
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__message_needaction
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_needaction
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Hvis dette felt er markeret, kræver nye beskeder din opmærksomhed."
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+"Hvis dette felt er markeret, indeholder nogle beskeder en leveringsfejl."
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "In Progress"
+msgstr "I gang"
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__state__open
+msgid "In progress"
+msgstr "I gang"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_location
+msgid "Inventory Locations"
+msgstr "Lageradresser"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_route
+msgid "Inventory Routes"
+msgstr "Lagerruter"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_is_follower
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_is_follower
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_is_follower
+msgid "Is Follower"
+msgstr "Er følger"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+msgid "Items"
+msgstr "Elementer"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Kanban"
+msgstr "Kanban"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__write_uid
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__write_uid
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__write_uid
+msgid "Last Updated by"
+msgstr "Sidst opdateret af"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__write_date
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__write_date
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__write_date
+msgid "Last Updated on"
+msgstr "Sidst opdateret den"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__location_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__location_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__location_id
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Location"
+msgstr "Adresse"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Location must be equal to the order"
+msgstr "Adressen skal svare til ordren"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Manufacturing"
+msgstr "Produktion"
+
+#. module: stock_request
+#: model:ir.ui.menu,name:stock_request.menu_stock_request_master_data
+msgid "Master Data"
+msgstr "Stamdata"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_error
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_error
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_error
+msgid "Message Delivery error"
+msgstr "Besked ved leveringsfejl"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_ids
+msgid "Messages"
+msgstr "Beskeder"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__reference_ids
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__reference_ids
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__reference_ids
+msgid ""
+"Moves created through this stock request will be grouped using these "
+"references. If none are given, the moves generated by procurement rules will"
+" be grouped into one big picking."
+msgstr ""
+"Bilag oprettet via denne lageranmodning vil blive grupperet ved hjælp af "
+"disse referencer. Hvis ingen angives, vil bilag genereret af "
+"anskaffelsesregler blive grupperet i én stor plukning."
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__my_activity_date_deadline
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__my_activity_date_deadline
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Deadline på mine aktiviteter"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__name
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__name
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__name
+msgid "Name"
+msgstr "Navn"
+
+#. module: stock_request
+#: model:ir.model.constraint,message:stock_request.constraint_stock_request_abstract_name_uniq
+msgid "Name must be unique"
+msgstr "Navn skal være unikt"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_date_deadline
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_date_deadline
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Deadline for næste aktivitet"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_summary
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_summary
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_summary
+msgid "Next Activity Summary"
+msgstr "Oversigt over næste aktivitet"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_type_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_type_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_type_id
+msgid "Next Activity Type"
+msgstr "Næste aktivitetstype"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_needaction_counter
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_needaction_counter
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Antal handlinger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__message_has_error_counter
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__message_has_error_counter
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__message_has_error_counter
+msgid "Number of errors"
+msgstr "Antal fejl"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__message_needaction_counter
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_needaction_counter
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Antal meddelelser, der kræver handling"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__message_has_error_counter
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__message_has_error_counter
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Antal beskeder med leveringsfejl"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_order.py:0
+msgid "Only orders on draft state can be unlinked"
+msgstr "Kun ordrer i status kladde kan slettes"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Only requests on draft state can be unlinked"
+msgstr "Kun anmodninger i status kladde kan slettes"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__open_product_qty
+msgid "Open Quantity"
+msgstr "Åbent antal"
+
+#. module: stock_request
+#: model:ir.ui.menu,name:stock_request.menu_stock_request_operations
+msgid "Operations"
+msgstr "Operationer"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__order_id
+msgid "Order"
+msgstr "Ordre"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Orders &amp; Configuration"
+msgstr "Ordrer &amp; konfiguration"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__picking_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__picking_ids
+msgid "Pickings"
+msgstr "Plukninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__product_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__product_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__product_id
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Product"
+msgstr "Produkt"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Produktbilag (lagerbilagslinje)"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__product_uom_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__product_uom_id
+msgid "Product Unit of Measure"
+msgstr "Produktets måleenhed"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Purchases"
+msgstr "Indkøb"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__qty_cancelled
+msgid "Qty Cancelled"
+msgstr "Antal annulleret"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__qty_done
+msgid "Qty Done"
+msgstr "Antal udført"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__qty_in_progress
+msgid "Qty In Progress"
+msgstr "Antal i gang"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__product_uom_qty
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__product_uom_qty
+msgid "Quantity"
+msgstr "Antal"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__qty_cancelled
+msgid "Quantity cancelled"
+msgstr "Antal annulleret"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__qty_done
+msgid "Quantity completed"
+msgstr "Antal gennemført"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__qty_in_progress
+msgid "Quantity in progress."
+msgstr "Antal i gang."
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__product_qty
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__product_qty
+msgid "Quantity in the default UoM of the product"
+msgstr "Antal i produktets standardenhed"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request_allocation__requested_product_uom_qty
+msgid ""
+"Quantity of the stock request allocated to the stock move, in the UoM of the"
+" Stock Request"
+msgstr ""
+"Antal af lageranmodningen allokeret til lagerbilaget, i lageranmodningens "
+"enhed"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request_allocation__allocated_product_qty
+#: model:ir.model.fields,help:stock_request.field_stock_request_allocation__requested_product_qty
+msgid ""
+"Quantity of the stock request allocated to the stock move, in the default "
+"UoM of the product"
+msgstr ""
+"Antal af lageranmodningen allokeret til lagerbilaget, i produktets "
+"standardenhed"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__product_uom_qty
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__product_uom_qty
+msgid "Quantity, specified in the unit of measure indicated in the request."
+msgstr "Antal, angivet i den måleenhed, der er angivet i anmodningen."
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__product_qty
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__product_qty
+msgid "Real Quantity"
+msgstr "Reelt antal"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_move_line.py:0
+msgid ""
+"Receipt confirmation %(picking_name)s for your Request %(request_name)s"
+msgstr ""
+"Modtagelsesbekræftelse %(picking_name)s for din anmodning %(request_name)s"
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__picking_policy__one
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request_order__picking_policy__one
+msgid "Receive all products at once"
+msgstr "Modtag alle produkter på én gang"
+
+#. module: stock_request
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request__picking_policy__direct
+#: model:ir.model.fields.selection,name:stock_request.selection__stock_request_order__picking_policy__direct
+msgid "Receive each product when available"
+msgstr "Modtag hvert produkt, når det er tilgængeligt"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__reference_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__reference_ids
+msgid "Reference"
+msgstr "Reference"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__reference_ids
+msgid "References"
+msgstr "Referencer"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "References must be equal to the order"
+msgstr "Referencer skal svare til ordren"
+
+#. module: stock_request
+#: model:ir.actions.server,name:stock_request.action_template_generate_stock_request_orders
+#: model:ir.actions.server,name:stock_request.action_variant_generate_stock_request_orders
+msgid "Request Stock"
+msgstr "Anmod om lager"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__requested_by
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__requested_by
+msgid "Requested By"
+msgstr "Anmodet af"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__requested_product_qty
+msgid "Requested Quantity"
+msgstr "Anmodet antal"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__requested_product_uom_qty
+msgid "Requested Quantity (UoM)"
+msgstr "Anmodet antal (enhed)"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Requested by must be equal to the order"
+msgstr "Anmodet af skal svare til ordren"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__activity_user_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__activity_user_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__activity_user_id
+msgid "Responsible User"
+msgstr "Ansvarlig bruger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__route_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__route_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__route_id
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Route"
+msgstr "Rute"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__route_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__route_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__route_ids
+msgid "Routes"
+msgstr "Ruter"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
+msgid "Set to Draft"
+msgstr "Markér som kladde"
+
+#. module: stock_request
+#: model:ir.actions.act_window,name:stock_request.action_stock_request_config
+#: model:ir.ui.menu,name:stock_request.menu_stock_request_config
+msgid "Settings"
+msgstr "Indstillinger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__picking_policy
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__picking_policy
+msgid "Shipping Policy"
+msgstr "Afsendelsesmåde"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__state
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__state
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Status"
+msgstr "Status"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__activity_state
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__activity_state
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status baseret på aktiviteter\n"
+"Forfalden: Forfaldsdatoen er allerede overskredet\n"
+"I dag: Aktivitetsdatoen er i dag\n"
+"Planlagt: Fremtidige aktiviteter."
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_move
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__stock_move_id
+msgid "Stock Move"
+msgstr "Lagerflytning"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__move_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__move_ids
+msgid "Stock Moves"
+msgstr "Lagerflytninger"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__stock_request_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__stock_request_ids
+#: model:res.groups.privilege,name:stock_request.res_groups_privilege_stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
+msgid "Stock Request"
+msgstr "Lageranmodning"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_picking__stock_request_count
+msgid "Stock Request #"
+msgstr "Lageranmodning #"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_request_allocation
+#: model:ir.model.fields,field_description:stock_request.field_stock_move__allocation_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__allocation_ids
+msgid "Stock Request Allocation"
+msgstr "Lageranmodningsallokering"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.view_move_form
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_allocation_form
+msgid "Stock Request Allocations"
+msgstr "Lageranmodningsallokeringer"
+
+#. module: stock_request
+#: model:res.groups,name:stock_request.group_stock_request_manager
+msgid "Stock Request Manager"
+msgstr "Lageranmodningsansvarlig"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_request_order
+#: model:res.groups,name:stock_request.group_stock_request_order
+msgid "Stock Request Order"
+msgstr "Lageranmodningsordre"
+
+#. module: stock_request
+#: model:ir.actions.act_window,name:stock_request.stock_request_order_action
+#: model:ir.ui.menu,name:stock_request.stock_request_order_menu
+#: model:res.groups.privilege,name:stock_request.res_groups_privilege_stock_request_order
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+msgid "Stock Request Orders"
+msgstr "Lageranmodningsordrer"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_request_abstract
+msgid "Stock Request Template"
+msgstr "Lageranmodningsskabelon"
+
+#. module: stock_request
+#: model:res.groups,name:stock_request.group_stock_request_user
+msgid "Stock Request User"
+msgstr "Lageranmodningsbruger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_mrp
+msgid "Stock Request for Manufacturing"
+msgstr "Lageranmodning til produktion"
+
+#. module: stock_request
+#: model:ir.model.constraint,message:stock_request.constraint_stock_request_name_uniq
+#: model:ir.model.constraint,message:stock_request.constraint_stock_request_order_name_uniq
+msgid "Stock Request name must be unique"
+msgstr "Lageranmodningens navn skal være unikt"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Stock Request product quantity cannot be negative."
+msgstr "Lageranmodningens produktantal kan ikke være negativt."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Stock Request product quantity has to be strictly positive."
+msgstr "Lageranmodningens produktantal skal være strengt positivt."
+
+#. module: stock_request
+#: model:ir.actions.act_window,name:stock_request.action_stock_request_form
+#: model:ir.model.fields,field_description:stock_request.field_stock_move__stock_request_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_picking__stock_request_ids
+#: model:ir.ui.menu,name:stock_request.menu_stock_request
+#: model:ir.ui.menu,name:stock_request.menu_stock_request_root
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+#: model_terms:ir.ui.view,arch_db:stock_request.view_picking_form
+msgid "Stock Requests"
+msgstr "Lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_analytic
+msgid "Stock Requests Analytic integration"
+msgstr "Analytisk integration for lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_kanban
+msgid "Stock Requests Kanban integration"
+msgstr "Kanbanintegration for lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_purchase
+msgid "Stock Requests for Purchases"
+msgstr "Lageranmodninger til indkøb"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_rule
+msgid "Stock Rule"
+msgstr "Lagerregel"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+msgid "Stock request Order"
+msgstr "Lageranmodningsordre"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__stock_request_count
+msgid "Stock requests"
+msgstr "Lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_res_config_settings__module_stock_request_submit
+msgid "Submitted state in Stock Requests"
+msgstr "Status 'Indsendt' i lageranmodninger"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_move.py:0
+#: code:addons/stock_request/models/stock_request_order.py:0
+msgid "The company of the stock request must match with that of the location."
+msgstr ""
+"Lageranmodningens virksomhed skal stemme overens med adressens virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_order.py:0
+msgid ""
+"The company of the stock request must match with that of the warehouse."
+msgstr ""
+"Lageranmodningens virksomhed skal stemme overens med lagerets virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_move_line.py:0
+msgid ""
+"The following requested items from Stock Request %(request_name)s have now "
+"been received in %(location_name)s using Picking %(picking_name)s:"
+msgstr ""
+"Følgende anmodede varer fra lageranmodning %(request_name)s er nu modtaget i "
+"%(location_name)s via plukning %(picking_name)s:"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "The picking policy must be equal to the order"
+msgstr "Plukningspolitikken skal svare til ordren"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__route_id
+msgid "The route related to a stock request order"
+msgstr "Ruten relateret til en lageranmodningsordre"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_order.py:0
+msgid "There should be at least one request item for confirming the order."
+msgstr "Der skal være mindst ét anmodningselement for at bekræfte ordren."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_order.py:0
+msgid "This action only works in the context of products"
+msgstr "Denne handling virker kun i forbindelse med produkter"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_picking
+msgid "Transfer"
+msgstr "Overfør"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_form
+#: model_terms:ir.ui.view,arch_db:stock_request.view_stock_request_form
+msgid "Transfers"
+msgstr "Overførsler"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__activity_exception_decoration
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__activity_exception_decoration
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type registreret undtagelsesaktivitet."
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_allocation__product_uom_id
+msgid "UoM"
+msgstr "Enhed"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Use Kanban cards for consumable products"
+msgstr "Brug kanbankort til forbrugsprodukter"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Use Manufacturing Orders with Stock Requests"
+msgstr "Brug produktionsordrer med lageranmodninger"
+
+#. module: stock_request
+#: model_terms:ir.ui.view,arch_db:stock_request.res_config_settings_view_form
+msgid "Use Purchases with Stock Requests"
+msgstr "Brug indkøb med lageranmodninger"
+
+#. module: stock_request
+#: model:ir.model,name:stock_request.model_stock_warehouse
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__warehouse_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__warehouse_id
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__warehouse_id
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_order_search
+#: model_terms:ir.ui.view,arch_db:stock_request.stock_request_search
+msgid "Warehouse"
+msgstr "Lagerstyring"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request.py:0
+msgid "Warehouse must be equal to the order"
+msgstr "Lageret skal svare til ordren"
+
+#. module: stock_request
+#: model:ir.model.fields,field_description:stock_request.field_stock_request__website_message_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_abstract__website_message_ids
+#: model:ir.model.fields,field_description:stock_request.field_stock_request_order__website_message_ids
+msgid "Website Messages"
+msgstr "Beskeder fra hjemmesiden"
+
+#. module: stock_request
+#: model:ir.model.fields,help:stock_request.field_stock_request__website_message_ids
+#: model:ir.model.fields,help:stock_request.field_stock_request_abstract__website_message_ids
+#: model:ir.model.fields,help:stock_request.field_stock_request_order__website_message_ids
+msgid "Website communication history"
+msgstr "Hjemmesidens kommunikationshistorik"
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_location.py:0
+msgid ""
+"You cannot change the company of the location, as it is already assigned to "
+"stock request orders that belong to another company."
+msgstr ""
+"Du kan ikke ændre adressens virksomhed, da den allerede er tildelt "
+"lageranmodningsordrer, der tilhører en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_location.py:0
+msgid ""
+"You cannot change the company of the location, as it is already assigned to "
+"stock requests that belong to another company."
+msgstr ""
+"Du kan ikke ændre adressens virksomhed, da den allerede er tildelt "
+"lageranmodninger, der tilhører en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_route.py:0
+msgid ""
+"You cannot change the company of the route, as it is already assigned to "
+"stock requests that belong to another company."
+msgstr ""
+"Du kan ikke ændre rutens virksomhed, da den allerede er tildelt "
+"lageranmodninger, der tilhører en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_warehouse.py:0
+msgid ""
+"You cannot change the company of the warehouse, as it is already assigned to"
+" stock request orders that belong to another company."
+msgstr ""
+"Du kan ikke ændre lagerets virksomhed, da det allerede er tildelt "
+"lageranmodningsordrer, der tilhører en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_warehouse.py:0
+msgid ""
+"You cannot change the company of the warehouse, as it is already assigned to"
+" stock requests that belong to another company."
+msgstr ""
+"Du kan ikke ændre lagerets virksomhed, da det allerede er tildelt "
+"lageranmodninger, der tilhører en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_abstract.py:0
+msgid "You have entered a location that is assigned to another company."
+msgstr "Du har angivet en adresse, der er tildelt en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_abstract.py:0
+msgid "You have entered a product that is assigned to another company."
+msgstr "Du har angivet et produkt, der er tildelt en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_abstract.py:0
+msgid "You have entered a route that is assigned to another company."
+msgstr "Du har angivet en rute, der er tildelt en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_abstract.py:0
+msgid "You have entered a warehouse that is assigned to another company."
+msgstr "Du har angivet et lager, der er tildelt en anden virksomhed."
+
+#. module: stock_request
+#. odoo-python
+#: code:addons/stock_request/models/stock_request_abstract.py:0
+msgid ""
+"You have to select a product unit of measure in the same category than the "
+"default unit of measure of the product"
+msgstr ""
+"Du skal vælge en produktmåleenhed i samme kategori som produktets "
+"standardmåleenhed"
