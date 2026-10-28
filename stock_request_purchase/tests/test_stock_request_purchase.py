@@ -347,3 +347,28 @@ class TestStockRequestPurchase(TestStockRequest):
         self.assertEqual(allocation.requested_product_uom_qty, 1.0)
         self.assertEqual(allocation.requested_product_qty, 12.0)
         self.assertEqual(stock_request.qty_in_progress, 1.0)
+
+    def test_reduce_received_line_does_not_allocate_return(self):
+        stock_request = self.stock_request.sudo().create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        purchase = stock_request.purchase_ids
+        purchase.button_confirm()
+        picking = purchase.picking_ids
+        picking.move_ids.quantity = 5.0
+        picking.button_validate()
+        purchase.order_line.product_qty = 0.0
+        # Odoo creates a return to the vendor, which is not part of the request
+        return_move = purchase.order_line.move_ids - picking.move_ids
+        self.assertTrue(return_move)
+        self.assertFalse(return_move.allocation_ids)
+        self.assertEqual(stock_request.state, "done")
+        self.assertEqual(stock_request.qty_done, 5.0)

@@ -30,6 +30,8 @@ class PurchaseOrderLine(models.Model):
     def _prepare_stock_moves(self, picking=False):
         res = super()._prepare_stock_moves(picking)
         for re in res:
+            if re["product_uom_qty"] < 0:
+                continue
             re["allocation_ids"] = [
                 (
                     0,
