@@ -36,7 +36,7 @@ class PurchaseOrderLine(models.Model):
                     0,
                     {
                         "stock_request_id": request.id,
-                        "requested_product_uom_qty": request.product_qty,
+                        "requested_product_uom_qty": request.product_uom_qty,
                     },
                 )
                 for request in self.stock_request_ids
