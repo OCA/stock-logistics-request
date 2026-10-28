@@ -327,3 +327,23 @@ class TestStockRequestPurchase(TestStockRequest):
         self.assertEqual(
             self.stock_request.with_user(both_user).search(domain), stock_request
         )
+
+    def test_allocation_in_request_uom(self):
+        dozen = self.env.ref("uom.product_uom_dozen")
+        stock_request = self.stock_request.sudo().create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        stock_request.purchase_ids.button_confirm()
+        allocation = stock_request.allocation_ids
+        # The allocation is expressed in the UoM of the request
+        self.assertEqual(allocation.requested_product_uom_qty, 1.0)
+        self.assertEqual(allocation.requested_product_qty, 12.0)
+        self.assertEqual(stock_request.qty_in_progress, 1.0)
