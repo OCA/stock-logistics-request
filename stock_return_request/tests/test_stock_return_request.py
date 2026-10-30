@@ -415,3 +415,23 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
             ValidationError, "Not enough moves to return this product"
         ):
             self.return_request_supplier.action_confirm()
+
+    def test_return_request_split_picking(self):
+        """Splitting a returned picking keeps the backorder in the request"""
+        self.return_request_supplier.write(
+            {
+                "line_ids": [
+                    Command.create({"product_id": self.prod_1.id, "quantity": 5.0})
+                ],
+            }
+        )
+        self.return_request_supplier.action_confirm()
+        picking = self.return_request_supplier.returned_picking_ids
+        self.assertEqual(len(picking), 1)
+        picking.move_ids.quantity = 2.0
+        picking.action_split_transfer()
+        backorder = self.picking_obj.search([("backorder_id", "=", picking.id)])
+        self.assertEqual(backorder.move_ids.product_uom_qty, 3.0)
+        self.assertEqual(
+            backorder.stock_return_request_id, self.return_request_supplier
+        )
