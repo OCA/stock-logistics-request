@@ -3,10 +3,10 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from odoo import Command, exceptions, fields
-from odoo.tests import common, new_test_user
+from odoo.tests import Form, common, new_test_user
 
 from odoo.addons.base.tests.common import BaseCommon
 
@@ -1666,6 +1666,27 @@ class TestStockRequestBase(TestStockRequest):
         self._validate_picking(push_picking, 5.0)
         self.assertEqual(stock_request.qty_done, 5.0)
         self.assertEqual(stock_request.state, "done")
+
+    def _create_request_with_expected_date(self, expected_date):
+        request_form = Form(self.stock_request.with_user(self.stock_request_user))
+        request_form.product_id = self.product
+        request_form.product_uom_qty = 5.0
+        request_form.expected_date = expected_date
+        return request_form.save()
+
+    def test_create_request_keeps_expected_date(self):
+        expected_date = fields.Datetime.now().replace(microsecond=0) + timedelta(
+            days=30
+        )
+        stock_request = self._create_request_with_expected_date(expected_date)
+        self.assertEqual(stock_request.expected_date, expected_date)
+
+    def test_duplicate_request_keeps_expected_date(self):
+        expected_date = fields.Datetime.now().replace(microsecond=0) + timedelta(
+            days=30
+        )
+        stock_request = self._create_request_with_expected_date(expected_date)
+        self.assertEqual(stock_request.copy().expected_date, expected_date)
 
 
 class TestStockRequestOrderState(TestStockRequest):
