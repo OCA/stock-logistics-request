@@ -71,12 +71,12 @@ class StockMove(models.Model):
         """Apply sudo to prevent requests ACL errors if the user does not have
         permissions (example: productions)."""
         res = super()._action_cancel()
-        self.mapped("allocation_ids.stock_request_id").sudo().check_cancel()
+        self.exists().mapped("allocation_ids.stock_request_id").sudo().check_cancel()
         return res
 
     def _action_done(self, cancel_backorder=False):
         """Apply sudo to prevent requests ACL errors if the user does not have
         permissions (example: productions)."""
         res = super()._action_done(cancel_backorder=cancel_backorder)
-        self.mapped("allocation_ids.stock_request_id").sudo().check_done()
+        self.exists().mapped("allocation_ids.stock_request_id").sudo().check_done()
         return res
