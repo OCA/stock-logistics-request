@@ -12,7 +12,7 @@
                     type="object"
                     name="action_view_stock_request"
                     class="oe_stat_button"
-                    icon="fa-chain"
+                    icon="link"
                     invisible="not stock_request_ids"
                     groups="stock_request.group_stock_request_user"
                 >
@@ -39,6 +39,20 @@
         <field name="name">purchase.order.line.form2</field>
         <field name="model">purchase.order.line</field>
         <field name="inherit_id" ref="purchase.purchase_order_line_form2" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <separator string="Stock Requests" />
+                <field
+                    name="stock_request_ids"
+                    groups="stock_request.group_stock_request_user"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="purchase_order_line_view_form_invoice" model="ir.ui.view">
+        <field name="name">purchase.order.line.view.form.invoice</field>
+        <field name="model">purchase.order.line</field>
+        <field name="inherit_id" ref="purchase.purchase_order_line_view_form_invoice" />
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <separator string="Stock Requests" />
