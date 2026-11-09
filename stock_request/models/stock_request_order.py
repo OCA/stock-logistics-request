@@ -60,14 +60,12 @@ class StockRequestOrder(models.Model):
     )
     warehouse_id = fields.Many2one(
         comodel_name="stock.warehouse",
-        string="Warehouse",
         check_company=True,
         ondelete="cascade",
         required=True,
     )
     location_id = fields.Many2one(
         comodel_name="stock.location",
-        string="Location",
         domain="not allow_virtual_location and "
         "[('usage', 'in', ['internal', 'transit'])] or []",
         ondelete="cascade",
@@ -88,7 +86,6 @@ class StockRequestOrder(models.Model):
     )
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         required=True,
         default=lambda self: self.env.company,
     )
