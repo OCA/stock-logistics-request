@@ -70,5 +70,4 @@ class StockMoveLine(models.Model):
                         message_data
                     )
                     request.message_post(body=message, subtype_xmlid="mail.mt_comment")
-                    request.check_done()
         return res

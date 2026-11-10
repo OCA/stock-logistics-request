@@ -87,3 +87,22 @@ class StockRequestAllocation(models.Model):
                     rec.requested_product_qty - rec.allocated_product_qty
                 )
                 rec.open_product_qty = max(rec.open_product_qty, 0.0)
+
+    def _get_done_sign(self):
+        """1 if the allocated quantity fulfills the request, -1 if it undoes
+        it (a return) and 0 if a next move of the chain counts it instead."""
+        self.ensure_one()
+        move = self.stock_move_id
+        if move.origin_returned_move_id:
+            origin = move.origin_returned_move_id.allocation_ids.filtered(
+                lambda a: a.stock_request_id == self.stock_request_id
+            )[:1]
+            return -origin._get_done_sign() if origin else -1
+        next_moves = move.move_dest_ids.filtered(
+            lambda m: (
+                m.state != "cancel"
+                and not m.origin_returned_move_id
+                and self.stock_request_id in m.allocation_ids.stock_request_id
+            )
+        )
+        return 0 if next_moves else 1

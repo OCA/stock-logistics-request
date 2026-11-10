@@ -165,21 +165,15 @@ class StockRequest(models.Model):
 
     @api.depends(
         "allocation_ids",
+        "allocation_ids.allocated_product_qty",
         "allocation_ids.stock_move_id.state",
+        "allocation_ids.stock_move_id.move_dest_ids",
         "allocation_ids.stock_move_id.move_line_ids",
         "allocation_ids.stock_move_id.move_line_ids.quantity",
     )
     def _compute_qty(self):
         for request in self:
-            incoming_qty = 0.0
-            other_qty = 0.0
-            for allocation in request.allocation_ids:
-                if allocation.stock_move_id.picking_code == "incoming":
-                    incoming_qty += allocation.allocated_product_qty
-                else:
-                    other_qty += allocation.allocated_product_qty
-            done_qty = abs(other_qty - incoming_qty)
-            open_qty = sum(request.allocation_ids.mapped("open_product_qty"))
+            done_qty, fulfilled_qty, open_qty = request._get_allocation_qtys()
             uom = request.product_id.uom_id
             request.qty_done = uom._compute_quantity(
                 done_qty,
@@ -195,7 +189,7 @@ class StockRequest(models.Model):
                 max(
                     0,
                     uom._compute_quantity(
-                        request.product_qty - done_qty - open_qty,
+                        request.product_qty - fulfilled_qty - open_qty,
                         request.product_uom_id,
                         rounding_method="HALF-UP",
                     ),
@@ -203,6 +197,19 @@ class StockRequest(models.Model):
                 if request.allocation_ids
                 else 0
             )
+
+    def _get_allocation_qtys(self):
+        """Return the done, fulfilled and open quantities in the product UoM.
+        Done is the fulfilled quantity minus what was returned."""
+        self.ensure_one()
+        done_qty = fulfilled_qty = open_qty = 0.0
+        for allocation in self.allocation_ids:
+            sign = allocation._get_done_sign()
+            done_qty += sign * allocation.allocated_product_qty
+            if sign > 0:
+                fulfilled_qty += allocation.allocated_product_qty
+                open_qty += allocation.open_product_qty
+        return max(done_qty, 0.0), fulfilled_qty, open_qty
 
     @api.constrains("order_id", "requested_by")
     def check_order_requested_by(self):
@@ -307,9 +314,9 @@ class StockRequest(models.Model):
     def check_done(self):
         precision = self.env["decimal.precision"].precision_get("Product Unit")
         for request in self:
-            allocated_qty = sum(request.allocation_ids.mapped("allocated_product_qty"))
+            done_qty = request._get_allocation_qtys()[0]
             qty_done = request.product_id.uom_id._compute_quantity(
-                allocated_qty, request.product_uom_id
+                done_qty, request.product_uom_id
             )
             if (
                 float_compare(
