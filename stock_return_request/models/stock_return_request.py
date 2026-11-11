@@ -349,7 +349,7 @@ class StockReturnRequest(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "stock.return.request"
                 ) or self.env._("New")
-        return super().create(vals)
+        return super().create(vals_list)
 
     @api.ondelete(at_uninstall=False)
     def _must_delete_request(self):
