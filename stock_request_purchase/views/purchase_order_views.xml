@@ -12,7 +12,7 @@
                     type="object"
                     name="action_view_stock_request"
                     class="oe_stat_button"
-                    icon="fa-chain"
+                    icon="link"
                     invisible="not stock_request_ids"
                     groups="stock_request.group_stock_request_user"
                 >

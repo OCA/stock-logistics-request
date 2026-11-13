@@ -3,6 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
 from odoo import fields
+from odoo.tests import new_test_user
 
 from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
 
@@ -12,6 +13,7 @@ class TestStockRequestPurchase(TestStockRequest):
     def setUpClass(cls):
         super().setUpClass()
         cls.route_buy = cls.warehouse.buy_pull_id.route_id
+        cls.route_buy.product_selectable = True
         cls.supplier = cls.env["res.partner"].create({"name": "Supplier"})
         cls.product.write(
             {
@@ -283,7 +285,7 @@ class TestStockRequestPurchase(TestStockRequest):
         action = stock_request.action_view_purchase()
 
         self.assertEqual(action["domain"], "[]")
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], stock_request.purchase_ids[0].id)
 
         action = stock_request.purchase_ids[0].action_view_stock_request()
@@ -293,5 +295,35 @@ class TestStockRequestPurchase(TestStockRequest):
         action = order.action_view_purchase()
 
         self.assertEqual(action["domain"], "[]")
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], order.purchase_ids[0].id)
+
+    def test_read_access_purchase_user(self):
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "requested_by": self.stock_request_manager.id,
+            }
+        )
+        purchase_user = new_test_user(
+            self.env, login="purchase_user", groups="purchase.group_purchase_user"
+        )
+        both_user = new_test_user(
+            self.env,
+            login="stock_request_purchase_user",
+            groups="stock_request.group_stock_request_user,"
+            "purchase.group_purchase_user",
+        )
+        domain = [("id", "=", stock_request.id)]
+        self.assertEqual(
+            self.stock_request.with_user(purchase_user).search(domain), stock_request
+        )
+        # A requester that is also a purchase user only reads their own or
+        # followed requests
+        self.assertFalse(self.stock_request.with_user(both_user).search(domain))
+        stock_request.message_subscribe(partner_ids=both_user.partner_id.ids)
+        self.assertEqual(
+            self.stock_request.with_user(both_user).search(domain), stock_request
+        )

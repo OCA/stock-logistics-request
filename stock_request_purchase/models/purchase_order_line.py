@@ -27,7 +27,7 @@ class PurchaseOrderLine(models.Model):
             stock_request_to_cancel.action_cancel()
         return res
 
-    def _prepare_stock_moves(self, picking):
+    def _prepare_stock_moves(self, picking=False):
         res = super()._prepare_stock_moves(picking)
         for re in res:
             re["allocation_ids"] = [
