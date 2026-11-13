@@ -375,7 +375,9 @@ class StockRequest(models.Model):
         return {
             "stock_request_id": self.id,
             "stock_move_id": move.id,
-            "requested_product_uom_qty": move.product_uom_qty,
+            "requested_product_uom_qty": move.uom_id._compute_quantity(
+                move.product_uom_qty, self.product_uom_id, rounding_method="HALF-UP"
+            ),
         }
 
     def _action_use_stock_available(self):
@@ -384,7 +386,7 @@ class StockRequest(models.Model):
         stock_move_model = self.env["stock.move"].sudo()
         precision = self.env["decimal.precision"].precision_get("Product Unit")
         quants = self.env["stock.quant"]._gather(self.product_id, self.location_id)
-        pending_qty = self.product_uom_qty
+        pending_qty = self.product_qty
         for quant in quants.filtered(lambda x: x.available_quantity >= 0):
             qty_move = min(pending_qty, quant.available_quantity)
             if float_compare(qty_move, 0, precision_digits=precision) > 0:
@@ -424,7 +426,7 @@ class StockRequest(models.Model):
                     request.product_id.sudo()
                     .with_context(location=request.location_id.id)
                     .free_qty,
-                    request.product_uom_qty,
+                    request.product_qty,
                     precision_digits=precision,
                 )
                 >= 0
