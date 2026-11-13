@@ -1,0 +1,374 @@
+# Copyright 2016-20 ForgeFlow S.L. (https://www.forgeflow.com)
+# Copyright 2023 Tecnativa - Víctor Martínez
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
+
+from odoo import fields
+from odoo.tests import new_test_user
+
+from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
+
+
+class TestStockRequestPurchase(TestStockRequest):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.route_buy = cls.warehouse.buy_pull_id.route_id
+        cls.route_buy.product_selectable = True
+        cls.supplier = cls.env["res.partner"].create({"name": "Supplier"})
+        cls.product.write(
+            {
+                "route_ids": [(6, 0, cls.route_buy.ids)],
+                "seller_ids": [(0, 0, {"partner_id": cls.supplier.id, "delay": 5})],
+            }
+        )
+        cls.group_purchase_user = cls.env.ref("purchase.group_purchase_user")
+        cls.stock_request_user.write({"group_ids": [(4, cls.group_purchase_user.id)]})
+        cls.stock_request_manager.write(
+            {"group_ids": [(4, cls.group_purchase_user.id)]}
+        )
+
+    def test_create_request_01(self):
+        """Single Stock request with buy rule"""
+        expected_date = fields.Datetime.now()
+        vals = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": expected_date,
+            "stock_request_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.product.id,
+                        "product_uom_id": self.product.uom_id.id,
+                        "product_uom_qty": 5.0,
+                        "company_id": self.main_company.id,
+                        "warehouse_id": self.warehouse.id,
+                        "location_id": self.warehouse.lot_stock_id.id,
+                        "expected_date": expected_date,
+                    },
+                )
+            ],
+        }
+
+        order = (
+            self.env["stock.request.order"]
+            .with_user(self.stock_request_user)
+            .create(vals)
+        )
+
+        order.action_confirm()
+        self.assertEqual(order.state, "open")
+        self.assertEqual(order.stock_request_ids.state, "open")
+
+        order.invalidate_recordset()
+        self.assertEqual(len(order.sudo().purchase_ids), 1)
+        self.assertEqual(len(order.picking_ids), 0)
+        self.assertEqual(len(order.move_ids), 0)
+        self.assertEqual(len(order.stock_request_ids.sudo().purchase_ids), 1)
+        self.assertEqual(len(order.stock_request_ids.picking_ids), 0)
+        self.assertEqual(len(order.stock_request_ids.move_ids), 0)
+        self.assertEqual(order.stock_request_ids.qty_in_progress, 0.0)
+
+        purchase = order.sudo().purchase_ids[0]
+        self.assertEqual(purchase.company_id, order.stock_request_ids[0].company_id)
+        purchase.button_confirm()
+        picking = purchase.picking_ids[0]
+        picking.action_confirm()
+
+        self.assertEqual(order.stock_request_ids.qty_in_progress, 5.0)
+        self.assertEqual(order.stock_request_ids.qty_done, 0.0)
+
+        picking.action_assign()
+        packout1 = picking.move_line_ids[0]
+        packout1.quantity = 5
+        picking.button_validate()
+
+        self.assertEqual(order.stock_request_ids.qty_in_progress, 0.0)
+        self.assertEqual(
+            order.stock_request_ids.qty_done, order.stock_request_ids.product_uom_qty
+        )
+        self.assertEqual(order.stock_request_ids.state, "done")
+        self.assertEqual(order.state, "done")
+
+    def test_create_request_02(self):
+        """Multiple Stock requests with buy rule"""
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.product.uom_id.id,
+            "product_uom_qty": 5.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+
+        stock_request_1 = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        stock_request_2 = self.stock_request.with_user(
+            self.stock_request_manager
+        ).create(vals)
+
+        stock_request_1.action_confirm()
+        self.assertEqual(
+            sum(stock_request_1.sudo().purchase_line_ids.mapped("product_qty")), 5
+        )
+
+        stock_request_2.with_user(self.stock_request_manager).sudo().action_confirm()
+
+        self.assertEqual(
+            sum(stock_request_2.sudo().purchase_line_ids.mapped("product_qty")), 10
+        )
+
+        stock_request_1.invalidate_recordset()
+        stock_request_2.invalidate_recordset()
+
+        self.assertEqual(len(stock_request_1.sudo().purchase_ids), 1)
+        self.assertEqual(len(stock_request_2.sudo().purchase_ids), 1)
+        self.assertEqual(len(stock_request_1.sudo().purchase_ids), 1)
+        self.assertEqual(len(stock_request_2.sudo().purchase_line_ids), 1)
+        self.assertEqual(
+            stock_request_1.sudo().purchase_ids, stock_request_2.sudo().purchase_ids
+        )
+        self.assertEqual(
+            stock_request_1.sudo().purchase_line_ids,
+            stock_request_2.sudo().purchase_line_ids,
+        )
+
+        purchase = stock_request_1.sudo().purchase_ids[0]
+
+        purchase.button_confirm()
+        picking = purchase.picking_ids[0]
+        picking.action_confirm()
+
+        self.assertEqual(stock_request_1.qty_in_progress, 5.0)
+        self.assertEqual(stock_request_1.qty_done, 0.0)
+        self.assertEqual(stock_request_2.qty_in_progress, 5.0)
+        self.assertEqual(stock_request_2.qty_done, 0.0)
+
+        picking.action_assign()
+        packout1 = picking.move_line_ids[0]
+        packout1.quantity = 10
+        picking.button_validate()
+
+        self.assertEqual(stock_request_1.qty_in_progress, 0.0)
+        self.assertEqual(stock_request_1.qty_done, stock_request_1.product_uom_qty)
+
+        self.assertEqual(stock_request_2.qty_in_progress, 0.0)
+        self.assertEqual(stock_request_2.qty_done, stock_request_2.product_uom_qty)
+
+    def test_create_request_cancel_purchase(self):
+        vals = {
+            "product_id": self.product.id,
+            "product_uom_id": self.product.uom_id.id,
+            "product_uom_qty": 5.0,
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+        stock_request = self.stock_request.with_user(self.stock_request_user).create(
+            vals
+        )
+        stock_request.action_confirm()
+        self.assertEqual(stock_request.purchase_ids.state, "draft")
+        stock_request.action_cancel()
+        self.assertEqual(stock_request.purchase_ids.state, "cancel")
+
+    def test_unlink_purchase_order_line(self):
+        """
+        Test that when a purchase order line is unlinked,
+        the related stock requests are cancelled
+        """
+        expected_date = fields.Datetime.now()
+        product2 = self._create_product(
+            "P2",
+            "product2",
+            False,
+            route_ids=[(6, 0, self.route_buy.ids)],
+            seller_ids=[(0, 0, {"partner_id": self.supplier.id, "delay": 5})],
+        )
+        vals = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": expected_date,
+            "stock_request_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.product.id,
+                        "product_uom_id": self.product.uom_id.id,
+                        "product_uom_qty": 10.0,
+                        "company_id": self.main_company.id,
+                        "warehouse_id": self.warehouse.id,
+                        "location_id": self.warehouse.lot_stock_id.id,
+                        "expected_date": expected_date,
+                    },
+                ),
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": product2.id,
+                        "product_uom_id": product2.uom_id.id,
+                        "product_uom_qty": 20.0,
+                        "company_id": self.main_company.id,
+                        "warehouse_id": self.warehouse.id,
+                        "location_id": self.warehouse.lot_stock_id.id,
+                        "expected_date": expected_date,
+                    },
+                ),
+            ],
+        }
+
+        order = (
+            self.env["stock.request.order"]
+            .with_user(self.stock_request_user)
+            .create(vals)
+        )
+
+        order.action_confirm()
+        self.assertEqual(order.state, "open")
+        self.assertEqual(len(order.purchase_ids), 1)
+        purchase = order.purchase_ids[0]
+        purchase_line1 = purchase.order_line.filtered(
+            lambda x: x.product_id == self.product
+        )
+        purchase_line2 = purchase.order_line.filtered(
+            lambda x: x.product_id == product2
+        )
+        stock_request1 = order.stock_request_ids.filtered(
+            lambda x: x.product_id == self.product
+        )
+        stock_request2 = order.stock_request_ids.filtered(
+            lambda x: x.product_id == product2
+        )
+        purchase_line1.sudo().unlink()
+        self.assertEqual(stock_request1.state, "cancel")
+        self.assertEqual(order.state, "open")
+        purchase_line2.sudo().unlink()
+        self.assertEqual(stock_request2.state, "cancel")
+        self.assertEqual(order.state, "cancel")
+
+    def test_view_actions(self):
+        expected_date = fields.Datetime.now()
+        vals = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+            "expected_date": expected_date,
+            "stock_request_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": self.product.id,
+                        "product_uom_id": self.product.uom_id.id,
+                        "product_uom_qty": 5.0,
+                        "company_id": self.main_company.id,
+                        "warehouse_id": self.warehouse.id,
+                        "location_id": self.warehouse.lot_stock_id.id,
+                        "expected_date": expected_date,
+                    },
+                )
+            ],
+        }
+
+        order = self.env["stock.request.order"].sudo().create(vals)
+
+        order.action_confirm()
+
+        stock_request = order.stock_request_ids
+
+        action = stock_request.action_view_purchase()
+
+        self.assertEqual(action["domain"], "[]")
+        self.assertEqual("views" in action, True)
+        self.assertEqual(action["res_id"], stock_request.purchase_ids[0].id)
+
+        action = stock_request.purchase_ids[0].action_view_stock_request()
+        self.assertEqual(action["type"], "ir.actions.act_window")
+        self.assertEqual(action["res_id"], stock_request.id)
+
+        action = order.action_view_purchase()
+
+        self.assertEqual(action["domain"], "[]")
+        self.assertEqual("views" in action, True)
+        self.assertEqual(action["res_id"], order.purchase_ids[0].id)
+
+    def test_read_access_purchase_user(self):
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "requested_by": self.stock_request_manager.id,
+            }
+        )
+        purchase_user = new_test_user(
+            self.env, login="purchase_user", groups="purchase.group_purchase_user"
+        )
+        both_user = new_test_user(
+            self.env,
+            login="stock_request_purchase_user",
+            groups="stock_request.group_stock_request_user,"
+            "purchase.group_purchase_user",
+        )
+        domain = [("id", "=", stock_request.id)]
+        self.assertEqual(
+            self.stock_request.with_user(purchase_user).search(domain), stock_request
+        )
+        # A requester that is also a purchase user only reads their own or
+        # followed requests
+        self.assertFalse(self.stock_request.with_user(both_user).search(domain))
+        stock_request.message_subscribe(partner_ids=both_user.partner_id.ids)
+        self.assertEqual(
+            self.stock_request.with_user(both_user).search(domain), stock_request
+        )
+
+    def test_allocation_in_request_uom(self):
+        dozen = self.env.ref("uom.product_uom_dozen")
+        stock_request = self.stock_request.sudo().create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        stock_request.purchase_ids.button_confirm()
+        allocation = stock_request.allocation_ids
+        # The allocation is expressed in the UoM of the request
+        self.assertEqual(allocation.requested_product_uom_qty, 1.0)
+        self.assertEqual(allocation.requested_product_qty, 12.0)
+        self.assertEqual(stock_request.qty_in_progress, 1.0)
+
+    def test_reduce_received_line_does_not_allocate_return(self):
+        stock_request = self.stock_request.sudo().create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        purchase = stock_request.purchase_ids
+        purchase.button_confirm()
+        picking = purchase.picking_ids
+        picking.move_ids.quantity = 5.0
+        picking.button_validate()
+        purchase.order_line.product_qty = 0.0
+        # Odoo creates a return to the vendor, which is not part of the request
+        return_move = purchase.order_line.move_ids - picking.move_ids
+        self.assertTrue(return_move)
+        self.assertFalse(return_move.allocation_ids)
+        self.assertEqual(stock_request.state, "done")
+        self.assertEqual(stock_request.qty_done, 5.0)
