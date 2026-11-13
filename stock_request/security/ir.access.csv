@@ -1,0 +1,18 @@
+id,name,model_id,group_id/id,operation,domain
+stock_request_followers_rule,Follow Stock Request,stock.request,stock_request.group_stock_request_user,r,"['|',('requested_by','=',user.id),
+                                            ('message_partner_ids', 'in', [user.partner_id.id])]"
+stock_request_rule,Stock Request User,stock.request,stock_request.group_stock_request_user,crud,"[('requested_by','=',user.id)]"
+stock_request_manager_rule,Stock Request Manager,stock.request,stock_request.group_stock_request_manager,crud,
+access_stock_request_stock_user,stock.request stock user,stock.request,stock.group_stock_user,r,"[] if not user.has_group('stock_request.group_stock_request_user') else [(0, '=', 1)]"
+stock_picking_rule,stock_request multi-company,stock.request,,crud,"['|',('company_id','=',False),('company_id', 'in', company_ids)]"
+access_stock_request_allocation_user,stock request allocation user,stock.request.allocation,stock_request.group_stock_request_user,crud,
+access_stock_request_allocation_stock_user,stock.request.allocation stock user,stock.request.allocation,base.group_user,r,
+access_stock_location_user,stock.location.user,stock.location,stock_request.group_stock_request_user,r,
+access_stock_rule_user,stock_rule_user,stock.rule,stock_request.group_stock_request_user,r,
+stock_request_order_followers_rule,Follow Stock Request Order,stock.request.order,stock_request.group_stock_request_user,r,"['|',('requested_by','=',user.id),
+                                            ('message_partner_ids', 'in', [user.partner_id.id])]"
+stock_request_order_rule,Stock Request Order User,stock.request.order,stock_request.group_stock_request_user,cru,"[('requested_by','=',user.id)]"
+stock_request_order_manager_rule,Stock Request Manager,stock.request.order,stock_request.group_stock_request_manager,crud,
+stock_request_order_picking_rule,stock_request_order multi-company,stock.request.order,,crud,"['|',('company_id','=',False),('company_id', 'in', company_ids)]"
+access_stock_request_user_warehouse,stock request user Warehouse,stock.warehouse,stock_request.group_stock_request_user,r,
+access_stock_request_user_stock_move,stock request user stock move,stock.move,stock_request.group_stock_request_user,r,
