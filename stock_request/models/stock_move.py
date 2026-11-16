@@ -1,8 +1,9 @@
 # Copyright 2017-2020 ForgeFlow, S.L.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-from odoo import _, api, fields, models
+from odoo import Command, _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_is_zero
 
 
 class StockMove(models.Model):
@@ -66,6 +67,47 @@ class StockMove(models.Model):
                 )
             )
         return super().copy_data(default)
+
+    def _split(self, qty, restrict_partner_id=False):
+        kept_qty = max(0.0, self.product_qty - qty)
+        new_move_vals = super()._split(qty, restrict_partner_id=restrict_partner_id)
+        if new_move_vals and self.allocation_ids:
+            new_move_vals[0]["allocation_ids"] = self._split_allocations(kept_qty)
+        return new_move_vals
+
+    def _split_allocations(self, kept_qty):
+        vals_list = []
+        to_unlink = self.env["stock.request.allocation"].sudo()
+        for allocation in self.allocation_ids.sudo():
+            uom = allocation.product_id.uom_id
+            allocation_kept_qty = min(allocation.open_product_qty, kept_qty)
+            kept_qty -= allocation_kept_qty
+            split_qty = allocation.open_product_qty - allocation_kept_qty
+            if float_is_zero(split_qty, precision_rounding=uom.rounding):
+                continue
+            vals_list.append(
+                Command.create(
+                    {
+                        "stock_request_id": allocation.stock_request_id.id,
+                        "requested_product_uom_qty": uom._compute_quantity(
+                            split_qty, allocation.product_uom_id, round=False
+                        ),
+                    }
+                )
+            )
+            remaining_qty = allocation.requested_product_qty - split_qty
+            if float_is_zero(remaining_qty, precision_rounding=uom.rounding):
+                to_unlink |= allocation
+            else:
+                allocation.write(
+                    {
+                        "requested_product_uom_qty": uom._compute_quantity(
+                            remaining_qty, allocation.product_uom_id, round=False
+                        )
+                    }
+                )
+        to_unlink.unlink()
+        return vals_list
 
     def _action_cancel(self):
         """Apply sudo to prevent requests ACL errors if the user does not have
