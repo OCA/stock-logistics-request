@@ -69,17 +69,11 @@ class StockMove(models.Model):
             ]
         else:
             uom = self.env["uom.uom"].browse(vals.get("uom_id")) or self.uom_id
-            to_copy = uom._compute_quantity(
-                vals.get("product_uom_qty", self.product_uom_qty), product_uom
+            qtys = self._get_split_allocation_qtys(
+                uom._compute_quantity(
+                    vals.get("product_uom_qty", self.product_uom_qty), product_uom
+                )
             )
-            to_keep = max(self.product_qty - to_copy, 0.0)
-            qtys = []
-            for alloc in self.allocation_ids:
-                kept_qty = min(alloc.open_product_qty, to_keep)
-                to_keep -= kept_qty
-                qty = min(alloc.open_product_qty - kept_qty, to_copy)
-                to_copy -= qty
-                qtys.append((alloc, qty))
         return [
             Command.create(
                 {
@@ -92,6 +86,41 @@ class StockMove(models.Model):
             for alloc, qty in qtys
             if not product_uom.is_zero(qty)
         ]
+
+    def _get_split_allocation_qtys(self, to_copy):
+        self.ensure_one()
+        to_keep = max(self.product_qty - to_copy, 0.0)
+        qtys = []
+        for alloc in self.allocation_ids:
+            kept_qty = min(alloc.open_product_qty, to_keep)
+            to_keep -= kept_qty
+            qty = min(alloc.open_product_qty - kept_qty, to_copy)
+            to_copy -= qty
+            qtys.append((alloc, qty))
+        return qtys
+
+    def _split(self, qty, restrict_partner_id=False):
+        split_qtys = self.allocation_ids and self._get_split_allocation_qtys(qty)
+        new_move_vals = super()._split(qty, restrict_partner_id=restrict_partner_id)
+        if new_move_vals and split_qtys:
+            self._reduce_allocations(split_qtys)
+        return new_move_vals
+
+    def _reduce_allocations(self, qtys):
+        to_unlink = self.env["stock.request.allocation"].sudo()
+        for alloc, qty in qtys:
+            alloc = alloc.sudo()
+            product_uom = alloc.product_id.uom_id
+            if product_uom.is_zero(qty):
+                continue
+            remaining_qty = alloc.requested_product_qty - qty
+            if product_uom.is_zero(remaining_qty):
+                to_unlink |= alloc
+            else:
+                alloc.requested_product_uom_qty = product_uom._compute_quantity(
+                    remaining_qty, alloc.product_uom_id, rounding_method="HALF-UP"
+                )
+        to_unlink.unlink()
 
     def _action_cancel(self):
         """Apply sudo to prevent requests ACL errors if the user does not have

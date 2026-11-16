@@ -3,7 +3,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_compare
+from odoo.tools import float_compare, float_is_zero
 
 
 class StockRequest(models.Model):
@@ -165,6 +165,7 @@ class StockRequest(models.Model):
 
     @api.depends(
         "allocation_ids",
+        "allocation_ids.requested_product_uom_qty",
         "allocation_ids.allocated_product_qty",
         "allocation_ids.stock_move_id.state",
         "allocation_ids.stock_move_id.move_dest_ids",
@@ -343,6 +344,7 @@ class StockRequest(models.Model):
         return (
             self.allocation_ids
             and float_compare(self.qty_cancelled, 0, precision_digits=precision) > 0
+            and float_is_zero(self.qty_in_progress, precision_digits=precision)
         )
 
     def _prepare_procurement_values(self, reference_ids=False):
