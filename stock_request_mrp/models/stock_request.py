@@ -57,3 +57,52 @@ class StockRequest(models.Model):
             ]
             action["res_id"] = productions.id
         return action
+
+    def _update_production_allocations(self):
+        """Spread the quantity of each request over the open finished moves of
+        its manufacturing orders, up to the quantity of each move. Call it with
+        sudo: the user may not read the productions nor create allocations."""
+        allocation_obj = self.env["stock.request.allocation"]
+        for request in self:
+            product_uom = request.product_id.uom_id
+            moves = (
+                request.production_ids.move_finished_ids
+                | request.allocation_ids.stock_move_id
+            ).filtered(
+                lambda m, request=request: (
+                    m.production_id
+                    and m.product_id == request.product_id
+                    and not m.byproduct_id
+                    and m.state != "cancel"
+                )
+            )
+            allocations = request.allocation_ids.filtered(
+                lambda a, moves=moves: a.stock_move_id in moves
+            )
+            pending_qty = request.product_qty - sum(
+                allocations.filtered(lambda a: a.stock_move_id.state == "done").mapped(
+                    "allocated_product_qty"
+                )
+            )
+            for move in moves.filtered(lambda m: m.state != "done").sorted("id"):
+                allocation = allocations.filtered(
+                    lambda a, move=move: a.stock_move_id == move
+                )[:1]
+                qty = max(min(pending_qty, move.product_qty), 0.0)
+                pending_qty -= qty
+                requested_qty = product_uom._compute_quantity(
+                    allocation.allocated_product_qty + qty,
+                    request.product_uom_id,
+                    rounding_method="HALF-UP",
+                )
+                if allocation:
+                    if allocation.requested_product_uom_qty != requested_qty:
+                        allocation.requested_product_uom_qty = requested_qty
+                elif not product_uom.is_zero(qty):
+                    allocation_obj.create(
+                        {
+                            "stock_request_id": request.id,
+                            "stock_move_id": move.id,
+                            "requested_product_uom_qty": requested_qty,
+                        }
+                    )
