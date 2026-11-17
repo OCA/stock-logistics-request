@@ -132,7 +132,7 @@ class TestStockRequestMrp(TestStockRequest):
 
         action = stock_request.action_view_mrp_production()
 
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], stock_request.production_ids[0].id)
 
         action = stock_request.production_ids[0].action_view_stock_request()
@@ -141,5 +141,5 @@ class TestStockRequestMrp(TestStockRequest):
 
         action = order.action_view_mrp_production()
 
-        self.assertEqual("views" in action.keys(), True)
+        self.assertEqual("views" in action, True)
         self.assertEqual(action["res_id"], order.production_ids[0].id)

@@ -18,7 +18,7 @@ def post_init_hook(env):
 
 
 def link_existing_mos_to_stock_request(env):
-    env = api.Environment(env.cr, SUPERUSER_ID, dict())
+    env = api.Environment(env.cr, SUPERUSER_ID, {})
     stock_request_obj = env["stock.request"]
     stock_request_order_obj = env["stock.request.order"]
     stock_request_allocation_obj = env["stock.request.allocation"]
