@@ -3,6 +3,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools import float_is_zero
 
 
 class StockMove(models.Model):
@@ -75,8 +76,45 @@ class StockMove(models.Model):
         return res
 
     def _action_done(self, cancel_backorder=False):
-        """Apply sudo to prevent requests ACL errors if the user does not have
-        permissions (example: productions)."""
+        """A move that has not reached its final location is counted by the
+        move its push creates (see stock.rule._run_push), so it is only counted
+        here when no push follows. Apply sudo to prevent requests ACL errors if
+        the user does not have permissions (example: productions)."""
+        deferred_moves = self.filtered(
+            lambda m: m.state not in ("done", "cancel")
+            and m.allocation_ids
+            and m._stock_request_before_final_location()
+        )
         res = super()._action_done(cancel_backorder=cancel_backorder)
+        deferred_moves.filtered(
+            lambda m: m.state == "done" and m.allocation_ids
+        ).move_line_ids._stock_request_allocate()
         self.mapped("allocation_ids.stock_request_id").sudo().check_done()
         return res
+
+    def _stock_request_before_final_location(self):
+        self.ensure_one()
+        return bool(self.location_final_id) and not self.location_dest_id._child_of(
+            self.location_final_id
+        )
+
+    def _stock_request_fit_allocations(self):
+        self.ensure_one()
+        pending_qty = self.product_qty
+        for allocation in self.allocation_ids.sudo():
+            uom = allocation.product_id.uom_id
+            qty = min(allocation.requested_product_qty, pending_qty)
+            pending_qty -= qty
+            if float_is_zero(qty, precision_rounding=uom.rounding):
+                allocation.unlink()
+            elif not float_is_zero(
+                allocation.requested_product_qty - qty,
+                precision_rounding=uom.rounding,
+            ):
+                allocation.write(
+                    {
+                        "requested_product_uom_qty": uom._compute_quantity(
+                            qty, allocation.product_uom_id, round=False
+                        )
+                    }
+                )

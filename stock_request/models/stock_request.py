@@ -155,6 +155,8 @@ class StockRequest(models.Model):
 
     @api.depends(
         "allocation_ids",
+        "allocation_ids.requested_product_uom_qty",
+        "allocation_ids.allocated_product_qty",
         "allocation_ids.stock_move_id.state",
         "allocation_ids.stock_move_id.move_line_ids",
         "allocation_ids.stock_move_id.move_line_ids.quantity",
