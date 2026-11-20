@@ -385,7 +385,7 @@ class StockRequest(models.Model):
             "stock_request_id": self.id,
             "stock_move_id": move.id,
             "requested_product_uom_qty": move.product_uom._compute_quantity(
-                move.product_uom_qty, self.product_uom_id, rounding_method="HALF-UP"
+                move.product_uom_qty, self.product_uom_id, round=False
             ),
         }
 
