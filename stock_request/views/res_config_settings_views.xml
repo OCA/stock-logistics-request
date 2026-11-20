@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    Copyright 2018 Creu Blanca
+    License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
+-->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.stock_request</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app
+                    data-string="Stock Request"
+                    string="Stock Request"
+                    name="stock_request"
+                    groups="stock_request.group_stock_request_manager"
+                >
+                    <h2>Orders &amp; Configuration</h2>
+                    <block id="stock_request">
+                        <setting
+                            help="Activates Stock Request Orders"
+                            class="text-muted"
+                        >
+                            <field
+                                name="group_stock_request_order"
+                                string="Enable Orders"
+                            />
+                        </setting>
+                        <setting
+                            help="By default only internal and transit locations are allowed in Stock Request and Orders."
+                            class="text-muted"
+                        >
+                            <field
+                                name="stock_request_allow_virtual_loc"
+                                string="Allow All Locations Types"
+                            />
+                        </setting>
+                        <setting
+                            help="Add State to Stock Request and Stock Request Orders if activated."
+                            class="text-muted"
+                        >
+                            <field
+                                name="module_stock_request_submit"
+                                string="Enable Submitted State"
+                            />
+                        </setting>
+                        <setting
+                            help="By default, available stock is not used"
+                            class="text-muted"
+                        >
+                            <field
+                                name="stock_request_check_available_first"
+                                string="Check available stock first"
+                            />
+                        </setting>
+                    </block>
+                    <h2>Purchases</h2>
+                    <block id="stock_request_purchase">
+                        <setting
+                            help="Use Purchases with Stock Requests"
+                            class="text-muted"
+                        >
+                            <field
+                                name="module_stock_request_purchase"
+                                string="Enable Stock Requests for Purchases"
+                            />
+                        </setting>
+                    </block>
+                    <h2>Manufacturing</h2>
+                    <block id="stock_request_mrp">
+                        <setting
+                            help="Use Manufacturing Orders with Stock Requests"
+                            class="text-muted"
+                        >
+                            <field
+                                name="module_stock_request_mrp"
+                                string="Enable Stock Requests for Manufacturing"
+                            />
+                        </setting>
+                    </block>
+                    <h2>Kanban</h2>
+                    <block id="stock_request_purchase">
+                        <setting
+                            help="Use Kanban cards for consumable products"
+                            class="text-muted"
+                        >
+                            <field
+                                name="module_stock_request_kanban"
+                                string="Enable Stock Requests Kanban cards"
+                            />
+                        </setting>
+                    </block>
+                    <h2>Analytic</h2>
+                    <block id="stock_request_analytic">
+                        <setting
+                            help="Analytic accounting in Stock Requests"
+                            class="text-muted"
+                        >
+                            <field
+                                name="module_stock_request_analytic"
+                                string="Enable Analytic Accounting in Stock Requests"
+                            />
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_stock_request_config" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="res_config_settings_view_form" />
+        <field name="view_mode">form</field>
+        <field name="context">{'module' : 'stock_request', 'bin_size': False}</field>
+    </record>
+</odoo>
