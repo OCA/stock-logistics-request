@@ -1416,13 +1416,51 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(sr1.state, "done")
         self.assertEqual(sr1.qty_done, 5)
         self.assertEqual(sr1.qty_cancelled, 0)
-        self.assertEqual(sr2.state, "cancel")
+        self.assertEqual(sr2.state, "done")
         self.assertEqual(sr2.qty_done, 1)
         self.assertEqual(sr2.qty_cancelled, 4)
         self.assertEqual(sr3.state, "cancel")
         self.assertEqual(sr3.qty_done, 0)
         self.assertEqual(sr3.qty_cancelled, 5)
         # Set the request order to done if there are any delivered lines
+        self.assertEqual(order.state, "done")
+
+    def test_cancel_backorder_partially_delivered(self):
+        order = self.request_order.create(
+            {
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+                "stock_request_ids": [
+                    Command.create(
+                        {
+                            "product_id": self.product.id,
+                            "product_uom_id": self.product.uom_id.id,
+                            "product_uom_qty": 10.0,
+                            "company_id": self.main_company.id,
+                            "warehouse_id": self.warehouse.id,
+                            "location_id": self.warehouse.lot_stock_id.id,
+                        }
+                    )
+                ],
+            }
+        )
+        self.product.route_ids = [Command.set(self.route.ids)]
+        order.action_confirm()
+        self._create_stock_quant(self.product, self.ressuply_loc, 10.0)
+        picking = order.picking_ids
+        picking.action_assign()
+        picking.move_ids.write({"quantity": 6.0, "picked": True})
+        self.env["stock.backorder.confirmation"].with_context(
+            button_validate_picking_ids=[picking.id]
+        ).create({"pick_ids": [Command.link(picking.id)]}).process()
+        stock_request = order.stock_request_ids
+        self.assertEqual(stock_request.state, "open")
+        backorder = order.picking_ids - picking
+        backorder.action_cancel()
+        self.assertEqual(stock_request.qty_done, 6)
+        self.assertEqual(stock_request.qty_cancelled, 4)
+        self.assertEqual(stock_request.state, "done")
         self.assertEqual(order.state, "done")
 
 
