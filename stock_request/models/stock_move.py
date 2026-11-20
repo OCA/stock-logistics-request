@@ -3,7 +3,6 @@
 
 from odoo import Command, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import float_is_zero
 
 
 class StockMove(models.Model):
@@ -51,63 +50,79 @@ class StockMove(models.Model):
             )
 
     def copy_data(self, default=None):
-        if not default:
-            default = {}
-        if "allocation_ids" not in default:
-            default["allocation_ids"] = []
-        for alloc in self.allocation_ids:
-            default["allocation_ids"].append(
-                (
-                    0,
-                    0,
-                    {
-                        "stock_request_id": alloc.stock_request_id.id,
-                        "requested_product_uom_qty": alloc.requested_product_uom_qty,
-                    },
+        vals_list = super().copy_data(default)
+        for move, vals in zip(self, vals_list, strict=True):
+            vals["allocation_ids"] = list(
+                vals.get("allocation_ids", [])
+            ) + move._prepare_copy_allocation_vals(vals)
+        return vals_list
+
+    def _prepare_copy_allocation_vals(self, vals):
+        """A copy of a done move (a return or a push) takes the quantity
+        allocated to it. A copy of an open move (a split) takes the open
+        quantity that the original move does not keep."""
+        self.ensure_one()
+        product_uom = self.product_id.uom_id
+        if self.state == "done":
+            qtys = [
+                (alloc, alloc.allocated_product_qty) for alloc in self.allocation_ids
+            ]
+        else:
+            uom = (
+                self.env["uom.uom"].browse(vals.get("product_uom")) or self.product_uom
+            )
+            qtys = self._get_split_allocation_qtys(
+                uom._compute_quantity(
+                    vals.get("product_uom_qty", self.product_uom_qty), product_uom
                 )
             )
-        return super().copy_data(default)
+        return [
+            Command.create(
+                {
+                    "stock_request_id": alloc.stock_request_id.id,
+                    "requested_product_uom_qty": product_uom._compute_quantity(
+                        qty, alloc.product_uom_id, rounding_method="HALF-UP"
+                    ),
+                }
+            )
+            for alloc, qty in qtys
+            if not product_uom.is_zero(qty)
+        ]
+
+    def _get_split_allocation_qtys(self, to_copy):
+        self.ensure_one()
+        to_keep = max(self.product_qty - to_copy, 0.0)
+        qtys = []
+        for alloc in self.allocation_ids:
+            kept_qty = min(alloc.open_product_qty, to_keep)
+            to_keep -= kept_qty
+            qty = min(alloc.open_product_qty - kept_qty, to_copy)
+            to_copy -= qty
+            qtys.append((alloc, qty))
+        return qtys
 
     def _split(self, qty, restrict_partner_id=False):
-        kept_qty = max(0.0, self.product_qty - qty)
+        split_qtys = self.allocation_ids and self._get_split_allocation_qtys(qty)
         new_move_vals = super()._split(qty, restrict_partner_id=restrict_partner_id)
-        if new_move_vals and self.allocation_ids:
-            new_move_vals[0]["allocation_ids"] = self._split_allocations(kept_qty)
+        if new_move_vals and split_qtys:
+            self._reduce_allocations(split_qtys)
         return new_move_vals
 
-    def _split_allocations(self, kept_qty):
-        vals_list = []
+    def _reduce_allocations(self, qtys):
         to_unlink = self.env["stock.request.allocation"].sudo()
-        for allocation in self.allocation_ids.sudo():
-            uom = allocation.product_id.uom_id
-            allocation_kept_qty = min(allocation.open_product_qty, kept_qty)
-            kept_qty -= allocation_kept_qty
-            split_qty = allocation.open_product_qty - allocation_kept_qty
-            if float_is_zero(split_qty, precision_rounding=uom.rounding):
+        for alloc, qty in qtys:
+            alloc = alloc.sudo()
+            product_uom = alloc.product_id.uom_id
+            if product_uom.is_zero(qty):
                 continue
-            vals_list.append(
-                Command.create(
-                    {
-                        "stock_request_id": allocation.stock_request_id.id,
-                        "requested_product_uom_qty": uom._compute_quantity(
-                            split_qty, allocation.product_uom_id, round=False
-                        ),
-                    }
-                )
-            )
-            remaining_qty = allocation.requested_product_qty - split_qty
-            if float_is_zero(remaining_qty, precision_rounding=uom.rounding):
-                to_unlink |= allocation
+            remaining_qty = alloc.requested_product_qty - qty
+            if product_uom.is_zero(remaining_qty):
+                to_unlink |= alloc
             else:
-                allocation.write(
-                    {
-                        "requested_product_uom_qty": uom._compute_quantity(
-                            remaining_qty, allocation.product_uom_id, round=False
-                        )
-                    }
+                alloc.requested_product_uom_qty = product_uom._compute_quantity(
+                    remaining_qty, alloc.product_uom_id, rounding_method="HALF-UP"
                 )
         to_unlink.unlink()
-        return vals_list
 
     def _action_cancel(self):
         """Apply sudo to prevent requests ACL errors if the user does not have

@@ -67,21 +67,21 @@ class StockRequest(models.Model):
         readonly=True,
     )
     qty_in_progress = fields.Float(
-        digits="Product Unit of Measure",
+        digits="Product Unit",
         readonly=True,
         compute="_compute_qty",
         store=True,
         help="Quantity in progress.",
     )
     qty_done = fields.Float(
-        digits="Product Unit of Measure",
+        digits="Product Unit",
         readonly=True,
         compute="_compute_qty",
         store=True,
         help="Quantity completed",
     )
     qty_cancelled = fields.Float(
-        digits="Product Unit of Measure",
+        digits="Product Unit",
         readonly=True,
         compute="_compute_qty",
         store=True,
@@ -168,20 +168,13 @@ class StockRequest(models.Model):
         "allocation_ids.requested_product_uom_qty",
         "allocation_ids.allocated_product_qty",
         "allocation_ids.stock_move_id.state",
+        "allocation_ids.stock_move_id.move_dest_ids",
         "allocation_ids.stock_move_id.move_line_ids",
         "allocation_ids.stock_move_id.move_line_ids.quantity",
     )
     def _compute_qty(self):
         for request in self:
-            incoming_qty = 0.0
-            other_qty = 0.0
-            for allocation in request.allocation_ids:
-                if allocation.stock_move_id.picking_code == "incoming":
-                    incoming_qty += allocation.allocated_product_qty
-                else:
-                    other_qty += allocation.allocated_product_qty
-            done_qty = abs(other_qty - incoming_qty)
-            open_qty = sum(request.allocation_ids.mapped("open_product_qty"))
+            done_qty, fulfilled_qty, open_qty = request._get_allocation_qtys()
             uom = request.product_id.uom_id
             request.qty_done = uom._compute_quantity(
                 done_qty,
@@ -197,7 +190,7 @@ class StockRequest(models.Model):
                 max(
                     0,
                     uom._compute_quantity(
-                        request.product_qty - done_qty - open_qty,
+                        request.product_qty - fulfilled_qty - open_qty,
                         request.product_uom_id,
                         rounding_method="HALF-UP",
                     ),
@@ -205,6 +198,19 @@ class StockRequest(models.Model):
                 if request.allocation_ids
                 else 0
             )
+
+    def _get_allocation_qtys(self):
+        """Return the done, fulfilled and open quantities in the product UoM.
+        Done is the fulfilled quantity minus what was returned."""
+        self.ensure_one()
+        done_qty = fulfilled_qty = open_qty = 0.0
+        for allocation in self.allocation_ids:
+            sign = allocation._get_done_sign()
+            done_qty += sign * allocation.allocated_product_qty
+            if sign > 0:
+                fulfilled_qty += allocation.allocated_product_qty
+                open_qty += allocation.open_product_qty
+        return max(done_qty, 0.0), fulfilled_qty, open_qty
 
     @api.constrains("order_id", "requested_by")
     def check_order_requested_by(self):
@@ -307,13 +313,11 @@ class StockRequest(models.Model):
                 request._action_done_or_cancel()
 
     def check_done(self):
-        precision = self.env["decimal.precision"].precision_get(
-            "Product Unit of Measure"
-        )
+        precision = self.env["decimal.precision"].precision_get("Product Unit")
         for request in self:
-            allocated_qty = sum(request.allocation_ids.mapped("allocated_product_qty"))
+            done_qty = request._get_allocation_qtys()[0]
             qty_done = request.product_id.uom_id._compute_quantity(
-                allocated_qty, request.product_uom_id
+                done_qty, request.product_uom_id
             )
             if (
                 float_compare(
@@ -327,9 +331,7 @@ class StockRequest(models.Model):
         return True
 
     def _action_done_or_cancel(self):
-        precision = self.env["decimal.precision"].precision_get(
-            "Product Unit of Measure"
-        )
+        precision = self.env["decimal.precision"].precision_get("Product Unit")
         self.ensure_one()
         if float_compare(self.qty_done, 0, precision_digits=precision) > 0:
             self.action_done()
@@ -337,9 +339,7 @@ class StockRequest(models.Model):
             self.write({"state": "cancel"})
 
     def _check_cancel_allocation(self):
-        precision = self.env["decimal.precision"].precision_get(
-            "Product Unit of Measure"
-        )
+        precision = self.env["decimal.precision"].precision_get("Product Unit")
         self.ensure_one()
         return (
             self.allocation_ids
@@ -384,18 +384,18 @@ class StockRequest(models.Model):
         return {
             "stock_request_id": self.id,
             "stock_move_id": move.id,
-            "requested_product_uom_qty": move.product_uom_qty,
+            "requested_product_uom_qty": move.product_uom._compute_quantity(
+                move.product_uom_qty, self.product_uom_id, round=False
+            ),
         }
 
     def _action_use_stock_available(self):
         """Create a stock move with the necessary data and mark it as done."""
         allocation_model = self.env["stock.request.allocation"]
         stock_move_model = self.env["stock.move"].sudo()
-        precision = self.env["decimal.precision"].precision_get(
-            "Product Unit of Measure"
-        )
+        precision = self.env["decimal.precision"].precision_get("Product Unit")
         quants = self.env["stock.quant"]._gather(self.product_id, self.location_id)
-        pending_qty = self.product_uom_qty
+        pending_qty = self.product_qty
         for quant in quants.filtered(lambda x: x.available_quantity >= 0):
             qty_move = min(pending_qty, quant.available_quantity)
             if float_compare(qty_move, 0, precision_digits=precision) > 0:
@@ -416,9 +416,7 @@ class StockRequest(models.Model):
         '_run_buy' or '_run_manufacture'
         depending on the stock request product rule.
         """
-        precision = self.env["decimal.precision"].precision_get(
-            "Product Unit of Measure"
-        )
+        precision = self.env["decimal.precision"].precision_get("Product Unit")
         errors = []
         for request in self:
             if request._skip_procurement():
@@ -437,7 +435,7 @@ class StockRequest(models.Model):
                         request.product_id.sudo()
                         .with_context(location=request.location_id.id)
                         .free_qty,
-                        request.product_uom_qty,
+                        request.product_qty,
                         precision_digits=precision,
                     )
                     >= 0
