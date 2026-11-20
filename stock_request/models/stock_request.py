@@ -3,7 +3,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import float_compare
+from odoo.tools import float_compare, float_is_zero
 
 
 class StockRequest(models.Model):
@@ -165,6 +165,7 @@ class StockRequest(models.Model):
 
     @api.depends(
         "allocation_ids",
+        "allocation_ids.requested_product_uom_qty",
         "allocation_ids.allocated_product_qty",
         "allocation_ids.stock_move_id.state",
         "allocation_ids.stock_move_id.move_dest_ids",
@@ -309,7 +310,7 @@ class StockRequest(models.Model):
     def check_cancel(self):
         for request in self:
             if request._check_cancel_allocation():
-                request.write({"state": "cancel"})
+                request._action_done_or_cancel()
 
     def check_done(self):
         precision = self.env["decimal.precision"].precision_get("Product Unit")
@@ -326,9 +327,16 @@ class StockRequest(models.Model):
             ):
                 request.action_done()
             elif request._check_cancel_allocation():
-                # If qty_done=0 and qty_cancelled>0 it's cancelled
-                request.write({"state": "cancel"})
+                request._action_done_or_cancel()
         return True
+
+    def _action_done_or_cancel(self):
+        precision = self.env["decimal.precision"].precision_get("Product Unit")
+        self.ensure_one()
+        if float_compare(self.qty_done, 0, precision_digits=precision) > 0:
+            self.action_done()
+        else:
+            self.write({"state": "cancel"})
 
     def _check_cancel_allocation(self):
         precision = self.env["decimal.precision"].precision_get("Product Unit")
@@ -336,6 +344,7 @@ class StockRequest(models.Model):
         return (
             self.allocation_ids
             and float_compare(self.qty_cancelled, 0, precision_digits=precision) > 0
+            and float_is_zero(self.qty_in_progress, precision_digits=precision)
         )
 
     def _prepare_procurement_values(self, reference_ids=False):
