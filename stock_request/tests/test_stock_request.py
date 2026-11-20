@@ -657,6 +657,29 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request.qty_done, 1.0)
         self.assertEqual(stock_request.state, "done")
 
+    def test_stock_request_available_stock_uom_several_quants(self):
+        self.main_company.stock_request_check_available_first = True
+        for name in ("A", "B", "C"):
+            location = self.env["stock.location"].create(
+                {"name": name, "location_id": self.warehouse.lot_stock_id.id}
+            )
+            self._create_stock_quant(self.product, location, 4)
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.uom_dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        self.assertEqual(stock_request.move_ids.mapped("product_uom_qty"), [4.0] * 3)
+        self.assertAlmostEqual(stock_request.qty_done, 1.0)
+        self.assertEqual(stock_request.qty_cancelled, 0.0)
+        self.assertEqual(stock_request.state, "done")
+
     def test_stock_request_validations_01(self):
         vals = {
             "product_id": self.product.id,
