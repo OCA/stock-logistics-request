@@ -40,3 +40,24 @@ class StockRule(models.Model):
                 )
             ]
         return result
+
+    def _run_push(self, move):
+        """The pushed move takes over the allocations of the original move, up
+        to the quantity moved. A request that gets nothing keeps its allocation
+        on the original move with no requested quantity, so that it is
+        cancelled instead of staying open."""
+        new_move = super()._run_push(move)
+        if (
+            new_move
+            and move.allocation_ids
+            and move._stock_request_before_final_location()
+        ):
+            new_move._stock_request_fit_allocations()
+            allocations = move.allocation_ids.sudo()
+            pushed_requests = new_move.allocation_ids.stock_request_id
+            pushed = allocations.filtered(
+                lambda a: a.stock_request_id in pushed_requests
+            )
+            pushed.unlink()
+            (allocations - pushed).write({"requested_product_uom_qty": 0.0})
+        return new_move

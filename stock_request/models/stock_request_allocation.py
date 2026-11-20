@@ -85,8 +85,8 @@ class StockRequestAllocation(models.Model):
             if rec.stock_move_id.state in ["cancel", "done"]:
                 rec.open_product_qty = 0.0
             else:
-                rec.open_product_qty = (
-                    rec.requested_product_qty - rec.allocated_product_qty
-                )
-                if rec.open_product_qty < 0.0:
-                    rec.open_product_qty = 0.0
+                rec.open_product_qty = rec._get_pending_product_qty()
+
+    def _get_pending_product_qty(self):
+        self.ensure_one()
+        return max(self.requested_product_qty - self.allocated_product_qty, 0.0)

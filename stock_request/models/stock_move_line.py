@@ -50,7 +50,16 @@ class StockMoveLine(models.Model):
 
     def _action_done(self):
         res = super()._action_done()
-        for ml in self.filtered(lambda m: m.exists() and m.move_id.allocation_ids):
+        self.filtered(
+            lambda m: m.exists()
+            and m.move_id.allocation_ids
+            and not m.move_id._stock_request_before_final_location()
+        )._stock_request_allocate()
+        return res
+
+    def _stock_request_allocate(self):
+        requests = self.env["stock.request"].sudo()
+        for ml in self:
             qty_done = ml.product_uom_id._compute_quantity(
                 ml.quantity, ml.product_id.uom_id
             )
@@ -60,8 +69,9 @@ class StockMoveLine(models.Model):
             to_allocate_qty = qty_done
             for allocation in ml.move_id.allocation_ids.sudo():
                 allocated_qty = 0.0
-                if allocation.open_product_qty:
-                    allocated_qty = min(allocation.open_product_qty, to_allocate_qty)
+                open_qty = allocation._get_pending_product_qty()
+                if open_qty:
+                    allocated_qty = min(open_qty, to_allocate_qty)
                     allocation.allocated_product_qty += allocated_qty
                     to_allocate_qty -= allocated_qty
                 if allocated_qty:
@@ -73,5 +83,5 @@ class StockMoveLine(models.Model):
                         message_data
                     )
                     request.message_post(body=message, subtype_xmlid="mail.mt_comment")
-                    request.check_done()
-        return res
+                    requests |= request
+        requests.check_done()
