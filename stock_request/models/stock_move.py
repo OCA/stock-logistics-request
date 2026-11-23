@@ -79,7 +79,7 @@ class StockMove(models.Model):
                 {
                     "stock_request_id": alloc.stock_request_id.id,
                     "requested_product_uom_qty": product_uom._compute_quantity(
-                        qty, alloc.product_uom_id, rounding_method="HALF-UP"
+                        qty, alloc.product_uom_id, round=False
                     ),
                 }
             )
@@ -118,7 +118,7 @@ class StockMove(models.Model):
                 to_unlink |= alloc
             else:
                 alloc.requested_product_uom_qty = product_uom._compute_quantity(
-                    remaining_qty, alloc.product_uom_id, rounding_method="HALF-UP"
+                    remaining_qty, alloc.product_uom_id, round=False
                 )
         to_unlink.unlink()
 
