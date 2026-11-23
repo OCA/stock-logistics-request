@@ -34,7 +34,7 @@ def _fix_open_allocations(env):
             alloc.requested_product_uom_qty = product_uom._compute_quantity(
                 alloc.allocated_product_qty + qty,
                 alloc.product_uom_id,
-                rounding_method="HALF-UP",
+                round=False,
             )
 
 
