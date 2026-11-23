@@ -4,9 +4,11 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0).
 
 from odoo import fields
+from odoo.exceptions import ValidationError
 from odoo.tests import Form
 
 from odoo.addons.stock_request.tests.test_stock_request import TestStockRequest
+from odoo.addons.stock_request_mrp.hooks import link_existing_mos_to_stock_request
 
 
 class TestStockRequestMrp(TestStockRequest):
@@ -143,3 +145,65 @@ class TestStockRequestMrp(TestStockRequest):
 
         self.assertEqual("views" in action.keys(), True)
         self.assertEqual(action["res_id"], order.production_ids[0].id)
+
+    def test_post_init_hook(self):
+        order = self._create_stock_request(self.stock_request_user, [(self.product, 5)])
+        order.action_confirm()
+        stock_request = order.stock_request_ids
+        production = stock_request.production_ids
+        self.assertEqual(len(production), 1)
+        # Simulate an MO created from a stock request before the module was installed
+        production.origin = stock_request.name
+        self.env["stock.request.allocation"].search(
+            [("stock_request_id", "=", stock_request.id)]
+        ).unlink()
+        production.stock_request_ids = [(5,)]
+        self.assertFalse(stock_request.production_ids)
+        production.action_assign()
+        self._produce(production, 5.0)
+        self.assertTrue(production.finished_move_line_ids)
+        self.assertEqual(stock_request.qty_done, 0.0)
+        link_existing_mos_to_stock_request(self.env)
+        self.assertEqual(production.stock_request_ids, stock_request)
+        self.assertEqual(
+            stock_request.allocation_ids.stock_move_id, production.move_finished_ids
+        )
+        self.assertEqual(stock_request.allocation_ids.allocated_product_qty, 5.0)
+        self.assertEqual(stock_request.qty_done, 5.0)
+
+    def test_view_actions_multi(self):
+        order = self._create_stock_request(
+            self.stock_request_user, [(self.product, 5), (self.product, 3)]
+        )
+        order.action_confirm()
+        order.invalidate_model()
+        self.assertEqual(len(order.production_ids), 2)
+        self.assertEqual(order.production_count, 2)
+        action = order.action_view_mrp_production()
+        self.assertEqual(action["domain"], [("id", "in", order.production_ids.ids)])
+        request_1, request_2 = order.stock_request_ids
+        production_2 = request_2.production_ids
+        request_1.production_ids = [(4, production_2.id)]
+        self.assertEqual(request_1.production_count, 2)
+        self.assertEqual(production_2.stock_request_count, 2)
+        action = request_1.action_view_mrp_production()
+        self.assertEqual(action["domain"], [("id", "in", request_1.production_ids.ids)])
+        action = production_2.action_view_stock_request()
+        self.assertEqual(
+            action["domain"], [("id", "in", production_2.stock_request_ids.ids)]
+        )
+
+    def test_production_company_constraint(self):
+        order = self._create_stock_request(self.stock_request_user, [(self.product, 5)])
+        production = self.env["mrp.production"].create(
+            {
+                "product_id": self.product_company_2.id,
+                "product_qty": 1.0,
+                "product_uom_id": self.product_company_2.uom_id.id,
+                "company_id": self.company_2.id,
+                "picking_type_id": self.wh2.manu_type_id.id,
+            }
+        )
+        self.assertFalse(production.stock_request_ids)
+        with self.assertRaises(ValidationError):
+            order.stock_request_ids.production_ids = [(4, production.id)]
