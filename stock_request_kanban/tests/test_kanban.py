@@ -197,3 +197,87 @@ class TestKanban(TestBaseKanban):
         self.assertTrue(
             self.env["stock.request"].search([("kanban_id", "=", kanban_3.id)])
         )
+
+    def _create_kanban(self, **vals):
+        values = {
+            "product_id": self.product.id,
+            "product_uom_id": self.product.uom_id.id,
+            "product_uom_qty": 1,
+        }
+        values.update(vals)
+        return self.env["stock.request.kanban"].create(values)
+
+    def _create_order_wizard(self, **vals):
+        values = {
+            "company_id": self.main_company.id,
+            "warehouse_id": self.warehouse.id,
+            "location_id": self.warehouse.lot_stock_id.id,
+        }
+        values.update(vals)
+        order = self.env["stock.request.order"].create(values)
+        wizard = (
+            self.env["wizard.stock.request.order.kanban"]
+            .with_context(default_order_id=order.id)
+            .create({})
+        )
+        return order, wizard
+
+    def test_product_kanban_cards(self):
+        template = self.product.product_tmpl_id
+        self.assertEqual(self.product.kanban_card_count, 0)
+        self.assertEqual(template.kanban_card_count, 0)
+        self._create_kanban()
+        self._create_kanban()
+        self.product.invalidate_recordset(["kanban_card_count"])
+        template.invalidate_recordset(["kanban_card_count"])
+        self.assertEqual(self.product.kanban_card_count, 2)
+        self.assertEqual(template.kanban_card_count, 2)
+        action = self.product.action_view_kanban_cards()
+        self.assertEqual(action["context"]["default_product_id"], self.product.id)
+        self.assertIn(("product_id", "=", self.product.id), action["domain"])
+        action = template.action_view_kanban_cards()
+        self.assertEqual(action["context"]["default_product_id"], self.product.id)
+        self.assertIn(("product_template_id", "=", template.id), action["domain"])
+
+    def test_stock_request_scan_kanban_action(self):
+        action = self.env["stock.request"].action_scan_kanban()
+        self.assertEqual(action["res_model"], "wizard.stock.request.kanban")
+        self.assertEqual(action["target"], "new")
+
+    def test_order_barcodes_not_draft(self):
+        kanban_1 = self._create_kanban()
+        kanban_2 = self._create_kanban()
+        order, wizard = self._create_order_wizard()
+        self.pass_code(wizard, kanban_1.name)
+        self.assertEqual(wizard.status_state, 0)
+        order.action_confirm()
+        self.assertNotEqual(order.state, "draft")
+        with self.assertRaisesRegex(ValidationError, "draft state"):
+            self.pass_code(wizard, kanban_2.name)
+
+    def test_order_barcodes_company(self):
+        kanban = self._create_kanban(
+            company_id=self.company_2.id,
+            warehouse_id=self.wh2.id,
+            location_id=self.wh2.lot_stock_id.id,
+        )
+        _order, wizard = self._create_order_wizard()
+        with self.assertRaisesRegex(ValidationError, "Company must be the same"):
+            self.pass_code(wizard, kanban.name)
+
+    def test_order_barcodes_references(self):
+        reference = self.env["stock.reference"].create({"name": "REF-KANBAN"})
+        kanban = self._create_kanban(reference_ids=[(6, 0, reference.ids)])
+        _order, wizard = self._create_order_wizard()
+        with self.assertRaisesRegex(ValidationError, "References must be the same"):
+            self.pass_code(wizard, kanban.name)
+
+    def test_order_barcodes_warehouse(self):
+        kanban = self._create_kanban(
+            company_id=self.main_company.id,
+            warehouse_id=self.wh3.id,
+            location_id=self.wh3.lot_stock_id.id,
+        )
+        _order, wizard = self._create_order_wizard(location_id=self.wh3.lot_stock_id.id)
+        with self.assertRaisesRegex(ValidationError, "Warehouse must be the same"):
+            self.pass_code(wizard, kanban.name)

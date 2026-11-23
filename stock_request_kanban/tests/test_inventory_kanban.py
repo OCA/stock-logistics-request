@@ -104,6 +104,8 @@ class TestKanban(TestBaseKanban):
         self.assertNotIn(self.kanban_3, inventory.kanban_ids)
         self.assertIn(self.kanban_1, inventory.missing_kanban_ids)
         self.assertEqual(inventory.state, "in_progress")
+        action = inventory.print_missing_kanbans()
+        self.assertTrue(action)
         inventory.cancel()
         self.assertEqual(inventory.state, "cancelled")
         inventory.to_draft()
