@@ -657,6 +657,29 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request.qty_done, 1.0)
         self.assertEqual(stock_request.state, "done")
 
+    def test_stock_request_available_stock_uom_several_quants(self):
+        self.main_company.stock_request_check_available_first = True
+        for name in ("A", "B", "C"):
+            location = self.env["stock.location"].create(
+                {"name": name, "location_id": self.warehouse.lot_stock_id.id}
+            )
+            self._create_stock_quant(self.product, location, 4)
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.uom_dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        self.assertEqual(stock_request.move_ids.mapped("product_uom_qty"), [4.0] * 3)
+        self.assertAlmostEqual(stock_request.qty_done, 1.0)
+        self.assertEqual(stock_request.qty_cancelled, 0.0)
+        self.assertEqual(stock_request.state, "done")
+
     def test_stock_request_validations_01(self):
         vals = {
             "product_id": self.product.id,
@@ -1028,6 +1051,40 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request.qty_in_progress, 7)
         self.assertEqual(stock_request.qty_cancelled, 3)
         self.assertEqual(stock_request.state, "open")
+
+    def test_split_transfer_request_uom(self):
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.uom_dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        self.product.route_ids = [Command.set(self.route.ids)]
+        stock_request.action_confirm()
+        self._create_stock_quant(self.product, self.ressuply_loc, 12.0)
+        picking = stock_request.picking_ids
+        picking.move_ids.write(
+            {"uom_id": self.product.uom_id.id, "product_uom_qty": 12.0}
+        )
+        picking.action_assign()
+        picking.move_ids.write({"quantity": 4.0})
+        picking.action_split_transfer()
+        for transfer in stock_request.picking_ids:
+            transfer.action_assign()
+            transfer.move_ids.write(
+                {"quantity": transfer.move_ids.product_uom_qty, "picked": True}
+            )
+            transfer.button_validate()
+        self.assertEqual(
+            sorted(stock_request.allocation_ids.mapped("allocated_product_qty")),
+            [4.0, 8.0],
+        )
+        self.assertAlmostEqual(stock_request.qty_done, 1.0)
+        self.assertEqual(stock_request.state, "done")
 
     def test_create_request_backorder_request_uom(self):
         stock_request = self.stock_request.create(
