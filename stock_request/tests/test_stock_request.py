@@ -611,6 +611,48 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(order.state, "done")
         self.assertEqual(len(order.stock_request_ids.move_ids), 2)
 
+    def test_stock_request_available_stock_uom(self):
+        self.main_company.stock_request_check_available_first = True
+        self._create_stock_quant(self.product, self.warehouse.lot_stock_id, 24)
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.uom_dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        self.assertEqual(stock_request.move_ids.product_uom_qty, 12.0)
+        self.assertEqual(stock_request.allocation_ids.requested_product_uom_qty, 1.0)
+        self.assertEqual(stock_request.qty_done, 1.0)
+        self.assertEqual(stock_request.state, "done")
+
+    def test_stock_request_available_stock_uom_several_quants(self):
+        self.main_company.stock_request_check_available_first = True
+        for name in ("A", "B", "C"):
+            location = self.env["stock.location"].create(
+                {"name": name, "location_id": self.warehouse.lot_stock_id.id}
+            )
+            self._create_stock_quant(self.product, location, 4)
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.uom_dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        stock_request.action_confirm()
+        self.assertEqual(stock_request.move_ids.mapped("product_uom_qty"), [4.0] * 3)
+        self.assertAlmostEqual(stock_request.qty_done, 1.0)
+        self.assertEqual(stock_request.qty_cancelled, 0.0)
+        self.assertEqual(stock_request.state, "done")
+
     def test_stock_request_validations_01(self):
         vals = {
             "product_id": self.product.id,
@@ -979,6 +1021,40 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request.qty_in_progress, 7)
         self.assertEqual(stock_request.qty_cancelled, 3)
         self.assertEqual(stock_request.state, "open")
+
+    def test_split_transfer_request_uom(self):
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.uom_dozen.id,
+                "product_uom_qty": 1.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+            }
+        )
+        self.product.route_ids = [Command.set(self.route.ids)]
+        stock_request.action_confirm()
+        self._create_stock_quant(self.product, self.ressuply_loc, 12.0)
+        picking = stock_request.picking_ids
+        picking.move_ids.write(
+            {"product_uom": self.product.uom_id.id, "product_uom_qty": 12.0}
+        )
+        picking.action_assign()
+        picking.move_ids.write({"quantity": 4.0})
+        picking.action_split_transfer()
+        for transfer in stock_request.picking_ids:
+            transfer.action_assign()
+            transfer.move_ids.write(
+                {"quantity": transfer.move_ids.product_uom_qty, "picked": True}
+            )
+            transfer.button_validate()
+        self.assertEqual(
+            sorted(stock_request.allocation_ids.mapped("allocated_product_qty")),
+            [4.0, 8.0],
+        )
+        self.assertAlmostEqual(stock_request.qty_done, 1.0)
+        self.assertEqual(stock_request.state, "done")
 
     def test_create_request_backorder_request_uom(self):
         stock_request = self.stock_request.create(
@@ -1463,6 +1539,113 @@ class TestStockRequestBase(TestStockRequest):
         self.assertEqual(stock_request.state, "done")
         self.assertEqual(order.state, "done")
 
+    def _create_open_request(self):
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+                "route_id": self.route.id,
+            }
+        )
+        self._create_stock_quant(self.product, self.ressuply_loc, 10.0)
+        stock_request.action_confirm()
+        return stock_request
+
+    def _validate_picking(self, picking, qty):
+        picking.action_assign()
+        picking.move_ids.quantity = qty
+        picking.move_ids.picked = True
+        picking._action_done()
+
+    def _return_picking(self, picking, qty):
+        wizard = (
+            self.env["stock.return.picking"]
+            .with_context(active_id=picking.id, active_model="stock.picking")
+            .create({})
+        )
+        wizard.product_return_moves.quantity = qty
+        return_picking = wizard._create_return()
+        self._validate_picking(return_picking, qty)
+
+    def test_return_after_done(self):
+        stock_request = self._create_open_request()
+        picking = stock_request.picking_ids
+        self._validate_picking(picking, 5.0)
+        self.assertEqual(stock_request.qty_done, 5.0)
+        self._return_picking(picking, 5.0)
+        self.assertEqual(stock_request.qty_done, 0.0)
+        self.assertEqual(stock_request.qty_in_progress, 0.0)
+        self.assertEqual(stock_request.qty_cancelled, 0.0)
+        self.assertEqual(stock_request.state, "done")
+
+    def test_return_with_backorder(self):
+        stock_request = self._create_open_request()
+        picking = stock_request.picking_ids
+        self._validate_picking(picking, 3.0)
+        self.assertEqual(stock_request.qty_done, 3.0)
+        self.assertEqual(stock_request.qty_in_progress, 2.0)
+        self._return_picking(picking, 3.0)
+        self.assertEqual(stock_request.qty_done, 0.0)
+        self.assertEqual(stock_request.qty_in_progress, 2.0)
+        self.assertEqual(stock_request.state, "open")
+
+    def test_push_into_request_location(self):
+        """The receipt goes to Input and a push moves it to the location of
+        the request, as with stock_request_purchase in two steps."""
+        self.warehouse.reception_steps = "two_steps"
+        supplier_loc = self.env.ref("stock.stock_location_suppliers")
+        input_loc = self.warehouse.wh_input_stock_loc_id
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 5.0,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.warehouse.lot_stock_id.id,
+                "state": "open",
+            }
+        )
+        receipt = self.env["stock.picking"].create(
+            {
+                "picking_type_id": self.warehouse.in_type_id.id,
+                "location_id": supplier_loc.id,
+                "location_dest_id": input_loc.id,
+                "move_ids": [
+                    Command.create(
+                        {
+                            "product_id": self.product.id,
+                            "product_uom_qty": 5.0,
+                            "location_id": supplier_loc.id,
+                            "location_dest_id": input_loc.id,
+                            "allocation_ids": [
+                                Command.create(
+                                    {
+                                        "stock_request_id": stock_request.id,
+                                        "requested_product_uom_qty": 5.0,
+                                    }
+                                )
+                            ],
+                        }
+                    )
+                ],
+            }
+        )
+        receipt.action_confirm()
+        self._validate_picking(receipt, 5.0)
+        self.assertEqual(stock_request.qty_done, 0.0)
+        self.assertEqual(stock_request.qty_in_progress, 5.0)
+        self.assertEqual(stock_request.state, "open")
+        push_picking = stock_request.picking_ids - receipt
+        self.assertEqual(push_picking.location_dest_id, stock_request.location_id)
+        self._validate_picking(push_picking, 5.0)
+        self.assertEqual(stock_request.qty_done, 5.0)
+        self.assertEqual(stock_request.state, "done")
+
 
 class TestStockRequestOrderState(TestStockRequest):
     @classmethod
@@ -1596,6 +1779,20 @@ class TestStockRequestOrderState(TestStockRequest):
             1,
             "Quantity in progress should be the rounded down after confirmation",
         )
+
+    def test_product_unit_precision(self):
+        self.env.ref("uom.decimal_product_uom").digits = 3
+        stock_request = self.stock_request.create(
+            {
+                "product_id": self.product.id,
+                "product_uom_id": self.product.uom_id.id,
+                "product_uom_qty": 0.125,
+                "company_id": self.main_company.id,
+                "warehouse_id": self.warehouse.id,
+                "location_id": self.virtual_loc.id,
+            }
+        )
+        self.assertEqual(stock_request.product_uom_qty, 0.125)
 
     def test_route_id_propagation_on_creation(self):
         order_vals = {
