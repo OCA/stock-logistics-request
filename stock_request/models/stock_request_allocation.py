@@ -92,7 +92,8 @@ class StockRequestAllocation(models.Model):
 
     def _get_done_sign(self):
         """1 if the allocated quantity fulfills the request, -1 if it undoes
-        it (a return) and 0 if a next move of the chain counts it instead."""
+        it (a return) and 0 if a next move of the chain counts it instead or
+        the chain was cancelled before reaching the request location."""
         self.ensure_one()
         move = self.stock_move_id
         if move.origin_returned_move_id:
@@ -107,4 +108,18 @@ class StockRequestAllocation(models.Model):
                 and self.stock_request_id in m.allocation_ids.stock_request_id
             )
         )
-        return 0 if next_moves else 1
+        if next_moves:
+            return 0
+        request_location = self.stock_request_id.location_id
+        if move.state != "done" or move.location_dest_id._child_of(request_location):
+            return 1
+        cancelled_onward_moves = (
+            self.stock_request_id.allocation_ids - self
+        ).stock_move_id.filtered(
+            lambda m: (
+                m.state == "cancel"
+                and not m.origin_returned_move_id
+                and m.location_id._child_of(move.location_dest_id)
+            )
+        )
+        return 0 if cancelled_onward_moves else 1

@@ -161,6 +161,67 @@ class TestStockRequestPush(TestStockRequest):
         self.assertEqual(left.qty_cancelled, left.product_uom_qty)
         self.assertEqual(left.picking_ids, first_picking)
 
+    def test_cancelled_push_step_cancels_the_request(self):
+        order = self._create_order(10.0)
+        order.action_confirm()
+        stock_request = order.stock_request_ids
+        first_picking = stock_request.picking_ids
+        first_picking.move_ids.write({"quantity": 10.0, "picked": True})
+        first_picking.button_validate()
+        second_picking = stock_request.picking_ids - first_picking
+        self.assertEqual(stock_request.qty_in_progress, 10.0)
+        second_picking.action_cancel()
+        self.assertEqual(stock_request.qty_done, 0.0)
+        self.assertEqual(stock_request.qty_in_progress, 0.0)
+        self.assertEqual(stock_request.qty_cancelled, 10.0)
+        self.assertEqual(stock_request.state, "cancel")
+        self.assertEqual(order.state, "cancel")
+
+    def test_cancelled_push_step_cancels_every_request_of_the_move(self):
+        order = self._create_order(6.0, 4.0)
+        order.action_confirm()
+        first_picking = order.picking_ids
+        self.assertEqual(len(first_picking.move_ids), 1)
+        first_picking.move_ids.write({"quantity": 10.0, "picked": True})
+        first_picking.button_validate()
+        second_picking = order.picking_ids - first_picking
+        self.assertEqual(len(second_picking.move_ids), 1)
+        second_picking.action_cancel()
+        for stock_request in order.stock_request_ids:
+            self.assertEqual(stock_request.qty_done, 0.0)
+            self.assertEqual(stock_request.qty_cancelled, stock_request.product_uom_qty)
+            self.assertEqual(stock_request.state, "cancel")
+        self.assertEqual(order.state, "cancel")
+
+    def test_cancelled_push_step_keeps_the_backorder_in_progress(self):
+        order = self._create_order(10.0)
+        order.action_confirm()
+        stock_request = order.stock_request_ids
+        first_picking = stock_request.picking_ids
+        first_picking.move_ids.write({"quantity": 4.0, "picked": True})
+        action = first_picking.button_validate()
+        self.env[action["res_model"]].with_context(**action["context"]).create(
+            {"pick_ids": [Command.link(first_picking.id)]}
+        ).process()
+        backorder = first_picking.backorder_ids
+        second_picking = stock_request.picking_ids - first_picking - backorder
+        self.assertEqual(second_picking.move_ids.product_uom_qty, 4.0)
+        second_picking.action_cancel()
+        self.assertEqual(stock_request.qty_done, 0.0)
+        self.assertEqual(stock_request.qty_in_progress, 6.0)
+        self.assertEqual(stock_request.qty_cancelled, 4.0)
+        self.assertEqual(stock_request.state, "open")
+        backorder.move_ids.write({"quantity": 6.0, "picked": True})
+        backorder.button_validate()
+        last_picking = backorder.move_ids.move_dest_ids.picking_id
+        self.assertEqual(last_picking.move_ids.product_uom_qty, 6.0)
+        last_picking.move_ids.write({"picked": True})
+        last_picking.button_validate()
+        self.assertEqual(stock_request.qty_done, 6.0)
+        self.assertEqual(stock_request.qty_in_progress, 0.0)
+        self.assertEqual(stock_request.qty_cancelled, 4.0)
+        self.assertEqual(stock_request.state, "done")
+
     def test_without_push_rule_request_is_done_on_first_step(self):
         self.push_rule.write({"active": False})
         order = self._create_order(10.0)
