@@ -415,3 +415,23 @@ class PurchaseReturnRequestCase(StockReturnRequestCase):
             ValidationError, "Not enough moves to return this product"
         ):
             self.return_request_supplier.action_confirm()
+
+    def test_create_several_requests(self):
+        requests = self.return_request_obj.create(
+            [
+                {
+                    "partner_id": partner.id,
+                    "return_type": return_type,
+                    "return_to_location": self.wh1.lot_stock_id.id,
+                    "return_from_location": self.wh1.lot_stock_id.id,
+                }
+                for partner, return_type in (
+                    (self.partner_customer, "customer"),
+                    (self.partner_supplier, "supplier"),
+                )
+            ]
+        )
+        self.assertEqual(
+            requests.mapped("partner_id"), self.partner_customer + self.partner_supplier
+        )
+        self.assertNotEqual(requests[0].name, requests[1].name)
