@@ -151,4 +151,4 @@ class TestStockRequestKit(TransactionCase):
             {self.can: 8, self.box: 0},
             backorder=False,
         )
-        self.assertEqual(request.qty_done, 0)
+        self._assert_qtys(request, "cancel", 0, 0, 4)
