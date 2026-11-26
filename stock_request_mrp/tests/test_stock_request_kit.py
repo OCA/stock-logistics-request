@@ -133,3 +133,22 @@ class TestStockRequestKit(TransactionCase):
         request = self._request(self.pack, 3)
         self._validate(request.picking_ids, {self.can: 12}, backorder=False)
         self._assert_qtys(request, "done", 1, 0, 2)
+
+    def test_kit_bom_changed(self):
+        request = self._request(self.pack, 3)
+        self.pack.bom_ids.active = False
+        self._create_kit(self.pack, [(self.can, 6)])
+        self._validate(request.picking_ids, {self.can: 12})
+        self._assert_qtys(request, "open", 1, 2, 0)
+
+    def test_kit_component_without_moves(self):
+        request = self._request(self.combo, 4)
+        request.allocation_ids.filtered(
+            lambda a: a.stock_move_id.product_id == self.box
+        ).unlink()
+        self._validate(
+            request.picking_ids,
+            {self.can: 8, self.box: 0},
+            backorder=False,
+        )
+        self.assertEqual(request.qty_done, 0)

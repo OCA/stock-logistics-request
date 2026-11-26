@@ -54,9 +54,21 @@ class StockRequest(models.Model):
             lambda a: a.stock_move_id.bom_line_id
             and a.stock_move_id.product_id != self.product_id
         )
+        if not allocations:
+            return super()._get_allocation_qtys()
+        # The BoM the moves were made from, as the kit may have changed since.
         bom = (
-            allocations
-            and self.env["mrp.bom"]._bom_find(
+            allocations.stock_move_id.bom_line_id.bom_id.filtered(
+                lambda b: b.type == "phantom"
+                and (
+                    b.product_id == self.product_id
+                    or (
+                        b.product_tmpl_id == self.product_id.product_tmpl_id
+                        and not b.product_id
+                    )
+                )
+            )[:1]
+            or self.env["mrp.bom"]._bom_find(
                 self.product_id, company_id=self.company_id.id, bom_type="phantom"
             )[self.product_id]
         )
@@ -77,7 +89,11 @@ class StockRequest(models.Model):
             qty_per_kit = bom_line.product_uom_id._compute_quantity(
                 line_data["qty"], uom, round=False
             )
-            if not line_allocations or uom.is_zero(qty_per_kit):
+            if bom_line.product_id.type == "service" or uom.is_zero(qty_per_kit):
+                continue
+            if not line_allocations:
+                # A component without moves gives no kit, as in Odoo.
+                ratios.append([0.0, 0.0, 0.0])
                 continue
             done_qty = fulfilled_qty = open_qty = 0.0
             for allocation in line_allocations:
