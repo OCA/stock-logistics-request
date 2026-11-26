@@ -3,6 +3,8 @@
 from odoo import Command
 from odoo.tests import Form, TransactionCase
 
+from ..hooks import recompute_kit_requests
+
 
 class TestStockRequestKit(TransactionCase):
     @classmethod
@@ -152,3 +154,25 @@ class TestStockRequestKit(TransactionCase):
             backorder=False,
         )
         self._assert_qtys(request, "cancel", 0, 0, 4)
+
+    def test_hook_recomputes_kit_requests(self):
+        early = self._request(self.pack, 3)
+        self._validate(early.picking_ids, {self.can: 12})
+        complete = self._request(self.pack, 2)
+        self._validate(complete.picking_ids, {self.can: 24})
+        self.env.flush_all()
+        # As they were before this module: counted in cans, closed too early
+        self.env.cr.execute(
+            "UPDATE stock_request SET qty_done = 12, qty_in_progress = 0, "
+            "state = 'done' WHERE id = %s",
+            [early.id],
+        )
+        self.env.cr.execute(
+            "UPDATE stock_request SET qty_done = 24 WHERE id = %s", [complete.id]
+        )
+        self.env.invalidate_all()
+
+        recompute_kit_requests(self.env)
+
+        self._assert_qtys(early, "open", 1, 2, 0)
+        self._assert_qtys(complete, "done", 2, 0, 0)

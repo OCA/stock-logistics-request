@@ -4,6 +4,7 @@
 import logging
 
 from odoo import SUPERUSER_ID, api
+from odoo.tools import float_compare
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +16,35 @@ def post_init_hook(env):
     """
     logger.info("Linking existing MOs coming from a Stock Request")
     link_existing_mos_to_stock_request(env)
+    recompute_kit_requests(env)
+
+
+def recompute_kit_requests(env):
+    """The stored quantities of the requests of kits were computed with the
+    quantities of the components. Compute them again in kits, and let the
+    requests that were closed too early follow them."""
+    env = api.Environment(env.cr, SUPERUSER_ID, dict())
+    requests = env["stock.request"].search(
+        [
+            ("allocation_ids", "!=", False),
+            ("product_id.product_tmpl_id.bom_ids.type", "=", "phantom"),
+        ]
+    )
+    if not requests:
+        return
+    logger.info(f"Recomputing the quantities of {len(requests)} requests of kits")
+    fnames = ["qty_done", "qty_in_progress", "qty_cancelled"]
+    for fname in fnames:
+        env.add_to_compute(requests._fields[fname], requests)
+    requests.flush_recordset(fnames)
+    precision = env["decimal.precision"].precision_get("Product Unit")
+    in_progress = requests.filtered(
+        lambda r: float_compare(r.qty_in_progress, 0, precision_digits=precision) > 0
+    )
+    (in_progress & requests.filtered(lambda r: r.state in ("done", "cancel"))).write(
+        {"state": "open"}
+    )
+    (requests - in_progress).filtered(lambda r: r.state == "open").check_done()
 
 
 def link_existing_mos_to_stock_request(env):
