@@ -27,7 +27,14 @@ def _fix_open_allocations(env):
         product_uom = move.product_id.uom_id
         to_allocate = move.product_qty
         for alloc in move.allocation_ids:
-            qty = min(alloc.open_product_qty, _get_pending_qty(alloc), to_allocate)
+            # Kits are not supported yet: the move of a component holds units
+            # of the component, not of the requested product.
+            pending_qty = (
+                _get_pending_qty(alloc)
+                if alloc.product_id == move.product_id
+                else alloc.open_product_qty
+            )
+            qty = min(alloc.open_product_qty, pending_qty, to_allocate)
             to_allocate -= qty
             if not product_uom.compare(qty, alloc.open_product_qty):
                 continue
